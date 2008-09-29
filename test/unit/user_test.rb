@@ -4,7 +4,7 @@ class UserTest < Test::Unit::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
   # Then, you can remove it from this and the functional test.
   include AuthenticatedTestHelper
-  fixtures :users
+  fixtures :users, :lab_groups, :projects
 
   def test_should_create_user
     assert_difference 'User.count' do
@@ -116,6 +116,23 @@ class UserTest < Test::Unit::TestCase
     assert users(:customer_user).remember_token_expires_at.between?(before, after)
   end
 
+  def test_accessible_lab_groups_with_admin
+    assert_equal users(:admin_user).accessible_lab_groups, LabGroup.find(:all, :order => "name ASC")
+  end
+  
+  def test_accessible_lab_groups_with_customer
+    assert_equal users(:customer_user).accessible_lab_groups, [ lab_groups(:gorilla_group) ]
+  end
+  
+  def test_accessible_projects_with_admin
+    assert_equal users(:admin_user).accessible_projects, Project.find(:all, :order => "name ASC")
+  end
+  
+  def test_accessible_projects_with_customer
+    assert_equal users(:customer_user).accessible_projects,
+      [ projects(:another), projects(:first) ]
+  end
+  
 protected
   def create_user(options = {})
     User.create({ :login => 'quire',

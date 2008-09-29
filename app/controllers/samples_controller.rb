@@ -12,14 +12,8 @@ class SamplesController < ApplicationController
 
   def list
     if(@lab_groups != nil && @lab_groups.size > 0)
-      # make an array of the accessible project ids, and use this
-      # to find the current user's accessible samples in a nice sorted list
-      project_ids = Array.new
-      for project in @projects
-        project_ids << project.id
-      end
-
       # make sure at least one project exists
+      project_ids = @projects.collect{ |p| p.id }
       if(project_ids.size > 0)
         @sample_pages, @samples =
           paginate :samples, :conditions => [ "project_id IN (?)", project_ids ], :per_page => 40,
@@ -37,19 +31,19 @@ class SamplesController < ApplicationController
 
   def add
     @add_samples = AddSamples.new(params[:add_samples])
-
-    # change current naming scheme to whatever was selected   
-    if( @add_samples.naming_scheme_id != nil )
-      current_user.update_attribute('current_naming_scheme_id', @add_samples.naming_scheme_id )
-      populate_sample_naming_scheme_choices( NamingScheme.find(@add_samples.naming_scheme_id) )
+    
+    if(@add_samples.naming_scheme_id != nil)
+      naming_scheme = NamingScheme.find(@add_samples.naming_scheme_id)
+      
+      # populate naming elements for this scheme
+      @naming_elements = naming_scheme.ordered_naming_elements
+      
+      # change default naming scheme to whatever was selected
+      current_user.update_attribute('current_naming_scheme_id', naming_scheme.id)
     else
       current_user.update_attribute('current_naming_scheme_id', nil)
     end
- 
-    @naming_schemes = NamingScheme.find(:all)
     
-    @samples = Array.new
-
     # should a new project be created?
     if(@add_samples.project_id == -1)
       @project = Project.new(params[:project])
@@ -58,6 +52,7 @@ class SamplesController < ApplicationController
       end
     end
 
+    @samples = Array.new
     # make sure there's a project and valid sample info
     if(@add_samples.project_id != -1 && @add_samples.valid?) 
       for sample_number in 1..@add_samples.number
@@ -99,7 +94,7 @@ class SamplesController < ApplicationController
   end
   
   def create
-    populate_sample_naming_scheme_choices(current_user.naming_scheme)
+    populate_naming_elements(current_user.current_naming_scheme_id)
 
     # store the non-naming scheme info in an array of Sample records
     @samples = Array.new
@@ -196,7 +191,7 @@ class SamplesController < ApplicationController
     
     if failed
       @add_samples = AddSamples.new(:number => 0)
-      populate_sample_naming_scheme_choices(current_user.naming_scheme)
+      populate_naming_elements(current_user.current_naming_scheme_id)
       render :action => 'add'
     else
       # save now that all samples have been tested as valid
@@ -235,7 +230,7 @@ class SamplesController < ApplicationController
 
     # if a naming scheme was used, populate the necessary fields
     if( @sample.naming_scheme_id != nil )
-      populate_sample_naming_scheme_choices(@sample.naming_scheme)
+      populate_naming_elements(@sample.naming_scheme_id)
       @sample_terms = SampleTerm.find(:all, :conditions => ["sample_id = ?", @sample.id],
                                       :order => "term_order ASC")
       @sample_texts = SampleText.find(:all, :conditions => ["sample_id = ?", @sample.id])
@@ -314,7 +309,7 @@ class SamplesController < ApplicationController
     schemed_name = params[:sample]["0"][:schemed_name]
     if(schemed_name != nil)
       naming_scheme = NamingScheme.find(@samples[0].naming_scheme_id)
-      populate_sample_naming_scheme_choices(naming_scheme)
+      populate_naming_elements(naming_scheme.id)
       @samples[0].sample_name = ""
       @samples[0].sample_group_name = ""
       @samples[0].naming_element_selections = Array.new
@@ -480,7 +475,7 @@ class SamplesController < ApplicationController
   
   # labeling submission, from total RNA traces
   def new_from_traces(traces)
-    populate_sample_naming_scheme_choices(current_user.naming_scheme)
+    populate_naming_elements(current_user.current_naming_scheme_id)
     
     @add_samples = AddSamples.new
     @project = Project.new
@@ -501,7 +496,7 @@ class SamplesController < ApplicationController
   
   # create samples from total RNA traces
   def create_from_traces
-    populate_sample_naming_scheme_choices(current_user.naming_scheme)
+    populate_naming_elements(current_user.current_naming_scheme_id)
     
     @samples = session[:samples]
 
@@ -558,20 +553,14 @@ class SamplesController < ApplicationController
   end
 
   # interface to match up traces and Samples
-  def match_traces(traces, sample_status)
-    lab_group_ids = current_user.get_lab_group_ids
-    
-    # make an array of the accessible project ids, and use this
-    # to find the current user's accessible samples in a nice sorted list
-    project_ids = Array.new
-    for project in @projects
-      project_ids << project.id
-    end
-    
+  def match_traces(traces, sample_status)   
     # get samples for user's projects
+    project_ids = @projects.collect{ |p| p.id }
     @available_samples = Sample.find(:all, :conditions => [ "project_id IN (?) AND status = '#{sample_status}'", project_ids ],
                            :order => "sample_name ASC", :include => 'project')
-    
+
+    # get all the traces for lab groups the belong to
+    lab_group_ids = @lab_groups.collect{ |lg| lg.id }    
     available_traces = QualityTrace.find(:all, :conditions => [ "lab_group_id IN (?)", lab_group_ids ],
                                    :order => "name ASC")
     
@@ -755,7 +744,7 @@ class SamplesController < ApplicationController
       render :action => 'show'
     else
       @add_samples = AddSamples.new
-      populate_sample_naming_scheme_choices(current_user.naming_scheme)
+      populate_naming_elements(current_user.current_naming_scheme_id)
       render :action => 'new_from_traces'
     end
   end
@@ -766,35 +755,18 @@ class SamplesController < ApplicationController
     # grabbing it in the list view for every element displayed
     @using_sbeams = SiteConfig.find(1).using_sbeams?
     
-    # Administrators and staff can see all projects, otherwise users
-    # are restricted to seeing only projects for lab groups they belong to
-    if(current_user.staff_or_admin?)
-      @lab_groups = LabGroup.find(:all, :order => "name ASC")
-      @projects = Project.find(:all, :order => "name ASC")
-    else
-      @projects = Array.new
-      @lab_groups = current_user.lab_groups
-      @lab_groups.each do |g|
-        @projects << g.projects
-      end
-      # put it all down to a 1D Array
-      @projects = @projects.flatten
-    end
+    @lab_groups = current_user.accessible_lab_groups
+    @projects = current_user.accessible_projects
+
     @chip_types = ChipType.find(:all, :order => "name ASC")
     @organisms = Organism.find(:all, :order => "name ASC")
+    
+    @naming_schemes = NamingScheme.find(:all)
   end
 
   def populate_arrays_for_edit(selected_sample)
-    lab_group_ids = current_user.get_lab_group_ids
-    
-    # make an array of the accessible project ids, and use this
-    # to find the current user's accessible samples in a nice sorted list
-    project_ids = Array.new
-    for project in @projects
-      project_ids << project.id
-    end
-    
-    # remove all traces associated with a sample from list of available traces
+    # find all the existing samples that the user has access to
+    project_ids = @projects.collect{ |p| p.id }
     existing_samples = Sample.find(:all, :conditions => [ "project_id IN (?)", project_ids ],
                            :order => "sample_name ASC", :include => 'project')
 
@@ -847,10 +819,10 @@ class SamplesController < ApplicationController
     end  
   end
   
-  def populate_sample_naming_scheme_choices(scheme)
+  def populate_naming_elements(scheme_id)
     # only if the user has a specified scheme, find out what elements we need
-    if( scheme != nil )
-      @naming_elements = NamingElement.find(:all, :conditions => ["naming_scheme_id = ?", scheme.id],
+    if( scheme_id != nil )
+      @naming_elements = NamingElement.find(:all, :conditions => ["naming_scheme_id = ?", scheme_id],
                                             :order => "element_order ASC" )
     end
   end
