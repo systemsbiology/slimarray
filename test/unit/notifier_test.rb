@@ -34,6 +34,6 @@ class NotifierTest < ActionMailer::TestCase
     assert_equal ['facility@example.com'], sent.cc
     assert_equal "[SLIMarray] New Bioanalyzer results", sent.subject
     assert sent.body =~ /^You have new Bioanalyzer results/
-    assert sent.body =~ /bioanalyzer_runs\/show\//
+    assert sent.body =~ /quality_traces/
   end
 end
