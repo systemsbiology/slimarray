@@ -346,7 +346,11 @@ class SamplesController < ApplicationController
             end
           end
         else
-          if( schemed_name[element.name].to_i > 0 )
+          # make sure there's a selection, and that the element this one depends upon
+          # has a selection too
+          if( schemed_name[element.name].to_i > 0 &&
+              (element.depends_upon_element.nil? ||
+              schemed_name[element.depends_upon_element.name].to_i > 0) )
             naming_term = NamingTerm.find(schemed_name[element.name])
             #naming_element = naming_term.naming_element
             sample_term = SampleTerm.new( :term_order => element.element_order,
