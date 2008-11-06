@@ -196,7 +196,7 @@ class Sample < ActiveRecord::Base
         begin
           sample = Sample.find(row[1].to_i)
         rescue
-          return "Sample ID is invalid in row #{row_number}"
+          sample = Sample.new
         end
       
         # check to see if this sample should have a naming scheme
@@ -210,7 +210,9 @@ class Sample < ActiveRecord::Base
             return "Wrong number of columns in row #{row_number}. Expected 11"
           end
 
-          sample.destroy_existing_naming_scheme_info
+          if( !sample.new_record? )
+            sample.destroy_existing_naming_scheme_info
+          end
         
           errors = sample.update_unschemed_columns(row)
           if(errors != "")
@@ -237,7 +239,9 @@ class Sample < ActiveRecord::Base
               "Expected #{expected_columns}"
           end
 
-          sample.destroy_existing_naming_scheme_info
+          if( !sample.new_record? )
+            sample.destroy_existing_naming_scheme_info
+          end
         
           # update the sample attributes
           errors = sample.update_unschemed_columns(row)
@@ -245,7 +249,7 @@ class Sample < ActiveRecord::Base
             return errors + " in row #{row_number}"
           end
 
-          # update the naming scheme records
+          # create the new naming scheme records
           current_column_index = 11
           naming_elements.each do |e|
             # do nothing if there's nothing in the cell
@@ -293,7 +297,7 @@ class Sample < ActiveRecord::Base
           end
           sample.update_attributes(:naming_scheme_id => naming_scheme.id)
         end
-      end
+      end      
       row_number += 1
     end
 
