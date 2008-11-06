@@ -207,6 +207,87 @@ class SampleTest < Test::Unit::TestCase
     assert_equal naming_schemes(:yeast_scheme).id,
       Sample.find( samples(:sample3).id ).naming_scheme_id
   end
+
+  def test_from_csv_new_naming_scheme
+    csv_file = "#{RAILS_ROOT}/test/fixtures/csv/update_samples_new_scheme.csv"
+
+    errors = Sample.from_csv(csv_file, true)
+
+    assert_equal "", errors
+    
+    # new naming scheme
+    scheme = NamingScheme.find(:first, :conditions => {:name => "Badger"})
+    assert_not_nil scheme
+    
+    # naming elements
+    age_elements = NamingElement.find(:all,
+      :conditions => { :name => "Age", :element_order => 1, :group_element => true,
+        :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
+        :include_in_sample_name => true
+      }
+    )
+    assert_equal 1, age_elements.size
+    age_element = age_elements[0]
+    
+    disposition_elements = NamingElement.find(:all,
+      :conditions => { :name => "Disposition", :element_order => 2, :group_element => true,
+        :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
+        :include_in_sample_name => true
+      }
+    )
+    assert_equal 1, disposition_elements.size
+    disposition_element = disposition_elements[0]
+    
+    # naming terms
+    age_1_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "1", :abbreviated_term => "1", :naming_element_id => age_element.id,
+        :term_order => 0
+      }
+    )
+    assert_equal 1, age_1_terms.size
+    age_2_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "2", :abbreviated_term => "2", :naming_element_id => age_element.id,
+        :term_order => 0
+      }
+    )
+    assert_equal 1, age_2_terms.size
+    age_3_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "3", :abbreviated_term => "3", :naming_element_id => age_element.id,
+        :term_order => 0
+      }
+    )
+    assert_equal 1, age_3_terms.size
+    age_3_term = age_3_terms[0]
+
+    feisty_disposition_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "Feisty", :abbreviated_term => "Feisty", :naming_element_id => disposition_element.id,
+        :term_order => 0
+      }
+    )
+    assert_equal 1, feisty_disposition_terms.size
+    feisty_disposition_term = feisty_disposition_terms[0]
+    mellow_disposition_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "Mellow", :abbreviated_term => "Mellow", :naming_element_id => disposition_element.id,
+        :term_order => 0
+      }
+    )
+    assert_equal 1, mellow_disposition_terms.size
+
+    # sample terms and scheme
+    assert_equal 1, SampleTerm.find(:all, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => age_3_term.id } ).size
+    assert_equal 1, SampleTerm.find(:all, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => feisty_disposition_term.id } ).size
+    assert_equal scheme.id,
+      Sample.find( samples(:sample3).id ).naming_scheme_id
+  end
   
   def assert_row_equal(expected, row)
     column = 0

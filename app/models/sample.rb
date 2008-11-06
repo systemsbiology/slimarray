@@ -20,7 +20,7 @@ class Sample < ActiveRecord::Base
   validates_associated :chip_type, :project
   validates_presence_of :sample_name, :short_sample_name, :submission_date,
                         :project_id, :sample_group_name
-  validates_length_of :short_sample_name, :maximum => 20
+  validates_length_of :short_sample_name, :maximum => 50
   validates_length_of :sample_name, :maximum => 59
   validates_length_of :sbeams_user, :maximum => 20
   validates_length_of :status, :maximum => 50
@@ -186,13 +186,16 @@ class Sample < ActiveRecord::Base
     return csv_file_name
   end
 
-  def self.from_csv(csv_file_name)
+  def self.from_csv(csv_file_name, scheme_generation_allowed = false)
 
     row_number = 0
+    header_row = nil
 
     CSV.open(csv_file_name, 'r') do |row|
-      # don't process header row
-      if(row_number > 0)
+      # grab the header row or process sample rows
+      if(row_number == 0)
+        header_row = row
+      else
         begin
           sample = Sample.find(row[1].to_i)
         rescue
@@ -227,16 +230,46 @@ class Sample < ActiveRecord::Base
             :conditions => {:name => row[10]})
           # make sure this sample has a naming scheme
           if(naming_scheme.nil?)
-            return "Naming scheme #{row[10]} doesn't exist in row #{row_number}"
+            if(scheme_generation_allowed)
+              naming_scheme = NamingScheme.create(:name => row[10])
+            else
+              return "Naming scheme #{row[10]} doesn't exist in row #{row_number}"
+            end
           end
 
           naming_elements =
             naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
 
           expected_columns = 11 + naming_elements.size
-          if(row.size != expected_columns)
-            return "Wrong number of columns in row #{row_number}. " +
-              "Expected #{expected_columns}"
+          if(row.size > expected_columns)
+            # create new naming elements if that's allowed
+            # otherwise return an error message
+            if(scheme_generation_allowed)
+              if(naming_elements.size > 0)
+                current_element_order = naming_elements[-1].element_order + 1
+              else
+                current_element_order = 1
+              end
+              (11..header_row.size-1).each do |i|
+                NamingElement.create(
+                  :name => header_row[i],
+                  :element_order => current_element_order,
+                  :group_element => true,
+                  :optional => true,
+                  :naming_scheme_id => naming_scheme.id,
+                  :free_text => false,
+                  :include_in_sample_name => true,
+                  :dependent_element_id => 0)
+                current_element_order += 1
+              end
+              
+              # re-populate naming elements array
+              naming_elements =
+                naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
+            else
+              return "Wrong number of columns in row #{row_number}. " +
+                "Expected #{expected_columns}"
+            end
           end
 
           if( !sample.new_record? )
@@ -281,8 +314,17 @@ class Sample < ActiveRecord::Base
                       "0*" + row[current_column_index] ])
                 end
                 if(naming_term.nil?)
-                  return "Naming term #{row[current_column_index]} doesn't " +
-                    "exist for #{e.name} for row #{row_number}"
+                  if(scheme_generation_allowed)
+                    naming_term = NamingTerm.create(
+                      :naming_element_id => e.id,
+                      :term => row[current_column_index],
+                      :abbreviated_term => row[current_column_index],
+                      :term_order => 0
+                    )
+                  else
+                    return "Naming term #{row[current_column_index]} doesn't " +
+                      "exist for #{e.name} for row #{row_number}"
+                  end
                 end
                 sample_term = SampleTerm.new(
                   :sample_id => sample.id,
@@ -317,7 +359,7 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  def update_unschemed_columns(row)  
+  def update_unschemed_columns(row)
     chip_type = ChipType.find(:first, 
       :conditions => [ "name = ? OR short_name = ?", row[6], row[6] ])
     if(chip_type.nil?)
