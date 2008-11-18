@@ -39,16 +39,20 @@ class BioanalyzerRun < ActiveRecord::Base
         # copy over PDF
         current_pdf_file = "#{file_root}.pdf"
         pdf_path = "#{RAILS_ROOT}/public/quality_traces/#{run_name}.pdf"
-        FileUtils.cp( current_pdf_file, pdf_path)
+        if( File.exists?(current_pdf_file) )
+          FileUtils.cp( current_pdf_file, pdf_path)
+        end
        
         # parse XML
         doc = REXML::Document.new( File.new(xml_file) )
         
         # find who ran the chip
-        ran_by = doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"].text
-        ran_by_user = User.find(:first, :conditions => {:login => ran_by})
-        if(ran_by_user != nil)
-          ran_by_email = ran_by_user.email
+        if(doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"] != nil)
+          ran_by = doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"].text
+          ran_by_user = User.find(:first, :conditions => {:login => ran_by})
+          if(ran_by_user != nil)
+            ran_by_email = ran_by_user.email
+          end
         end
 
         # find the chip-wide comments
@@ -89,8 +93,10 @@ class BioanalyzerRun < ActiveRecord::Base
               name = full_name
             end
 
-            concentration = 
-              node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"].text
+            if(node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"] != nil)
+              concentration = 
+                node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"].text
+            end
   
             # look for sample-specific lab group
             lab_name = node.elements["Comment"].text
@@ -115,9 +121,12 @@ class BioanalyzerRun < ActiveRecord::Base
               # associate a jpeg
               current_jpg_file = file_root + "_EGRAM_Sample" + number + ".jpg"
   
-              quality_rating = node.elements["DAResultStructures/DARRIN/Channel/RIN"].text
-              ribosomal_ratio =
-                node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"].text
+              if(node.elements["DAResultStructures/DARRIN/Channel/RIN"] != nil &&
+                 node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"] != nil)
+                quality_rating = node.elements["DAResultStructures/DARRIN/Channel/RIN"].text
+                ribosomal_ratio =
+                  node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"].text
+              end
             end
 
             # ensure that sample is tagged with a type, and that image exists
@@ -161,7 +170,7 @@ class BioanalyzerRun < ActiveRecord::Base
             end
           end
         end
-debugger        
+        
         # only save bioanalyzer_run if there are > 1 samples (more than just ladder)
         if( traces.size > 1 )
           # grab the date from the XML
@@ -179,9 +188,11 @@ debugger
               trace.save
             end
 
-            # notification of new Bioanalyzer run
-            Notifier.deliver_bioanalyzer_notification(run, ran_by_email,
-                                                      email_recipients)
+            # only do email notification if a pdf exists
+            if( File.exists?(current_pdf_file) )
+              Notifier.deliver_bioanalyzer_notification(run, ran_by_email,
+                                                        email_recipients)
+            end
           end
         end
       end

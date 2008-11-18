@@ -24,10 +24,9 @@ class BioanalyzerRunTest < Test::Unit::TestCase
     BioanalyzerRun.import_new
 
     assert_equal num_bioanalyzer_runs + 2, BioanalyzerRun.count
-    # 12 samples + ladder from one chip, and 2 samples only
-    # from 2nd chip--ladder ownership doesn't make sense for
-    # split chips, so it isn't saved
-    assert_equal num_quality_traces + 17, QualityTrace.count
+    # 12 samples + ladder from one chip, and 2 samples + ladder
+    # for the 2nd chip
+    assert_equal num_quality_traces + 18, QualityTrace.count
 
     # verify that Control_1 total RNA sample, which was encountered twice,
     # is named appropriately (Control_1 and Control_1_r1)
@@ -57,11 +56,11 @@ class BioanalyzerRunTest < Test::Unit::TestCase
     BioanalyzerRun.import_new
 
     assert_equal num_bioanalyzer_runs + 2, BioanalyzerRun.count
-    assert_equal num_quality_traces + 17, QualityTrace.count
+    assert_equal num_quality_traces + 18, QualityTrace.count
 
     BioanalyzerRun.import_new
 
     assert_equal num_bioanalyzer_runs + 2, BioanalyzerRun.count
-    assert_equal num_quality_traces + 17, QualityTrace.count
+    assert_equal num_quality_traces + 18, QualityTrace.count
   end
 end
