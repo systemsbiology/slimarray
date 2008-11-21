@@ -25,6 +25,9 @@ class SamplesController < ApplicationController
   def new
     @naming_schemes = NamingScheme.find(:all)
     
+    # only show active projects here
+    @projects = current_user.accessible_projects(true)
+    
     @add_samples = AddSamples.new
     @project = Project.new
   end

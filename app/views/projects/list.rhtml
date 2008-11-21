@@ -2,7 +2,7 @@
 
 <table class="sortable" id="samples">
   <tr>
-  <% for column in ["Name", "Budget", "Lab Group", "Edit", "Destroy"] %>
+  <% for column in ["Name", "Budget", "Lab Group", "Active", "Edit", "Destroy"] %>
     <th><%= column %></th>
   <% end %>
   </tr>
@@ -12,6 +12,7 @@
     <td><%=h project.name %></td>
     <td><%=h project.budget %></td>
     <td><%=h project.lab_group.name %></td>
+    <td><%= project.active ? "Yes" : "No" %>
     <td><%= link_to 'Edit', :action => 'edit', :id => project %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => project }, :confirm => 'Are you sure?', :post => true %></td>
   </tr>

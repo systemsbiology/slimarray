@@ -186,7 +186,7 @@ public
     end
   end
   
-  def accessible_projects
+  def accessible_projects(active_only = false)
     # Administrators and staff can see all projects, otherwise users
     # are restricted to seeing only projects for lab groups they belong to
     if(self.staff_or_admin?)
@@ -196,11 +196,17 @@ public
       
       lab_groups = self.lab_groups
       lab_groups.each do |g|
-        projects << g.projects
+        if(active_only)
+          projects << g.projects.find(:all, :conditions => {:active => true})
+        else
+          projects << g.projects
+        end
       end
       
       # put it all down to a 1D Array
-      return projects.flatten
+      projects.flatten!
+      
+      return projects.sort {|x,y| x.name <=> y.name }
     end
   end
 end
