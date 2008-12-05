@@ -1,16 +1,11 @@
 class SamplesController < ApplicationController
   before_filter :login_required
   before_filter :populate_arrays_from_tables,
-    :only => [:index, :list, :new, :add, :create, :edit, :submit_traces,
+    :only => [:index, :new, :add, :create, :edit, :submit_traces,
               :new_from_traces, :create_traces, :match_traces,
               :submit_matched_traces, :update]
   
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
     if(@lab_groups != nil && @lab_groups.size > 0)
       # make sure at least one project exists
       project_ids = @projects.collect{ |p| p.id }
@@ -20,6 +15,23 @@ class SamplesController < ApplicationController
                    :order => "submission_date DESC, samples.id ASC", :include => 'project'
       end
     end
+    
+    respond_to do |format|
+      format.html  #index.html
+      format.xml   { render :xml => @samples }
+      format.json  { render :json => @samples.
+        collect{|x| x.summary_hash}.to_json 
+      }
+    end
+  end
+
+  def show
+    @sample = Sample.find(params[:id])
+    
+    respond_to do |format|
+      format.xml   { render :xml => @sample }
+      format.json  { render :json => @sample.detail_hash.to_json }
+    end    
   end
   
   def new
@@ -416,7 +428,7 @@ class SamplesController < ApplicationController
         end
 
         flash[:notice] = 'Sample was successfully updated.'
-        redirect_to :action => 'list'
+        redirect_to(samples_url)
       else
         flash[:warning] = 'Resulting sample name or group name too long'
         params[:id] = @samples[0].id
@@ -439,8 +451,7 @@ class SamplesController < ApplicationController
       redirect_to :back
     else
       flash[:warning] = "Unable to destroy samples that have already been hybridized."
-      list
-      render :action => 'list'
+      render :action => 'index'
     end
   end
   
@@ -452,7 +463,7 @@ class SamplesController < ApplicationController
         sample.destroy
       end
     end
-    redirect_to :action => 'list'
+    redirect_to(samples_url)
   end
   
   # handle different requests for sample submission

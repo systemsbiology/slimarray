@@ -392,4 +392,58 @@ class Sample < ActiveRecord::Base
     
     return ""
   end
+  
+  def raw_data_path
+    if(hybridization.nil?)
+      return nil
+    else
+      return hybridization.raw_data_path
+    end
+  end
+  
+  def file_root
+    return raw_data_path.match(/.*\/(.*?)\.\w{3}/)[1]
+  end
+  
+  def summary_hash
+    return {
+      :id => id,
+      :sample_description => sample_name,
+      :submission_date => submission_date,
+      :updated_at => updated_at,
+      :uri => "#{SiteConfig.site_url}/samples/#{id}"
+    }
+  end
+  
+  def detail_hash
+    sample_term_array = Array.new
+    sample_terms.each do |st|
+      sample_term_array << {
+        st.naming_term.naming_element.name => st.naming_term.term
+      }
+    end
+    
+    sample_text_array = Array.new
+    sample_texts.each do |st|
+      sample_text_array << {
+        st.naming_element.name => st.text
+      }
+    end
+    
+    return {
+      :id => id,
+      :user => sbeams_user,
+      :project => project.name,
+      :name_on_tube => short_sample_name,
+      :sample_description => sample_name,
+      :submission_date => submission_date,
+      :updated_at => updated_at,
+      :status => status,
+      :naming_scheme => naming_scheme ? naming_scheme.name : "",
+      :sample_terms => sample_term_array,
+      :sample_texts => sample_text_array,
+      :raw_data_path => raw_data_path,
+      :file_root => file_root
+    }
+  end
 end

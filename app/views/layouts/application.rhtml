@@ -26,7 +26,7 @@
           <% if SiteConfig.track_hybridizations? %>
             <li class="category">Samples</li>
             <li><%= link_to 'Bioanalyzer Results', {:controller => 'bioanalyzer_runs', :action => 'list'} %></li>
-            <li><%= link_to 'Samples', {:controller => 'samples', :action => 'list'} %></li>
+            <li><%= link_to 'Samples', samples_path %></li>
             <%= link_if_staff_or_admin 'Hybridizations', {:controller => 'hybridizations', :action => 'list'}, 
             :wrap_in => 'li'%>
           <% end %>

@@ -27,17 +27,7 @@ class SamplesControllerTest < Test::Unit::TestCase
   
     get :index
     assert_response :success
-    assert_template 'list'
-  end
-
-  def test_list_as_admin
-    login_as_admin
-    get :list
-
-    assert_response :success
-    assert_template 'list'
-
-    assert_not_nil assigns(:samples)
+    assert_template 'index'
   end
 
   def test_new_gcos_on_sbeams_on_in_site_config_as_admin
@@ -432,7 +422,7 @@ class SamplesControllerTest < Test::Unit::TestCase
     assert_equal "new group", sample.sample_group_name
     
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to :action => 'index'
   end
 
   def test_update_with_naming_scheme_as_admin
@@ -472,7 +462,7 @@ class SamplesControllerTest < Test::Unit::TestCase
     end
     
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to :action => 'index'
   end
 
 #  def test_update_locked_without_naming_scheme_as_admin
@@ -502,10 +492,10 @@ class SamplesControllerTest < Test::Unit::TestCase
     login_as_admin
     assert_not_nil Sample.find( samples(:sample1).id )
 
-    @request.env["HTTP_REFERER"] = "/samples/list"
+    @request.env["HTTP_REFERER"] = "/samples/index"
     post :destroy, :id => samples(:sample1).id
     assert_response :redirect
-    assert_redirected_to "samples/list"
+    assert_redirected_to "samples/index"
 
     assert_raise(ActiveRecord::RecordNotFound) {
       Sample.find( samples(:sample1).id )
@@ -516,10 +506,10 @@ class SamplesControllerTest < Test::Unit::TestCase
     login_as_admin
     assert_not_nil Sample.find( samples(:sample2).id )
 
-    @request.env["HTTP_REFERER"] = "/samples/list"
+    @request.env["HTTP_REFERER"] = "/samples/index"
     post :destroy, :id => samples(:sample2).id
     assert_response :redirect
-    assert_redirected_to "samples/list"
+    assert_redirected_to "samples/index"
 
     assert_raise(ActiveRecord::RecordNotFound) {
       Sample.find( samples(:sample2).id )
@@ -534,7 +524,7 @@ class SamplesControllerTest < Test::Unit::TestCase
          :commit => "Delete Samples"
     
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to :action => 'index'
 
     # assert that destroys have taken place
     assert_raise(ActiveRecord::RecordNotFound) {
@@ -783,15 +773,7 @@ class SamplesControllerTest < Test::Unit::TestCase
   
     get :index
     assert_response :success
-    assert_template 'list'
-  end
-
-  def test_list_as_customer
-    login_as_customer
-    get :list
-
-    assert_response :success
-    assert_template 'list'
+    assert_template 'index'
 
     assert_not_nil assigns(:samples)
   end
@@ -1188,7 +1170,7 @@ class SamplesControllerTest < Test::Unit::TestCase
     assert_equal "new group", sample.sample_group_name
     
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to :action => 'index'
   end
 
   def test_update_with_naming_scheme_as_customer
@@ -1228,7 +1210,7 @@ class SamplesControllerTest < Test::Unit::TestCase
     end
     
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to :action => 'index'
   end
 
 #  def test_update_locked_without_naming_scheme_as_customer
@@ -1258,10 +1240,10 @@ class SamplesControllerTest < Test::Unit::TestCase
     login_as_customer
     assert_not_nil Sample.find( samples(:sample1).id )
 
-    @request.env["HTTP_REFERER"] = "/samples/list"
+    @request.env["HTTP_REFERER"] = "/samples/index"
     post :destroy, :id => samples(:sample1).id
     assert_response :redirect
-    assert_redirected_to "samples/list"
+    assert_redirected_to "samples/index"
 
     assert_raise(ActiveRecord::RecordNotFound) {
       Sample.find( samples(:sample1).id )
@@ -1273,10 +1255,10 @@ class SamplesControllerTest < Test::Unit::TestCase
     login_as_customer
     assert_not_nil Sample.find( samples(:sample2).id )
 
-    @request.env["HTTP_REFERER"] = "/samples/list"
+    @request.env["HTTP_REFERER"] = "/samples/index"
     post :destroy, :id => samples(:sample2).id
     assert_response :success
-    assert_template 'list'
+    assert_template 'index'
     assert_flash_warning
 
     assert_not_nil Sample.find( samples(:sample2).id )
