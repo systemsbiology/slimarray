@@ -7,13 +7,16 @@ class SamplesController < ApplicationController
   
   def index
     if(@lab_groups != nil && @lab_groups.size > 0)
-      # make sure at least one project exists
-      project_ids = @projects.collect{ |p| p.id }
-      if(project_ids.size > 0)
-        @sample_pages, @samples =
-          paginate :samples, :conditions => [ "project_id IN (?)", project_ids ], :per_page => 40,
-                   :order => "submission_date DESC, samples.id ASC", :include => 'project'
-      end
+      @samples = Sample.find(:all, 
+         :include => 'project',
+         :conditions => [ "projects.lab_group_id IN (?)",
+          current_user.get_lab_group_ids ],
+         :order => "submission_date DESC, samples.id ASC")
+      @paged_samples = Sample.paginate :page => params[:page],
+        :include => 'project',
+        :order => 'submission_date DESC, samples.id ASC',
+        :conditions => [ "projects.lab_group_id IN (?)",
+          current_user.get_lab_group_ids ]
     end
     
     respond_to do |format|
