@@ -402,15 +402,16 @@ class Sample < ActiveRecord::Base
   end
   
   def file_root
-    return raw_data_path.match(/.*\/(.*?)\.\w{3}/)[1]
+    if(raw_data_path != nil && raw_data_path.match(/^.*\/(.*?)\.\w{3}$/))
+      return raw_data_path.match(/^.*\/(.*?)\.\w{3}$/)[1]
+    else
+      return ""
+    end
   end
   
   def summary_hash
     return {
-      :id => id,
-      :sample_description => sample_name,
-      :submission_date => submission_date,
-      :updated_at => updated_at,
+      :file_root => file_root,
       :uri => "#{SiteConfig.site_url}/samples/#{id}"
     }
   end
@@ -436,6 +437,7 @@ class Sample < ActiveRecord::Base
       :project => project.name,
       :name_on_tube => short_sample_name,
       :sample_description => sample_name,
+      :sample_group_name => sample_group_name,
       :submission_date => submission_date,
       :updated_at => updated_at,
       :status => status,
@@ -443,7 +445,9 @@ class Sample < ActiveRecord::Base
       :sample_terms => sample_term_array,
       :sample_texts => sample_text_array,
       :raw_data_path => raw_data_path,
-      :file_root => file_root
+      :file_root => file_root,
+      :organism => organism.name,
+      :chip_type => chip_type.short_name
     }
   end
 end
