@@ -39,159 +39,161 @@ class BioanalyzerRun < ActiveRecord::Base
         # copy over PDF
         current_pdf_file = "#{file_root}.pdf"
         pdf_path = "#{RAILS_ROOT}/public/quality_traces/#{run_name}.pdf"
+        
+        # only load runs that have a PDF
         if( File.exists?(current_pdf_file) )
           FileUtils.cp( current_pdf_file, pdf_path)
-        end
-       
-        # parse XML
-        doc = REXML::Document.new( File.new(xml_file) )
-        
-        # find who ran the chip
-        if(doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"] != nil)
-          ran_by = doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"].text
-          ran_by_user = User.find(:first, :conditions => {:login => ran_by})
-          if(ran_by_user != nil)
-            ran_by_email = ran_by_user.email
+
+          # parse XML
+          doc = REXML::Document.new( File.new(xml_file) )
+
+          # find who ran the chip
+          if(doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"] != nil)
+            ran_by = doc.elements["Chipset/Chips/Chip/ChipInformation/UserName"].text
+            ran_by_user = User.find(:first, :conditions => {:login => ran_by})
+            if(ran_by_user != nil)
+              ran_by_email = ran_by_user.email
+            end
           end
-        end
 
-        # find the chip-wide comments
-        chip_comments = doc.elements["Chipset/Chips/Chip/Files/File/FileInformation/Comment"].text
-        puts "Chip-wide comments: #{chip_comments}" if VERBOSE > 0
+          # find the chip-wide comments
+          chip_comments = doc.elements["Chipset/Chips/Chip/Files/File/FileInformation/Comment"].text
+          puts "Chip-wide comments: #{chip_comments}" if VERBOSE > 0
 
-        chip_lab_group = parse_for_lab_group(chip_comments)
-        email_recipients = parse_for_emails(chip_comments)
+          chip_lab_group = parse_for_lab_group(chip_comments)
+          email_recipients = parse_for_emails(chip_comments)
 
-        puts "SLIMarray lab group: #{chip_lab_group}" if VERBOSE > 0
-        puts "Email recipients: #{email_recipients}" if VERBOSE > 0
-        
-        # create an array to hold traces
-        traces = Array.new
-        
-        quality_rating = 0
-        concentration = 0
-        ribosomal_ratio = 0
-        
-        # grab each sample-specific node in the XML
-        doc.elements.each("Chipset/Chips/Chip/Files/File/Samples/Sample") do |node|
-          # only use lanes that have data
-          if( node.elements["HasData"].text == "true" )
-            number = node.elements["WellNumber"].text
+          puts "SLIMarray lab group: #{chip_lab_group}" if VERBOSE > 0
+          puts "Email recipients: #{email_recipients}" if VERBOSE > 0
 
-            # figure out sample name and type
-            full_name = node.elements["Name"].text
-            if( full_name.downcase.match(/(.*)_(total|crna|frag|fragmented).*/) != nil )
-              elements = full_name.split(/_/)
-              type = elements.pop
-              name = elements.join("_")
-            elsif( full_name.downcase.match(/(.*)\ (total|crna|frag|fragmented).*/) != nil )
-              elements = full_name.split(/ /)
-              type = elements.pop
-              name = elements.join(" ")
-            else
-              type = "total"
-              name = full_name
-            end
+          # create an array to hold traces
+          traces = Array.new
 
-            if(node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"] != nil)
-              concentration = 
-                node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"].text
-            end
-  
-            # look for sample-specific lab group
-            lab_name = node.elements["Comment"].text
-            lab_group = nil
-            if(lab_name != nil)
-              lab_group = LabGroup.find(:first, :conditions => [ "name LIKE ?", lab_name])
-            end
-            # if there wasn't a spcific lab group specified for this sample,
-            # try to use the chip-wide lab group
-            if(lab_group == nil)
-              lab_group = chip_lab_group
-            end
-            
-            # need to treat ladder differently
-            if( name == "Ladder")
-              # associate a jpeg
-              current_jpg_file = file_root + "_EGRAM_Ladder.jpg"
-  
-              # set type as Ladder
-              type = "ladder"
-            else
-              # associate a jpeg
-              current_jpg_file = file_root + "_EGRAM_Sample" + number + ".jpg"
-  
-              if(node.elements["DAResultStructures/DARRIN/Channel/RIN"] != nil &&
-                 node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"] != nil)
-                quality_rating = node.elements["DAResultStructures/DARRIN/Channel/RIN"].text
-                ribosomal_ratio =
-                  node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"].text
+          quality_rating = 0
+          concentration = 0
+          ribosomal_ratio = 0
+
+          # grab each sample-specific node in the XML
+          doc.elements.each("Chipset/Chips/Chip/Files/File/Samples/Sample") do |node|
+            # only use lanes that have data
+            if( node.elements["HasData"].text == "true" )
+              number = node.elements["WellNumber"].text
+
+              # figure out sample name and type
+              full_name = node.elements["Name"].text
+              if( full_name.downcase.match(/(.*)_(total|crna|frag|fragmented).*/) != nil )
+                elements = full_name.split(/_/)
+                type = elements.pop
+                name = elements.join("_")
+              elsif( full_name.downcase.match(/(.*)\ (total|crna|frag|fragmented).*/) != nil )
+                elements = full_name.split(/ /)
+                type = elements.pop
+                name = elements.join(" ")
+              else
+                type = "total"
+                name = full_name
               end
-            end
 
-            # ensure that sample is tagged with a type, and that image exists
-            if( type != nil && lab_group != nil && jpg_files.include?(current_jpg_file) )
-              # create new image name, and drop spaces to make the URL easier
-              new_image_name = "#{run_name}-#{name}-#{type}.jpg".tr(" ","")
-              image_path = "/quality_traces/#{new_image_name}"
-              
-              FileUtils.cp( current_jpg_file, "#{RAILS_ROOT}/public#{image_path}")
-              
-              # find any existing trace with this name
-              existing_traces = QualityTrace.find(:all, :conditions => ["name = ?", name])
-              
-              # if there are traces with the same root name, look for repeats
-              if( existing_traces.size > 0 )
-                repeat_traces = QualityTrace.find(:all, :conditions => ["name LIKE ?", "%#{name}%_r%"])
-                
-                highest_repeat = 0
+              if(node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"] != nil)
+                concentration = 
+                  node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"].text
+              end
 
-                # find highest repeat number and store it
-                for repeat in repeat_traces
-                  repeat_number = repeat.name.scan( /.*_r(.)/ )[0][0].to_i
-                  if( repeat_number != nil && repeat_number > highest_repeat )
-                    highest_repeat = repeat_number
-                  end
+              # look for sample-specific lab group
+              lab_name = node.elements["Comment"].text
+              lab_group = nil
+              if(lab_name != nil)
+                lab_group = LabGroup.find(:first, :conditions => [ "name LIKE ?", lab_name])
+              end
+              # if there wasn't a spcific lab group specified for this sample,
+              # try to use the chip-wide lab group
+              if(lab_group == nil)
+                lab_group = chip_lab_group
+              end
+
+              # need to treat ladder differently
+              if( name == "Ladder")
+                # associate a jpeg
+                current_jpg_file = file_root + "_EGRAM_Ladder.jpg"
+
+                # set type as Ladder
+                type = "ladder"
+              else
+                # associate a jpeg
+                current_jpg_file = file_root + "_EGRAM_Sample" + number + ".jpg"
+
+                if(node.elements["DAResultStructures/DARRIN/Channel/RIN"] != nil &&
+                   node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"] != nil)
+                  quality_rating = node.elements["DAResultStructures/DARRIN/Channel/RIN"].text
+                  ribosomal_ratio =
+                    node.elements["DAResultStructures/DARFragment/Channel/rRNARatio"].text
                 end
-                
-                name = name + "_r" + (highest_repeat + 1).to_s
               end
 
-              trace = QualityTrace.new(:image_path => image_path,
-                :quality_rating => quality_rating,
-                :name => name,
-                :number => number,
-                :sample_type => type,
-                :concentration => concentration,
-                :ribosomal_ratio => ribosomal_ratio,
-                :lab_group_id => lab_group.id
-              )
-              traces << trace
+              # ensure that sample is tagged with a type, and that image exists
+              if( type != nil && lab_group != nil && jpg_files.include?(current_jpg_file) )
+                # create new image name, and drop spaces to make the URL easier
+                new_image_name = "#{run_name}-#{name}-#{type}.jpg".tr(" ","")
+                image_path = "/quality_traces/#{new_image_name}"
+
+                FileUtils.cp( current_jpg_file, "#{RAILS_ROOT}/public#{image_path}")
+
+                # find any existing trace with this name
+                existing_traces = QualityTrace.find(:all, :conditions => ["name = ?", name])
+
+                # if there are traces with the same root name, look for repeats
+                if( existing_traces.size > 0 )
+                  repeat_traces = QualityTrace.find(:all, :conditions => ["name LIKE ?", "%#{name}%_r%"])
+
+                  highest_repeat = 0
+
+                  # find highest repeat number and store it
+                  for repeat in repeat_traces
+                    repeat_number = repeat.name.scan( /.*_r(.)/ )[0][0].to_i
+                    if( repeat_number != nil && repeat_number > highest_repeat )
+                      highest_repeat = repeat_number
+                    end
+                  end
+
+                  name = name + "_r" + (highest_repeat + 1).to_s
+                end
+
+                trace = QualityTrace.new(:image_path => image_path,
+                  :quality_rating => quality_rating,
+                  :name => name,
+                  :number => number,
+                  :sample_type => type,
+                  :concentration => concentration,
+                  :ribosomal_ratio => ribosomal_ratio,
+                  :lab_group_id => lab_group.id
+                )
+                traces << trace
+              end
             end
           end
-        end
-        
-        # only save bioanalyzer_run if there are > 1 samples (more than just ladder)
-        if( traces.size > 1 )
-          # grab the date from the XML
-          time_date = doc.elements["Chipset/Chips/Chip/ChipInformation/CreationDate"].text
-          date = time_date.scan(/(\d{4}\-\d{2}\-\d{2}).*/).to_s
-                  
-          run = BioanalyzerRun.new(:name => run_name,
-            :date => date, :pdf_path => pdf_path
-          )
-          
-          # save the traces if the run itself saves
-          if( run.save )
-            for trace in traces
-              trace.bioanalyzer_run_id = run.id
-              trace.save
-            end
 
-            # only do email notification if a pdf exists
-            if( File.exists?(current_pdf_file) )
-              Notifier.deliver_bioanalyzer_notification(run, ran_by_email,
-                                                        email_recipients)
+          # only save bioanalyzer_run if there are > 1 samples (more than just ladder)
+          if( traces.size > 1 )
+            # grab the date from the XML
+            time_date = doc.elements["Chipset/Chips/Chip/ChipInformation/CreationDate"].text
+            date = time_date.scan(/(\d{4}\-\d{2}\-\d{2}).*/).to_s
+
+            run = BioanalyzerRun.new(:name => run_name,
+              :date => date, :pdf_path => pdf_path
+            )
+
+            # save the traces if the run itself saves
+            if( run.save )
+              for trace in traces
+                trace.bioanalyzer_run_id = run.id
+                trace.save
+              end
+
+              # only do email notification if a pdf exists
+              if( File.exists?(current_pdf_file) )
+                Notifier.deliver_bioanalyzer_notification(run, ran_by_email,
+                                                          email_recipients)
+              end
             end
           end
         end
