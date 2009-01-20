@@ -64,10 +64,14 @@ end
 AUTHENTICATION_SALT = 'mmm_kosher_rocks' unless defined? AUTHENTICATION_SALT
 
 # Exception Notifier plugin configuration
-if( ENV["RAILS_ENV"] == "test" )
+begin
+  if( ENV["RAILS_ENV"] == "test" )
+    ExceptionNotifier.exception_recipients = "admin@example.com"
+  else
+    ExceptionNotifier.exception_recipients = SiteConfig.administrator_email
+  end
+rescue
   ExceptionNotifier.exception_recipients = "admin@example.com"
-else
-  ExceptionNotifier.exception_recipients = SiteConfig.administrator_email
-end  
+end
 ExceptionNotifier.sender_address =
     %("Application Error" <slimarray@#{`hostname`.strip}>)
