@@ -1,8 +1,5 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'charges_controller'
-require 'assert_select'
-require 'html_selector'
-Test::Unit::TestCase.send :include, Test::Unit::AssertSelect
 
 # Re-raise errors caught by the controller.
 class ChargesController; def rescue_action(e) raise e end; end

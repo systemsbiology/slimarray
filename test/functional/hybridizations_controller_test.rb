@@ -1,8 +1,5 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'hybridizations_controller'
-require 'assert_select'
-require 'html_selector'
-Test::Unit::TestCase.send :include, Test::Unit::AssertSelect
 
 # Re-raise errors caught by the controller.
 class HybridizationsController; def rescue_action(e) raise e end; end
@@ -283,8 +280,6 @@ class HybridizationsControllerTest < Test::Unit::TestCase
 
     assert_response :redirect
     assert_redirected_to :action => 'show'
-    follow_redirect
-    assert_flash_warning
 
     # make sure the records made it into the hybridizations table
     assert_equal num_hybridizations + 1,

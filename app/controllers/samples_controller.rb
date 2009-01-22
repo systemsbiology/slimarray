@@ -8,7 +8,7 @@ class SamplesController < ApplicationController
   def index
     if(@lab_groups != nil && @lab_groups.size > 0)
       @samples = Sample.find(:all, 
-         :include => 'project',
+         :include => ['project','hybridization'],
          :conditions => [ "projects.lab_group_id IN (?)",
           current_user.get_lab_group_ids ],
          :order => "submission_date DESC, samples.id ASC")

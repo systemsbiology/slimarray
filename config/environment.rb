@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -64,14 +64,10 @@ end
 AUTHENTICATION_SALT = 'mmm_kosher_rocks' unless defined? AUTHENTICATION_SALT
 
 # Exception Notifier plugin configuration
-begin
-  if( ENV["RAILS_ENV"] == "test" )
-    ExceptionNotifier.exception_recipients = "admin@example.com"
-  else
-    ExceptionNotifier.exception_recipients = SiteConfig.administrator_email
-  end
-rescue
+if( ENV["RAILS_ENV"] == "test" )
   ExceptionNotifier.exception_recipients = "admin@example.com"
+else
+  ExceptionNotifier.exception_recipients = SiteConfig.administrator_email
 end
 ExceptionNotifier.sender_address =
     %("Application Error" <slimarray@#{`hostname`.strip}>)
