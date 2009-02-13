@@ -6,11 +6,17 @@ class SamplesController < ApplicationController
               :submit_matched_traces, :update]
   
   def index
+    if(params[:age_limit])
+      date_cutoff = Date.today - params[:age_limit].to_i
+    else
+      date_cutoff = Date.new
+    end
+
     if(@lab_groups != nil && @lab_groups.size > 0)
       @samples = Sample.find(:all, 
          :include => ['project','hybridization'],
-         :conditions => [ "projects.lab_group_id IN (?)",
-          current_user.get_lab_group_ids ],
+         :conditions => [ "projects.lab_group_id IN (?) AND samples.updated_at > ?",
+          current_user.get_lab_group_ids, date_cutoff ],
          :order => "submission_date DESC, samples.id ASC")
       @paged_samples = Sample.paginate :page => params[:page],
         :include => 'project',
