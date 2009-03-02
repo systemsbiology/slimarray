@@ -13,8 +13,6 @@ class HybridizationsController < ApplicationController
       @hybridization_pages, @hybridizations =
         paginate :hybridizations, :per_page => 40, :order => "hybridization_date DESC, chip_number ASC",
                  :include => { :sample => :project }
-#    @hybridizations = Hybridization.find(:all, :order => "hybridization_date DESC, chip_number ASC", 
-#                                         :include => { :sample => :project } )
   end
 
   def new
@@ -161,19 +159,34 @@ class HybridizationsController < ApplicationController
       flash[:notice] = "Hybridization records"
       if SiteConfig.track_inventory?
         # add chip transactions for these hybridizations
-        record_as_chip_transactions(@hybridizations)
+        Hybridization.record_as_chip_transactions(@hybridizations)
         flash[:notice] += ", inventory changes"
       end
       if SiteConfig.create_gcos_files?
         begin    
           # output files for automated sample/experiment loading into GCOS
-          create_gcos_import_files(@hybridizations)
+          @hybridizations.each do |h|
+            h.create_gcos_import_file
+          end
           flash[:notice] += ", GCOS files"
         rescue Errno::EACCES, Errno::ENOENT, Errno::EIO
           flash[:warning] = "Couldn't write GCOS file(s) to " + SiteConfig.gcos_output_path + ". " + 
                             "Change permissions on that folder, or choose a new output " +
                             "directory in the Site Config."
         end      
+      end
+      if SiteConfig.create_agcc_files?
+        begin
+          # output files for automated sample/experiment loading into GCOS
+          @hybridizations.each do |h|
+            h.create_agcc_array_file
+          end
+          flash[:notice] += ", AGCC files"
+        rescue Errno::EACCES, Errno::ENOENT, Errno::EIO
+          flash[:warning] = "Couldn't write AGCC file(s) to " + SiteConfig.agcc_output_path + ". " +
+                            "Change permissions on that folder, or choose a new output " +
+                            "directory in the Site Config."
+        end
       end
       if SiteConfig.track_charges?
         # record charges incurred from these hybridizations
@@ -275,7 +288,9 @@ class HybridizationsController < ApplicationController
         end
       elsif( params[:commit] == "Export GCOS Files" )
         begin
-          create_gcos_import_files(hybridizations)
+          hybridizations.each do |h|
+            h.create_gcos_import_file
+          end
           flash[:notice] = "GCOS files successfully created"
         rescue Errno::EACCES, Errno::ENOENT, Errno::EIO
           flash[:warning] = "Couldn't write GCOS file(s) to " + SiteConfig.gcos_output_path + ". " + 
@@ -297,105 +312,6 @@ class HybridizationsController < ApplicationController
     end
 
     redirect_to :action => 'list'
-  end
-
-  def record_as_chip_transactions(hybridizations)
-    hybs_per_group_chip = Hash.new(0)
-    
-    for hybridization in hybridizations
-      sample = hybridization.sample
-      hybridization_date_group_chip_key = hybridization.hybridization_date.to_s+"_"+sample.project.lab_group_id.to_s+"_"+sample.chip_type_id.to_s
-      # if this hybridization_date/lab group/chip type combo hasn't been seen, create a new object to track
-      # number of chips of this combo
-      if hybs_per_group_chip[hybridization_date_group_chip_key] == 0
-        hybs_per_group_chip[hybridization_date_group_chip_key] = ChipTransaction.new(:lab_group_id => sample.project.lab_group_id,
-                              :chip_type_id => sample.chip_type_id,
-                              :date => hybridization.hybridization_date,
-                              :description => 'Hybridized on ' + hybridization.hybridization_date.to_s,
-                              :used => 1)
-      else
-        hybs_per_group_chip[hybridization_date_group_chip_key][:used] += 1
-      end
-    end
-
-    for hybridization_date_group_chip_key in hybs_per_group_chip.keys
-      hybs_per_group_chip[hybridization_date_group_chip_key].save
-    end
-  end
-  
-  def create_gcos_import_files(hybridizations)
-    for hybridization in hybridizations
-      sample = hybridization.sample
-      # only make hyb info record for GCOS if it's an affy array
-      if sample.chip_type.array_platform == "affy"
-        hybridization_date_number_string = hybridization.hybridization_date.year.to_s + ("%02d" % hybridization.hybridization_date.month) +
-                             ("%02d" % hybridization.hybridization_date.day) + "_" + ("%02d" % hybridization.chip_number)
-        # open an output file for writing
-        gcos_file = File.new(SiteConfig.gcos_output_path + "/" + hybridization_date_number_string + 
-                    "_" + sample.sample_name + ".txt", "w")
-
-        # gather individual and group naming scheme info, if a naming scheme is being used
-        if sample.naming_scheme_id != nil
-          gcos_sample_info = Array.new
-          gcos_experiment_info = Array.new
-          
-          # store the GCOS sample and experiment templates from the naming schemes
-          gcos_sample_info << "SampleTemplate=" + sample.naming_scheme.name + "\n"
-          gcos_experiment_info << "ExperimentTemplate=" + sample.naming_scheme.name + "\n"
-          
-          for sample_term in sample.sample_terms
-            if(sample_term.naming_term.naming_element.group_element == true)
-              gcos_sample_info << sample_term.naming_term.naming_element.name + "=" + sample_term.naming_term.term + "\n"
-            else
-              gcos_experiment_info << sample_term.naming_term.naming_element.name + "=" + sample_term.naming_term.term + "\n"
-            end
-          end
-          
-          for sample_text in sample.sample_texts
-            if(sample_text.naming_element.group_element == true)
-              gcos_sample_info << sample_text.naming_element.name + "=" + sample_text.text + "\n"
-            else
-              gcos_experiment_info << sample_text.naming_element.name + "=" + sample_text.text + "\n"
-            end
-          end
-        # use default sample template of AffyCore if there's no naming scheme
-        else
-          gcos_file << "SampleTemplate=AffyCore\n"
-        end
-        
-        # write out information needed by GCOS Object Importer tool
-        gcos_file << "[SAMPLE]\n"
-        gcos_file << "SampleName=" + sample.sample_group_name + "\n"
-        gcos_file << "SampleType=" + Organism.find(sample.chip_type.organism_id).name + "\n"
-        gcos_file << "SampleProject=" + sample.project.name + "\n"
-        gcos_file << "SampleUser=affybot\n"
-        gcos_file << "SampleUpdate=1\n"
-        gcos_file << "Array User Name=" + sample.sbeams_user + "\n"
-        
-        # add any extra info from the naming scheme, if present
-        if( gcos_sample_info != nil )
-          for line in gcos_sample_info
-            gcos_file << line
-          end
-        end
-        
-        gcos_file << "\n"
-        gcos_file << "[EXPERIMENT]\n"
-        gcos_file << "ExperimentName=" + hybridization_date_number_string + "_" + sample.sample_name + "\n"
-        gcos_file << "ArrayType=" + ChipType.find(sample.chip_type_id).short_name + "\n"
-        gcos_file << "ExperimentUser=affybot\n"
-        gcos_file << "ExperimentUpdate=0\n"
-
-        # add any extra info from the naming scheme, if present
-        if( gcos_experiment_info != nil )
-          for line in gcos_experiment_info
-            gcos_file << line
-          end
-        end
-        
-        gcos_file.close
-      end
-    end
   end
   
   def record_charges(hybridizations)  

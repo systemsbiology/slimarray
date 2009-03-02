@@ -8,6 +8,9 @@
 <p><label for="chip_type_short_name">Short name</label><br/>
 <%= text_field 'chip_type', 'short_name'  %></p>
 
+<p><label for="chip_type_library_package">Library Package (for Affymetrix)</label><br/>
+<%= text_field 'chip_type', 'library_package'  %></p>
+
 <p><label for="chip_type_array_platform">Array Platform</label><br/>
 <%= radio_button 'chip_type', 'array_platform', 'affy'  %>Affymetrix<br>
 <%= radio_button 'chip_type', 'array_platform', 'nonaffy'  %>Non-Affymetrix</p>
