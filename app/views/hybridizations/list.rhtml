@@ -43,6 +43,9 @@
     <% if SiteConfig.create_gcos_files? %>
       <p><%= submit_tag 'Export GCOS Files' %></p>
     <% end %>
+    <% if SiteConfig.create_agcc_files? %>
+      <p><%= submit_tag 'Export AGCC Files' %></p>
+    <% end %>
     <p><%= submit_tag 'Export Bioanalyzer Images' %></p>
   <% end -%>
 <% else %>

@@ -296,7 +296,18 @@ class HybridizationsController < ApplicationController
           flash[:warning] = "Couldn't write GCOS file(s) to " + SiteConfig.gcos_output_path + ". " + 
                             "Change permissions on that folder, or choose a new output " +
                             "directory in the Site Config."
-        end 
+        end
+      elsif( params[:commit] == "Export AGCC Files" )
+        begin
+          hybridizations.each do |h|
+            h.create_agcc_array_file
+          end
+          flash[:notice] = "AGCC files successfully created"
+        rescue Errno::EACCES, Errno::ENOENT, Errno::EIO
+          flash[:warning] = "Couldn't write AGCC file(s) to " + SiteConfig.agcc_output_path + ". " +
+                            "Change permissions on that folder, or choose a new output " +
+                            "directory in the Site Config."
+        end
       elsif( params[:commit] == "Export Bioanalyzer Images" )
         begin
           output_trace_images(hybridizations)

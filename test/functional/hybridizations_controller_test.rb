@@ -207,6 +207,8 @@ class HybridizationsControllerTest < Test::Unit::TestCase
     @site_config.update_attributes(:create_gcos_files => 1)
     @site_config.update_attributes(:using_sbeams => 1)
     @site_config.update_attributes(:gcos_output_path => "#{RAILS_ROOT}")
+    @site_config.update_attributes(:create_agcc_files => 1)
+    @site_config.update_attributes(:agcc_output_path => "#{RAILS_ROOT}")
     @site_config.update_attributes(:quality_trace_dropoff => "#{RAILS_ROOT}")
     @site_config.update_attributes(:raw_data_root_path => "/raw/data/root")
     @site_config.save
@@ -249,6 +251,10 @@ class HybridizationsControllerTest < Test::Unit::TestCase
     # make sure gcos file was created, then delete it
     assert File.exists?("#{RAILS_ROOT}/20060213_01_Young.txt")
     FileUtils.rm("#{RAILS_ROOT}/20060213_01_Young.txt")
+
+    # make sure agcc file was created, then delete it
+    assert File.exists?("#{RAILS_ROOT}/20060213_01_Young.ARR")
+    FileUtils.rm("#{RAILS_ROOT}/20060213_01_Young.ARR")
     
     # make sure bioanalyzer trace files created, then delete them
     assert File.exists?("#{RAILS_ROOT}/200602/20060213_01_Young.EGRAM_T.jpg")
