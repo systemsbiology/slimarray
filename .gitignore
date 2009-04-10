@@ -1,0 +1,5 @@
+nbproject
+log/*
+config/database.yml
+config/application.yml
+doc/app
