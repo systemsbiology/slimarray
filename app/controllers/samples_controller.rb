@@ -47,7 +47,7 @@ class SamplesController < ApplicationController
     @naming_schemes = NamingScheme.find(:all)
     
     # only show active projects here
-    @projects = current_user.accessible_projects(true)
+    @projects = Project.accessible_to_user(current_user, true)
     
     @add_samples = AddSamples.new
     @project = Project.new
@@ -63,9 +63,9 @@ class SamplesController < ApplicationController
       @naming_elements = naming_scheme.ordered_naming_elements
       
       # change default naming scheme to whatever was selected
-      current_user.update_attribute('current_naming_scheme_id', naming_scheme.id)
+      current_user.user_profile.update_attribute('current_naming_scheme_id', naming_scheme.id)
     else
-      current_user.update_attribute('current_naming_scheme_id', nil)
+      current_user.user_profile.update_attribute('current_naming_scheme_id', nil)
     end
     
     # should a new project be created?
@@ -118,7 +118,7 @@ class SamplesController < ApplicationController
   end
   
   def create
-    populate_naming_elements(current_user.current_naming_scheme_id)
+    populate_naming_elements(current_user.user_profile.current_naming_scheme_id)
 
     # store the non-naming scheme info in an array of Sample records
     @samples = Array.new
@@ -215,7 +215,7 @@ class SamplesController < ApplicationController
     
     if failed
       @add_samples = AddSamples.new(:number => 0)
-      populate_naming_elements(current_user.current_naming_scheme_id)
+      populate_naming_elements(current_user.user_profile.current_naming_scheme_id)
       render :action => 'add'
     else
       # save now that all samples have been tested as valid
@@ -502,7 +502,7 @@ class SamplesController < ApplicationController
   
   # labeling submission, from total RNA traces
   def new_from_traces(traces)
-    populate_naming_elements(current_user.current_naming_scheme_id)
+    populate_naming_elements(current_user.user_pofile.current_naming_scheme_id)
     
     @add_samples = AddSamples.new
     @project = Project.new
@@ -523,7 +523,7 @@ class SamplesController < ApplicationController
   
   # create samples from total RNA traces
   def create_from_traces
-    populate_naming_elements(current_user.current_naming_scheme_id)
+    populate_naming_elements(current_user.user_pofile.current_naming_scheme_id)
     
     @samples = session[:samples]
 
@@ -783,7 +783,7 @@ class SamplesController < ApplicationController
     @using_sbeams = SiteConfig.find(1).using_sbeams?
     
     @lab_groups = current_user.accessible_lab_groups
-    @projects = current_user.accessible_projects
+    @projects = Project.accessible_to_user(current_user)
 
     @chip_types = ChipType.find(:all, :order => "name ASC")
     @organisms = Organism.find(:all, :order => "name ASC")

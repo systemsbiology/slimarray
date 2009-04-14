@@ -9,7 +9,11 @@ class ChipTypesController < ApplicationController
 
   def list
     populate_arrays_from_tables
-    @chip_types = ChipType.find(:all, :order => "name ASC")
+    @chip_types = ChipType.find(
+      :all,
+      :order => "name ASC",
+      :include => :organism
+    )
   end
 
   def new

@@ -3,6 +3,10 @@ ActionController::Routing::Routes.draw do |map|
     users.resources :lab_memberships, :name_prefix => "user_"
   end
   
+  map.resources :registrations
+
+  map.resources :lab_groups
+
   map.resources :samples
 
   # The priority is based upon order of creation: first created -> highest priority.

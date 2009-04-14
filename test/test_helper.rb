@@ -4,7 +4,7 @@ require 'test_help'
 
 class Test::Unit::TestCase
   # RESTful authentication
-  include AuthenticatedTestHelper
+  include AuthenticatedSpecHelper
   
   fixtures :users, :site_config
 
@@ -69,18 +69,6 @@ class Test::Unit::TestCase
   
   def text_field(field_id)
     {:tag => "input", :attributes => { :id => "#{field_id}", :type => "hidden" }}
-  end
-
-  # login as admin, necessary to reach pages for testing
-  def login_as_admin
-    login_as(:admin_user)
-    ##@request.session[:user] = users(:admin_user)
-  end
-
-  # login as a customer to test customer-specific code
-  def login_as_customer
-    login_as(:customer_user)
-    ##@request.session[:user] = users(:customer_user)
   end
 
 end

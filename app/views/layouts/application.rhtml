@@ -2,9 +2,10 @@
   <head>
       <title><%= SiteConfig.site_name %> | <%= controller.controller_name %> | <%= controller.action_name %></title>
       <%= stylesheet_link_tag 'mystyles' %>
+      <%= stylesheet_link_tag 'tinytable.css' %>
       <%= stylesheet_link_tag 'print', :media => 'print' %>
-      <%= javascript_include_tag 'sorttable' %>
       <%= javascript_include_tag 'checkall' %>
+      <%= javascript_include_tag 'tinytable-packed' %>
       <%= javascript_include_tag :defaults %>
   </head>
   <body>
@@ -39,7 +40,7 @@
           <% end %>
           <% if current_user.staff_or_admin? %>
             <li class="category">Administration</li>
-            <li><%= link_to 'Lab Groups', {:controller => 'lab_groups', :action => 'list'} %></li>
+            <li><%= link_to 'Lab Groups', lab_groups_path %></li>
             <li><%= link_to 'Projects', {:controller => 'projects', :action => 'list'} %></li>
             <li><%= link_to 'Organisms', {:controller => 'organisms', :action => 'list'} %></li>
             <li><%= link_to 'Naming Schemes', {:controller => 'naming_schemes', :action => 'list'} %></li>

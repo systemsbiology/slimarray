@@ -30,7 +30,10 @@
   <p><label for="add_samples_naming_scheme_id">Naming Scheme</label><br/>
     <select id="add_samples_naming_scheme_id" name="add_samples[naming_scheme_id]">
      <option value="">- None -</option>
-     <%= options_from_collection_for_select @naming_schemes, "id", "name", selected_value=current_user.current_naming_scheme_id %></select></p>
+     <%= options_from_collection_for_select @naming_schemes, "id", "name", 
+         selected_value=current_user.user_profile.current_naming_scheme_id %>
+    </select>
+  </p>
 <% end %>
 
 <p>Choose Project<br>
