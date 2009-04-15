@@ -2,42 +2,83 @@ class OrganismsController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
   
+  
+  # GET /organisms
+  # GET /organisms.xml
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
     @organisms = Organism.find(:all, :order => "name ASC")
-  end
 
-  def new
-    @organism = Organism.new
-  end
-
-  def create
-    @organism = Organism.new(params[:organism])
-    if @organism.save
-      flash[:notice] = 'Organism was successfully created.'
-      redirect_to :action => 'list'
-    else
-      render :action => 'new'
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @organisms }
+      format.json { render :json => @organisms }
     end
   end
 
+  # GET /organisms/1
+  # GET /organisms/1.xml
+  def show
+    @organism = Organism.find(params[:id])
+
+    respond_to do |format|
+      format.xml  { render :xml => @organism }
+      format.json  { render :json => @organism }
+    end
+  end
+
+  # GET /organisms/new
+  # GET /organisms/new.xml
+  def new
+    @organism = Organism.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @organism }
+      format.json  { render :json => @organism }
+    end
+  end
+
+  # POST /organisms
+  # POST /organisms.xml
+  def create
+    @organism = Organism.new(params[:organism])
+    
+    respond_to do |format|
+      if @organism.save
+        flash[:notice] = 'Organism was successfully created.'
+        format.html { redirect_to(organisms_url) }
+        format.xml  { render :xml => @organism, :status => :created, :location => @organism }
+        format.json  { render :json => @organism, :status => :created, :location => @organism }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @organism.errors, :status => :unprocessable_entity }
+        format.json  { render :json => @organism.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # GET /organisms/1/edit
   def edit
     @organism = Organism.find(params[:id])
   end
 
+  # PUT /organisms/1
+  # PUT /organisms/1.xml
   def update
     @organism = Organism.find(params[:id])
     
     begin
-      if @organism.update_attributes(params[:organism])
-        flash[:notice] = 'Organism was successfully updated.'
-        redirect_to :action => 'list', :id => @organism
-      else
-        render :action => 'edit'
+      respond_to do |format|
+        if @organism.update_attributes(params[:organism])
+          flash[:notice] = 'Organism was successfully updated.'
+          format.html { redirect_to(organisms_url) }
+          format.xml  { head :ok }
+          format.json  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @organism.errors, :status => :unprocessable_entity }
+          format.json  { render :json => @organism.errors, :status => :unprocessable_entity }
+        end
       end
     rescue ActiveRecord::StaleObjectError
       flash[:warning] = "Unable to update information. Another user has modified this organism."
@@ -46,8 +87,15 @@ class OrganismsController < ApplicationController
     end
   end
 
+  # DELETE /organisms/1
+  # DELETE /organisms/1.xml
   def destroy
     Organism.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    
+    respond_to do |format|
+      format.html { redirect_to(organisms_url) }
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
   end
 end
