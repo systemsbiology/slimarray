@@ -93,6 +93,7 @@ class BioanalyzerRun < ActiveRecord::Base
                 type = "total"
                 name = full_name
               end
+              puts "sample full name: #{full_name}" if VERBOSE >= 2
 
               if(node.elements["DAResultStructures/DARConcentration/Channel/TotalConcentration"] != nil)
                 concentration = 
@@ -101,9 +102,10 @@ class BioanalyzerRun < ActiveRecord::Base
 
               # look for sample-specific lab group
               lab_name = node.elements["Comment"].text
+              puts "sample-specific lab group: #{lab_name}" if VERBOSE >= 2
               lab_group = nil
               if(lab_name != nil)
-                lab_group = LabGroup.find(:first, :conditions => [ "name LIKE ?", lab_name])
+                lab_group = LabGroup.find_by_name(lab_name)
               end
               # if there wasn't a spcific lab group specified for this sample,
               # try to use the chip-wide lab group
@@ -157,6 +159,7 @@ class BioanalyzerRun < ActiveRecord::Base
 
                   name = name + "_r" + (highest_repeat + 1).to_s
                 end
+
 
                 trace = QualityTrace.new(:image_path => image_path,
                   :quality_rating => quality_rating,
@@ -217,7 +220,7 @@ private
       names = chip_comments.split(/\s*,\s*|\n/)
       
       names.each do |name|
-        chip_lab_group = LabGroup.find(:first, :conditions => {:name => name})
+        chip_lab_group = LabGroup.find_by_name(name)
         if(chip_lab_group != nil)
           return chip_lab_group
         end

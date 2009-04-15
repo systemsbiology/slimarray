@@ -2,7 +2,7 @@ class ChipTransaction < ActiveRecord::Base
   belongs_to :lab_group
   belongs_to :chip_type
   
-  validates_associated :lab_group, :chip_type
+  validates_associated :chip_type
   validates_presence_of :description
   validates_format_of :acquired_before_type_cast, :with => /^[0-9]*$/, :message=>"Must be a whole number"
   validates_format_of :used_before_type_cast, :with => /^[0-9]*$/, :message=>"Must be a whole number"

@@ -2,8 +2,6 @@ class Project < ActiveRecord::Base
   has_many :samples
   belongs_to :lab_group
   
-  validates_associated :lab_group
-
   validates_presence_of :name, :budget
   validates_length_of :name, :maximum => 250
   validates_length_of :budget, :maximum => 100

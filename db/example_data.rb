@@ -20,8 +20,18 @@ module FixtureReplacement
 	end
 
   attributes_for :chip_transaction do |a|
-    
-	end
+    a.date = Date.today
+    a.lab_group_id = 6
+    a.chip_type = default_chip_type
+    a.description = String.random
+    a.acquired = 0
+    a.used = 0
+    a.traded_sold = 0
+    a.borrowed_in = 0
+    a.returned_out = 0
+    a.borrowed_out = 0
+    a.returned_in = 0
+  end
 
   attributes_for :chip_type do |ct|
     ct.organism = default_organism
@@ -29,21 +39,17 @@ module FixtureReplacement
     ct.short_name = String.random(10)
     ct.array_platform = "affy"
     ct.library_package = "Expression"
-	end
+  end
 
   attributes_for :hybridization do |h|
     h.sample = default_sample
     h.hybridization_date = Date.today
     h.chip_number = 1
     h.charge_set = default_charge_set
-	end
+  end
 
   attributes_for :inventory_check do |a|
     
-	end
-
-  attributes_for :lab_group do |lg|
-    lg.name = String.random
 	end
 
   attributes_for :lab_membership do |a|
@@ -70,8 +76,8 @@ module FixtureReplacement
     p.name = String.random
     p.budget = String.random
     p.active = true
-    p.lab_group = default_lab_group
-	end
+    p.lab_group_id = 1
+  end
 
   attributes_for :quality_trace do |a|
     
@@ -95,14 +101,14 @@ module FixtureReplacement
     s.sbeams_user = String.random(8)
     s.status = "submitted"
     s.project = default_project
-	end
+  end
 
   attributes_for :site_config do |a|
     
 	end
 
-  attributes_for :user do |a|
-    
-	end
-
+  attributes_for :user_profile do |up|
+    up.role = "customer"
+    up.user_id = 1
+  end
 end

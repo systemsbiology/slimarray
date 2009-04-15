@@ -3,7 +3,6 @@ class QualityTrace < ActiveRecord::Base
   validates_associated :bioanalyzer_run
 
   belongs_to :lab_group
-  validates_associated :lab_group
 
   has_one :sample_starting, :class_name => "Sample", :foreign_key => "starting_quality_trace_id"
   has_one :sample_amplified, :class_name => "Sample", :foreign_key => "amplified_quality_trace_id"
