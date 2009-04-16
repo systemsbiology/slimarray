@@ -3,12 +3,13 @@ class ProjectsController < ApplicationController
   before_filter :staff_or_admin_required
   
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
     @projects = Project.find(:all, :order => "name ASC")
+    
+    respond_to do |format|
+      format.html # index.rhtml
+      format.xml  { render :xml => @projects }
+      format.json { render :json => @projects }
+    end
   end
 
   def new
@@ -22,7 +23,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     if @project.save
       flash[:notice] = 'Project was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to projects_url
     else
       render :action => 'new'
     end
@@ -41,7 +42,7 @@ class ProjectsController < ApplicationController
     begin
       if @project.update_attributes(params[:project])
         flash[:notice] = 'Project was successfully updated.'
-        redirect_to :action => 'list', :id => @project
+        redirect_to projects_url, :id => @project
       else
         render :action => 'edit'
       end
@@ -54,7 +55,7 @@ class ProjectsController < ApplicationController
 
   def destroy    
     Project.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    redirect_to projects_url
   end
 
   private
