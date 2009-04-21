@@ -21,6 +21,9 @@ describe "BioanalyzerRun" do
       any_number_of_times.and_return(@mock_lab_group)
     LabGroup.should_receive(:find_by_name).with("gorillaz").
       any_number_of_times.and_return(@mock_lab_group)
+
+    @mock_user = mock_model(User, :email => "user@example.com")
+    User.should_receive(:find).any_number_of_times.and_return(@mock_user)
   end
 
   it "should import new runs" do

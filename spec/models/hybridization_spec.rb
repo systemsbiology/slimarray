@@ -29,7 +29,7 @@ describe Hybridization do
       do_record
 
       @chip_transactions.size.should == 1
-      @chip_transactions[0].lab_group.should == project.lab_group
+      @chip_transactions[0].lab_group_id == project.lab_group_id
       @chip_transactions[0].chip_type.should == chip_type
       @chip_transactions[0].used.should == 3
     end
