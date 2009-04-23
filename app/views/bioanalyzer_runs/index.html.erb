@@ -20,8 +20,6 @@
     <% end %>
     </table>
     
-    <%= link_to 'Previous page', { :page => @bioanalyzer_run_pages.current.previous } if @bioanalyzer_run_pages.current.previous %>
-    <%= link_to 'Next page', { :page => @bioanalyzer_run_pages.current.next } if @bioanalyzer_run_pages.current.next %> 
 <% else %>
     <p>There are currently no Bioanalyzer runs that you have access to.</p>
 <% end %>

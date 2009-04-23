@@ -1,17 +1,36 @@
 ActionController::Routing::Routes.draw do |map|
+  # backward compatibility with bookmarked login page
+  map.connect 'session/new', :controller => "welcome", :action => "home"
+
+  # logout
+  map.connect 'logout', :controller => "sessions", :action => "destroy"
+
+  # SLIM* Authorization routes
+  map.resources :sessions
+  map.resources :lab_groups
+  map.resources :registrations
+  map.resources :users do |users|
+    users.resources :lab_memberships, :name_prefix => "user_"
+  end
+  map.resources :lab_memberships
+
+  # load routes from naming schemer plugin
+  # Use with Rails 2.3
+  #map.from_plugin :naming_schemer
+  map.resources :naming_schemes
   map.resources :users do |users|
     users.resources :lab_memberships, :name_prefix => "user_"
   end
   
-  map.resources :registrations
-
-  map.resources :lab_groups
+  #SLIMarray routes
 
   map.resources :samples
 
   map.resources :organisms
 
   map.resources :projects
+
+  map.resources :bioanalyzer_runs, :member => {:pdf => :get}
 
   # The priority is based upon order of creation: first created -> highest priority.
 
