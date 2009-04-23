@@ -12,6 +12,15 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def show
+    @project = Project.find(params[:id])
+
+    respond_to do |format|
+      format.xml  { render :xml => @project.detail_hash }
+      format.json  { render :json => @project.detail_hash }
+    end
+  end
+  
   def new
     populate_arrays_from_tables
     @project = Project.new
