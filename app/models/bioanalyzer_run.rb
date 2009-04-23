@@ -241,6 +241,59 @@ class BioanalyzerRun < ActiveRecord::Base
     return Array.new
   end
 
+  def to_pdf
+    quality_traces = QualityTrace.find( :all, :conditions => ["bioanalyzer_run_id = ?", id],
+                                         :order => "number ASC" )
+
+    # create the PDF document  
+    _pdf = PDF::Writer.new()
+
+    # print page heading
+    _pdf.select_font "Helvetica"
+    _pdf.font_size = 16
+    _pdf.text "Bioanalyzer Results, page 1\n\n", :justification => :center
+    _pdf.font_size = 12
+    _pdf.text "Name: " + name + "\n" +
+              "Date: " + date.to_s + "\n\n", :justification => :left
+
+    # go to two columns for traces
+    _pdf.start_columns(2)
+    _pdf.font_size = 10
+
+    # going until size-2 keeps ladder from being shown
+    for i in 0..quality_traces.size-2
+      # print page heading for new pages
+      if(i==6)
+        _pdf.stop_columns
+        _pdf.start_new_page
+            _pdf.select_font "Helvetica"
+            _pdf.font_size = 16
+            _pdf.text "Bioanalyzer Results, page 2\n\n", :justification => :center
+            _pdf.font_size = 12
+            _pdf.text "Name: " + name + "\n" +
+                      "Date: " + date.to_s + "\n\n", :justification => :left
+        _pdf.start_columns(2)
+      end
+     
+      # output trace image
+      image_file_path = "#{RAILS_ROOT}/public/" + quality_traces[i].image_path
+      _pdf.image image_file_path
+      
+      # output sample info
+      sample_text = "Concentration =" + quality_traces[i].concentration.to_i.to_s + "ng/uL\n"                    
+      if( quality_traces[i].sample_type == "total" )
+        sample_text += "RIN=" + round_to(quality_traces[i].quality_rating.to_f,2).to_s + "\n" +
+                       "28S/18S ratio=" + round_to(quality_traces[i].ribosomal_ratio.to_f,2).to_s + "\n"
+      else
+        sample_text += "\n\n"
+      end
+
+      _pdf.text sample_text, :justification => :center
+    end
+
+    return _pdf
+  end
+
 private
 
   def self.parse_for_lab_group(chip_comments)
@@ -276,5 +329,9 @@ private
     else
       return nil
     end
+  end
+
+  def round_to(n,x)
+    (n * 10**x).round.to_f / 10**x
   end
 end

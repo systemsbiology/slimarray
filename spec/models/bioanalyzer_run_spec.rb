@@ -3,13 +3,16 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "BioanalyzerRun" do
   fixtures :site_config
 
-  describe "importing new runs" do
-    before(:each) do
-      # point site settings at test set of bioanalyzer files
-      site_config = SiteConfig.find(1)
-      site_config.bioanalyzer_pickup = "#{RAILS_ROOT}/test/fixtures/bioanalyzer_files"
-      site_config.save
+  before(:each) do
+    # point site settings at test set of bioanalyzer files
+    site_config = SiteConfig.find(1)
+    site_config.bioanalyzer_pickup = "#{RAILS_ROOT}/test/fixtures/bioanalyzer_files"
+    site_config.save
+  end
       
+  describe "importing new runs" do
+
+    before(:each) do
       # trash the Bioanalyzer data that's already loaded
       BioanalyzerRun.find(:all).each do |r|
         r.destroy
@@ -98,6 +101,16 @@ describe "BioanalyzerRun" do
         bioanalyzer_runs(:bioanalyzer_run_00001),
         bioanalyzer_runs(:bioanalyzer_run_00002)
       ]
+    end
+  end
+
+  describe "converting to a pdf" do
+    it "should create a pdf" do
+      # import images
+      BioanalyzerRun.import_new
+      
+      pdf = BioanalyzerRun.find(:last).to_pdf
+      pdf.class.should == PDF::Writer
     end
   end
 end
