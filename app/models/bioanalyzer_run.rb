@@ -212,6 +212,35 @@ class BioanalyzerRun < ActiveRecord::Base
       "Are you sure you want to destroy it?"
   end
 
+  def self.find_for_user(user)
+    lab_group_ids = user.get_lab_group_ids
+  
+    # make sure this user belongs to at least one lab group        
+    if(lab_group_ids.size > 0)
+      # get the traces that the user has access to
+      traces = QualityTrace.find( :all, :conditions => ["lab_group_id IN (?)", lab_group_ids] )
+
+      # get unique bioanalyzer run ids from all traces
+      bioanalyzer_run_ids = Array.new
+      for trace in traces
+        if( !bioanalyzer_run_ids.include?(trace.bioanalyzer_run_id) )
+          bioanalyzer_run_ids << trace.bioanalyzer_run_id
+        end
+      end
+      bioanalyzer_run_ids.flatten
+
+      if(bioanalyzer_run_ids.size > 0)
+        return BioanalyzerRun.find(
+          :all,
+          :order => "date DESC",
+          :conditions => ["id IN (?)", bioanalyzer_run_ids]
+        )
+      end
+    end
+
+    return Array.new
+  end
+
 private
 
   def self.parse_for_lab_group(chip_comments)
