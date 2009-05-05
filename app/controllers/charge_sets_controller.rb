@@ -19,12 +19,9 @@ class ChargeSetsController < ApplicationController
 
   def list_all
     @charge_periods = ChargePeriod.find(:all, :order => "name DESC")
-    @charge_sets = ChargeSet.find(:all)
 
     respond_to do |format|
       format.html { render :action => 'index' }
-      format.xml  { render :xml => @charge_sets }
-      format.json { render :json => @charge_sets }
     end
   end
 
