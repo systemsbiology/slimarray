@@ -62,7 +62,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # Required Gems
-  config.gem 'pdf-writer'
+  config.gem 'pdf-writer', :lib => false
 end
 
 AUTHENTICATION_SALT = 'mmm_kosher_rocks' unless defined? AUTHENTICATION_SALT

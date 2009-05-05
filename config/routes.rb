@@ -23,14 +23,12 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   #SLIMarray routes
-
-  map.resources :samples
-
-  map.resources :organisms
-
-  map.resources :projects
-
   map.resources :bioanalyzer_runs, :member => {:pdf => :get}
+  map.resources :charge_periods, :member => {:pdf => :get, :excel => :get}
+  map.resources :charge_sets
+  map.resources :organisms
+  map.resources :projects
+  map.resources :samples
 
   # The priority is based upon order of creation: first created -> highest priority.
 
