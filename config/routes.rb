@@ -25,7 +25,7 @@ ActionController::Routing::Routes.draw do |map|
   #SLIMarray routes
   map.resources :bioanalyzer_runs, :member => {:pdf => :get}
   map.resources :charge_periods, :member => {:pdf => :get, :excel => :get}
-  map.resources :charge_sets
+  map.resources :charge_sets, :collection => {:list_all => :get}
   map.resources :organisms
   map.resources :projects
   map.resources :samples
