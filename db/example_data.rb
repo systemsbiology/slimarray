@@ -11,9 +11,16 @@ module FixtureReplacement
     
 	end
 
-  attributes_for :charge_template do |a|
-    
-	end
+  attributes_for :charge_template do |t|
+    t.name = String.random
+    t.chips_used = 1
+    t.description = String.random
+    t.chip_cost = 100
+    t.labeling_cost = 50
+    t.hybridization_cost = 25
+    t.qc_cost = 5
+    t.other_cost = 10
+  end
 
   attributes_for :charge do |a|
     

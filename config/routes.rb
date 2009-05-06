@@ -25,7 +25,13 @@ ActionController::Routing::Routes.draw do |map|
   #SLIMarray routes
   map.resources :bioanalyzer_runs, :member => {:pdf => :get}
   map.resources :charge_periods, :member => {:pdf => :get, :excel => :get}
-  map.resources :charge_sets, :collection => {:list_all => :get}
+
+  map.resources :charge_sets, :collection => {:list_all => :get} do |charge_sets|
+   charge_sets.resources :charges, :collection => {:bulk_edit_move_or_destroy => :get, :new_from_template => :post}
+  end
+  map.resources :charges, :collection => {:bulk_edit_move_or_destroy => :get, :new_from_template => :post}
+
+  map.resources :charge_templates
   map.resources :organisms
   map.resources :projects
   map.resources :samples

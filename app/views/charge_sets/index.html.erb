@@ -49,19 +49,15 @@
 				      <td><%= fmt_dollars(totals['qc_cost']) %></td>
 				      <td><%= fmt_dollars(totals['other_cost']) %></td>
 				      <td><%= fmt_dollars(totals['total_cost']) %></td>
-				      <td><%= link_to 'View Charges', :controller => 'charges', 
-				                                      :action => 'list_within_charge_set',
-				                                      :charge_set_id => set.id %></td>
+				      <td><%= link_to 'View Charges', charge_set_charges_path(set) %></td>
 				                                      
 		          <td><%= link_to 'Add Charge', :controller => 'charges', 
 				                                    :action => 'new',
 				                                    :charge_set_id => set.id %></td>
 				                                    
-				      <td><%= link_to 'Edit Set Info', :controller => 'charge_sets', 
-				                                       :action => 'edit', :id => set.id %></td>
+				      <td><%= link_to 'Edit Set Info', edit_charge_set_path(set) %></td>
 				                                       
-				      <td><%= link_to 'Destroy Set', { :controller => 'charge_sets', 
-				                                     :action => 'destroy', :id => set.id },
+                                      <td><%= link_to 'Destroy Set', charge_set_path(set), :method => :delete,
 				                                     :confirm => set.destroy_warning %></td>
 				                                     
 		     	    </tr>

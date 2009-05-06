@@ -1,7 +1,7 @@
 <h2>New Charge Set</h2>
 
-<% form_tag :action => 'create' do -%>
+<% form_for(@charge_set) do |@f| %>
   <%= render :partial => 'form' %>
   <%= submit_tag "Create" %>
-<% end -%>
+<% end %>
 

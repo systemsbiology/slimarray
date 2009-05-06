@@ -1,17 +1,18 @@
 <h2>New Charge</h2>
 
-<% form_tag :action => 'new' do -%>
+<% form_for :charge, @charge, :url => new_from_template_charge_set_charges_path(@charge_set),
+  :action => "new_from_template" do %>
   <p><select id="charge_template_id" name="charge_template_id">
      <%= options_from_collection_for_select @charge_templates, "id", "name" %>
   </select></p>
   <%= submit_tag "New Charge Using This Template" %>
-<% end -%>
+<% end %>
 
 <hr>
 
-<% form_tag :action => 'create' do -%>
+<% form_for([@charge_set, @charge]) do %>
   <%= render :partial => 'form' %>
   <%= submit_tag "Create" %>
-<% end -%>
+<% end %>
 
-<%= link_to 'Back', :action => 'list_within_charge_set' %>
+<%= link_to 'Back', charge_set_charges_path(@charge_set) %>

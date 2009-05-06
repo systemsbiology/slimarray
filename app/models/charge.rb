@@ -144,4 +144,32 @@ class Charge < ActiveRecord::Base
     end
   end
 
+  def self.from_template_id(template_id, charge_set)
+    template = ChargeTemplate.find(template_id) if template_id != nil
+    if( template != nil )
+      charge = Charge.new(
+        :charge_set => charge_set,
+        :description => template.description,
+        :chips_used => template.chips_used,
+        :chip_cost => template.chip_cost,
+        :labeling_cost => template.labeling_cost,
+        :hybridization_cost => template.hybridization_cost,
+        :qc_cost => template.qc_cost,
+        :other_cost => template.other_cost
+      )
+    else
+      charge = Charge.new(
+        :charge_set => charge_set,
+        :chips_used => 0,
+        :chip_cost => 0,
+        :labeling_cost => 0,
+        :hybridization_cost => 0,
+        :qc_cost => 0,
+        :other_cost => 0
+      )
+    end
+
+    return charge
+  end
+
 end

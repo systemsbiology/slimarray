@@ -35,7 +35,7 @@
             <% if current_user.staff_or_admin? %>
               <li class="category">Charges</li>
               <li><%= link_to 'Charges', charge_sets_path %></li>
-              <li><%= link_to 'Charge Templates', {:controller => 'charge_templates', :action => 'list'} %></li>
+              <li><%= link_to 'Charge Templates', charge_templates_path %></li>
             <% end %>    
           <% end %>
           <% if current_user.staff_or_admin? %>

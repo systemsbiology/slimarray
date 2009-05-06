@@ -1,7 +1,6 @@
 <h2>New Charge Template</h2>
 
-<% form_tag :action => 'create' do -%>
+<% form_for(@charge_template) do |@f| %>
   <%= render :partial => 'form' %>
   <%= submit_tag "Create" %>
-<% end -%>
-
+<% end %>

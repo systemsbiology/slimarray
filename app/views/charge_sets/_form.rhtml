@@ -16,19 +16,19 @@
 </p>
 
 <p><label for="charge_set_name">Name</label><br/>
-	<%= text_field 'charge_set', 'name'  %></p>
+    <%= @f.text_field 'name'  %></p>
 
 <p><label for="charge_set_charge_method">Charge Method</label><br/>
-	<%= radio_button 'charge_set', 'charge_method', 'internal'  %>Internal Budget Number<br>
-	<%= radio_button 'charge_set', 'charge_method', 'external'  %>External PO Number</p>
+    <%= @f.radio_button 'charge_method', 'internal'  %>Internal Budget Number<br>
+    <%= @f.radio_button 'charge_method', 'external'  %>External PO Number</p>
 
 <p><label for="charge_set_budget">Budget / PO</label><br/>
-	<%= text_field 'charge_set', 'budget'  %></p>
+    <%= @f.text_field 'budget'  %></p>
 
 <p><label for="charge_set_budget_manager">Budget manager (If charge is internal)</label><br/>
-	<%= text_field 'charge_set', 'budget_manager'  %></p>
+    <%= @f.text_field 'budget_manager'  %></p>
 
-<%= hidden_field 'charge_set', 'lock_version' %>
+<%= @f.hidden_field 'lock_version' %>
 
 <!--[eoform:charge_set]-->
 

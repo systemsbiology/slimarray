@@ -29,8 +29,8 @@
 	    <td><%= fmt_dollars(charge.hybridization_cost) %></td>
 	    <td><%= fmt_dollars(charge.qc_cost) %></td>
 	    <td><%= fmt_dollars(charge.other_cost) %></td>
-	    <td><%= link_to 'Edit', :action => 'edit', :id => charge %></td>
-	    <td><%= link_to 'Destroy', { :action => 'destroy', :id => charge }, :confirm => 'Are you sure?' %></td>
+	    <td><%= link_to 'Edit', edit_charge_set_charge_path(@charge_set, charge) %></td>
+            <td><%= link_to 'Destroy', [@charge_set, charge], :method => :delete, :confirm => 'Are you sure?' %></td>
 	  </tr>
 	<% end %>
 	</table>
@@ -57,9 +57,10 @@
     <%= submit_tag 'Move Charges To This Charge Set' %> 
     <select id="move_charge_set_id" name="move_charge_set_id">
         <%= charge_set_options_for_select %></select></p>
+    <%= hidden_field_tag 'charge_set_id', @charge_set.id %>
     <p><%= submit_tag 'Delete Charges' %></p>
 <% end -%>
 
 <br>
-<%= link_to 'Back to Charge Sets', :controller => 'charge_sets', :action => 'list' %> | 
-<%= link_to 'New charge', :action => 'new', :charge_set_id => @charge_set.id %>
+<%= link_to 'Back to Charge Sets', charge_sets_path %> | 
+<%= link_to 'New charge', new_charge_set_charge_path(@charge_set) %>
