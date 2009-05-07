@@ -13,8 +13,6 @@ class ChargesController < ApplicationController
     end
   end
 
-  # GET /charges/1
-  # GET /charges/1.xml
   def show
     @charge = @charge_set.charges.find(params[:id])
 
@@ -47,8 +45,8 @@ class ChargesController < ApplicationController
       if @charge.save
         flash[:notice] = 'Charge was successfully created.'
         format.html { redirect_to( charge_set_charges_url(@charge_set) ) }
-        format.xml  { render :xml => @charge, :status => :created, :location => @charge }
-        format.json  { render :json => @charge, :status => :created, :location => @charge }
+        format.xml  { render :xml => @charge, :status => :created, :location => [@charge_set, @charge] }
+        format.json  { render :json => @charge, :status => :created, :location => [@charge_set, @charge] }
       else
         @charge_templates = ChargeTemplate.find(:all, :order => "name ASC")
         
