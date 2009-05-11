@@ -7,7 +7,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # SLIM* Authorization routes
   map.resources :sessions
-  map.resources :lab_groups
+  # map.resources :lab_groups
   map.resources :registrations
   map.resources :users do |users|
     users.resources :lab_memberships, :name_prefix => "user_"
@@ -31,6 +31,12 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :charge_templates
+  map.resources :lab_groups do |lab_groups|
+    lab_groups.resources :chip_types do |chip_types|
+      chip_types.resources :chip_transactions
+      chip_types.resources :chip_purchases, :only => [:new, :create]
+    end
+  end
   map.resources :organisms
   map.resources :projects
   map.resources :samples
