@@ -12,4 +12,7 @@ class ApplicationController < ActionController::Base
   
   # filter passwords out of logs
   filter_parameter_logging "password"
+
+  # caching help for slimcore
+  include SlimcoreCaching
 end

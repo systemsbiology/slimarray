@@ -40,7 +40,7 @@
 			      <tr>
 			        <% totals = set.get_totals %>
 				      <td><%= set.name %></td>
-				      <td><%= LabGroup.find(set.lab_group_id).name %></td>
+				      <td><%= @lab_groups_by_id[set.lab_group_id].name %></td>
 				      <td><%= set.budget %></td>
 				      <td><%= totals['chips'] %></td>
 				      <td><%= fmt_dollars(totals['chip_cost']) %></td>
