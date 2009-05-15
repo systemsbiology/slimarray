@@ -11,17 +11,15 @@ describe ChipPurchasesController do
 
     @lab_group = mock_model(LabGroup, :id => 42)
     @chip_type = mock_model(ChipType, :id => 23)
-    LabGroup.should_receive(:find).with("42").and_return(@lab_group)
-    ChipType.should_receive(:find).with("23").and_return(@chip_type)
 
-    @mock_chip_purchase = mock("Chip purchase")
+    @mock_chip_purchase = mock("Chip purchase", :lab_group_id => 42, :chip_type_id => 23)
   end
 
   describe "responding to GET new" do
 
     before(:each) do
       ChipPurchase.should_receive(:new).
-        with(:lab_group_id => @lab_group.id,:chip_type_id => @chip_type.id).
+        with(:lab_group_id => "42",:chip_type_id => "23").
         and_return(@mock_chip_purchase)
     end
 
@@ -56,6 +54,8 @@ describe ChipPurchasesController do
       before(:each) do
         @mock_chip_purchase.should_receive(:valid?).and_return(true)
         @mock_chip_purchase.should_receive(:save).and_return(true)
+        LabGroup.should_receive(:find).with(42).and_return(@lab_group)
+        ChipType.should_receive(:find).with(23).and_return(@chip_type)
       end
 
       it "should redirect to the chip transactions" do

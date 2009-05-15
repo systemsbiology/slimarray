@@ -10,6 +10,13 @@ class ChipPurchase
   validates_presence_of :date, :lab_group_id, :chip_type_id, :description
   validates_numericality_of :number, :message => "of chips must be a number"
 
+  # initialize accepts an option hash with the following parameters:
+  #
+  # * <tt>date</tt> - The date of the transaction
+  # * <tt>buyer</tt> - The LabGroup buying arrays
+  # * <tt>seller</tt> - The LabGroup selling arrays
+  # * <tt>chip_type</tt> - The ChipType being bought
+  # * <tt>number</tt> - The number of arrays bought
   def initialize(options = {})
     @date = options[:date] || Date.today
     @lab_group_id = options[:lab_group_id]

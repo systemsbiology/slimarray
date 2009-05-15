@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "ChipTransaction" do
+describe "ChipPurchase" do
 
   it "should create a chip purchase" do
     lab_group = mock_model(LabGroup)

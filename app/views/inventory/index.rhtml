@@ -1,20 +1,18 @@
 <h2>Chip Inventory</h2>
 
 New Chip Transaction: 
-<%= link_if_staff_or_admin 'Vendor Purchase', :controller=> 'chip_transactions', :action => 'buy' %> | 
-<%= link_if_staff_or_admin 'Inter-group Purchase', :controller=> 'chip_transactions', :action => 'intergroup_buy' %> | <%= link_if_staff_or_admin 'Borrow', :controller=> 'chip_transactions', :action => 'borrow' %> | 
+<%= link_if_staff_or_admin 'Vendor Purchase', new_chip_purchase_path %> | 
+<%= link_if_staff_or_admin 'Inter-group Purchase', new_chip_intergroup_purchase_path %> |
+<%= link_if_staff_or_admin 'Borrow', :controller=> 'chip_transactions', :action => 'borrow' %> | 
 <%= link_if_staff_or_admin 'Return', :controller=> 'chip_transactions', :action => 'return_borrowed' %> | 
-<%= link_if_staff_or_admin 'Custom', :controller=> 'chip_transactions', :action => 'new' %>
+<%= link_if_staff_or_admin 'Custom', new_chip_transaction_path %>
 
 <% if(@lab_groups.size > 0) %>
 	<% for lab_group in @lab_groups %>
 		<p><%=h lab_group.name %>:
 		<% for chip_type in @chip_types %>
 			<% if ChipTransaction.has_transactions?(lab_group.id,chip_type.id) %>	           
-				<%= link_to(h=chip_type.name, { :controller => "chip_transactions",
-				                      :action => "list_subset",
-				                      :lab_group_id => lab_group.id,
-				                      :chip_type_id => chip_type.id}) %>
+				<%= link_to chip_type.name, lab_group_chip_type_chip_transactions_path(lab_group, chip_type) %>
 			<% end %>
 		<% end %>
 		</p>

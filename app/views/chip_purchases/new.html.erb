@@ -2,7 +2,7 @@
 
 <%= error_messages_for :chip_purchase %>
 
-<% form_for :chip_purchase, :url => lab_group_chip_type_chip_purchases_path do %>
+<% form_for :chip_purchase, :url => chip_purchases_path do %>
   <p><label for="chip_purchase_date">Date</label><br/>
   <%= date_select 'chip_purchase', 'date', :use_month_numbers => true  %></p>
   
