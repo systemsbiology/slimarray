@@ -84,7 +84,7 @@ describe ProjectsController do
         request.env["HTTP_ACCEPT"] = "application/json"
         Project.should_receive(:find).with("37").and_return(@project)
         get :show, :id => 37
-        response.body.should == "{\"n\":1}"
+        response.body.should match(/\{\"n\":\s*1\}/)
       end
     
     end
