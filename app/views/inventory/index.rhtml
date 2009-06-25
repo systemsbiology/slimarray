@@ -3,8 +3,8 @@
 New Chip Transaction: 
 <%= link_if_staff_or_admin 'Vendor Purchase', new_chip_purchase_path %> | 
 <%= link_if_staff_or_admin 'Inter-group Purchase', new_chip_intergroup_purchase_path %> |
-<%= link_if_staff_or_admin 'Borrow', :controller=> 'chip_transactions', :action => 'borrow' %> | 
-<%= link_if_staff_or_admin 'Return', :controller=> 'chip_transactions', :action => 'return_borrowed' %> | 
+<%= link_if_staff_or_admin 'Borrow', new_chip_borrow_path %> | 
+<%= link_if_staff_or_admin 'Return', new_chip_return_path %> | 
 <%= link_if_staff_or_admin 'Custom', new_chip_transaction_path %>
 
 <% if(@lab_groups.size > 0) %>

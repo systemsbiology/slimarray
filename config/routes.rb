@@ -36,11 +36,15 @@ ActionController::Routing::Routes.draw do |map|
       chip_types.resources :chip_transactions
       chip_types.resources :chip_purchases, :only => [:new, :create]
       chip_types.resources :chip_intergroup_purchases, :only => [:new, :create]
+      chip_types.resources :chip_borrows, :only => [:new, :create]
+      chip_types.resources :chip_returns, :only => [:new, :create]
     end
   end
-  map.resources :chip_transactions
+  map.resources :chip_transactions, :except => :index
   map.resources :chip_purchases, :only => [:new, :create]
   map.resources :chip_intergroup_purchases, :only => [:new, :create]
+  map.resources :chip_borrows, :only => [:new, :create]
+  map.resources :chip_returns, :only => [:new, :create]
   map.resources :organisms
   map.resources :projects
   map.resources :samples

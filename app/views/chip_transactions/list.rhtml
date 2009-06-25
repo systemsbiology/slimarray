@@ -1,11 +1,11 @@
-<h2>Listing Chip Transactions for <%= @lab_group_name%> and <%= @chip_type_name%></h2>
+<h2>Listing Chip Transactions for <%= @lab_group.name%> and <%= @chip_type.name%></h2>
 
 New Chip Transaction: 
-<%= link_if_staff_or_admin 'Vendor Purchase', :controller=> 'chip_transactions', :action => 'buy' %> | 
-<%= link_if_staff_or_admin 'Inter-group Purchase', :controller=> 'chip_transactions', :action => 'intergroup_buy' %> | 
-<%= link_if_staff_or_admin 'Borrow', :controller=> 'chip_transactions', :action => 'borrow' %> | 
-<%= link_if_staff_or_admin 'Return', :controller=> 'chip_transactions', :action => 'return_borrowed' %> | 
-<%= link_if_staff_or_admin 'Custom', :controller=> 'chip_transactions', :action => 'new' %><br>
+<%= link_if_staff_or_admin 'Vendor Purchase', new_lab_group_chip_type_chip_purchase_path(@lab_group, @chip_type) %> | 
+<%= link_if_staff_or_admin 'Inter-group Purchase', new_lab_group_chip_type_chip_intergroup_purchase_path(@lab_group, @chip_type) %> |
+<%= link_if_staff_or_admin 'Borrow', new_lab_group_chip_type_chip_borrow_path(@lab_group, @chip_type) %> | 
+<%= link_if_staff_or_admin 'Return', new_lab_group_chip_type_chip_return_path(@lab_group, @chip_type) %> | 
+<%= link_if_staff_or_admin 'Custom', new_lab_group_chip_type_chip_transaction_path(@lab_group, @chip_type) %>
 <%= link_to 'Chip Inventory Home', :controller => 'inventory', :action=>'index'%><br>
 <%= link_if_staff_or_admin 'Enter an Inventory Check', :controller => 'inventory_checks',
     :action => 'new', :expected => @totals['chips'], :lab_group_id => session[:lab_group_id],
@@ -68,7 +68,8 @@ New Chip Transaction:
     <td class="table"><%=h chip_transaction.returned_in %></td>  
     <% if staff_or_admin? %>
       <td class="table"><%= link_to 'Edit', :action => 'edit', :id => chip_transaction %></td>
-      <td class="table"><%= link_to 'Destroy', { :action => 'destroy', :id => chip_transaction }, :confirm => 'Are you sure?' %></td>
+      <td class="table"><%= link_to 'Destroy', chip_transaction_path(chip_transaction),
+        :method => :delete, :confirm => 'Are you sure?' %></td>
     <% end %>
   </tr>
     <% end %>

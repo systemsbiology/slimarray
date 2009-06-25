@@ -1,0 +1,30 @@
+<h2>New Chip Borrowing Transaction</h2>
+
+<%= error_messages_for :chip_borrow %>
+
+<% form_for :chip_borrow, :url => chip_borrows_path do %>
+  <p><label for="chip_borrow_date">Date</label><br/>
+  <%= date_select 'chip_borrow', 'date', :use_month_numbers => true  %></p>
+  
+  <p><label for="chip_trasaction_to_lab_group_id">Lab Group</label><br/>
+  <select id="to_lab_group_id" name="chip_borrow[to_lab_group_id]">
+  <%= options_from_collection_for_select @lab_groups, "id", "name",
+  @chip_borrow.to_lab_group_id %></select></p>
+
+  <p><label for="chip_trasaction_chip_type">Chip Type</label><br/>
+  <select id="chip_type_id" name="chip_borrow[chip_type_id]">
+  <%= options_from_collection_for_select @chip_types, "id", "name",
+  @chip_borrow.chip_type_id %></select></p>
+
+  <p><label for="chip_trasaction_from_lab_group_id">Borrowing From</label><br/>
+  <select id="from_lab_group_id" name="chip_borrow[from_lab_group_id]">
+  <%= options_from_collection_for_select @lab_groups, "id", "name",
+  @chip_borrow.from_lab_group_id %></select></p>
+  
+  <p><label for="chip_trasaction_number">Number of Chips</label><br/>
+  <%= text_field 'chip_borrow', 'number', 'size' => 25  %></p>
+  
+  <%= submit_tag "Done" %>
+<% end -%>
+
+<%= link_to 'Back to Listing', :action => 'list_subset' %>

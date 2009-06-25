@@ -20,24 +20,24 @@ needs to be entered</p>
         <td class="table">Borrowed from<br>this group</td>
         <td class="table">Returned to<br>this group</td>
     </tr>
-        <td class="table"><%= date_select 'chip_transaction', 'date', :use_month_numbers => true  %></td>
+        <td class="table"><%= @f.date_select 'date', :use_month_numbers => true  %></td>
         <td class="table"><select id="lab_group_id" name="chip_transaction[lab_group_id]">
             <%= options_from_collection_for_select @lab_groups, "id", "name",
             @chip_transaction.lab_group_id %></select></td>
         <td class="table"><select id="chip_type_id" name="chip_transaction[chip_type_id]">
             <%= options_from_collection_for_select @chip_types, "id", "name",
             @chip_transaction.chip_type_id %></select></td>
-        <td class="table"><%= text_field 'chip_transaction', 'description', 'size' => 25  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'acquired', 'size' => 5  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'used', 'size' => 5  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'traded_sold', 'size' => 5  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'borrowed_in', 'size' => 5  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'returned_out', 'size' => 5  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'borrowed_out', 'size' => 5  %></td>
-        <td class="table"><%= text_field 'chip_transaction', 'returned_in', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'description', 'size' => 25  %></td>
+        <td class="table"><%= @f.text_field 'acquired', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'used', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'traded_sold', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'borrowed_in', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'returned_out', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'borrowed_out', 'size' => 5  %></td>
+        <td class="table"><%= @f.text_field 'returned_in', 'size' => 5  %></td>
 </table>    
 
-<%= hidden_field 'chip_transaction', 'lock_version' %>
+<%= @f.hidden_field 'lock_version' %>
 
 <!--[eoform:chip_transaction]-->
 

@@ -71,52 +71,6 @@ class ChipTransaction < ActiveRecord::Base
     return @totals
   end
 
-  # buy accepts an option hash with the following parameters:
-  #
-  # * <tt>date</tt> - The date of the transaction
-  # * <tt>lab_group</tt> - The LabGroup buying arrays
-  # * <tt>chip_type</tt> - The ChipType being bought
-  # * <tt>description</tt> - A description of the purchase, e.g. "Box of 5 arrays"
-  # * <tt>number</tt> - The number of arrays bought
-  def self.buy(options = {})
-    transaction = ChipTransaction.new(
-      :date => options[:date],
-      :lab_group => options[:lab_group],
-      :chip_type => options[:chip_type],
-      :description => options[:description],
-      :acquired => options[:number]
-    )
-
-    transaction.save
-  end
-
-  # intergroup_buy accepts an option hash with the following parameters:
-  #
-  # * <tt>date</tt> - The date of the transaction
-  # * <tt>buyer</tt> - The LabGroup buying arrays
-  # * <tt>seller</tt> - The LabGroup selling arrays
-  # * <tt>chip_type</tt> - The ChipType being bought
-  # * <tt>number</tt> - The number of arrays bought
-  def self.intergroup_buy(options = {})
-    buy_transaction = ChipTransaction.new(
-      :date => options[:date],
-      :lab_group => options[:to],
-      :chip_type => options[:chip_type],
-      :description => "Purchased from #{options[:from].name}",
-      :acquired => options[:number]
-    )
-
-    sell_transaction = ChipTransaction.new(
-      :date => options[:date],
-      :lab_group => options[:from],
-      :chip_type => options[:chip_type],
-      :description => "Purchased by #{options[:to].name}",
-      :traded_sold => options[:number]
-    )
-
-    buy_transaction.save && sell_transaction.save
-  end
-
   # borrow accepts an option hash with the following parameters:
   #
   # * <tt>date</tt> - The date of the transaction

@@ -60,61 +60,6 @@ describe "ChipTransaction" do
     ChipTransaction.get_chip_totals(transactions).should == expected_totals
   end
 
-  it "should handle chip buying" do
-    lab_group = mock_model(LabGroup)
-    chip_type = create_chip_type
-
-    lambda {
-      ChipTransaction.buy(
-        :date => Date.today,
-        :lab_group => lab_group,
-        :chip_type => chip_type,
-        :number => 5,
-        :description => "Box of 5 arrays"
-      ).should be_true
-    }.should change(ChipTransaction, :count).by(1)
-
-    ChipTransaction.find(:first, :conditions => {
-      :date => Date.today,
-      :lab_group_id => lab_group.id,
-      :chip_type_id => chip_type.id,
-      :acquired => 5,
-      :description => "Box of 5 arrays"
-    }).should_not be_nil
-  end 
-
-  it "should handle chip inter-group buy" do
-    lab_group_1 = mock_model(LabGroup, :name => "Smith Lab")
-    lab_group_2 = mock_model(LabGroup, :name => "Johnson Lab")
-    chip_type = create_chip_type
-
-    lambda {
-      ChipTransaction.intergroup_buy(
-        :date => Date.today,
-        :to => lab_group_1,
-        :from => lab_group_2,
-        :chip_type => chip_type,
-        :number => 5
-      ).should be_true
-    }.should change(ChipTransaction, :count).by(2)
-
-    ChipTransaction.find(:first, :conditions => {
-      :date => Date.today,
-      :lab_group_id => lab_group_1.id,
-      :chip_type_id => chip_type.id,
-      :acquired => 5,
-      :description => "Purchased from Johnson Lab"
-    }).should_not be_nil
-
-    ChipTransaction.find(:first, :conditions => {
-      :date => Date.today,
-      :lab_group_id => lab_group_2.id,
-      :chip_type_id => chip_type.id,
-      :traded_sold => 5,
-      :description => "Purchased by Smith Lab"
-    }).should_not be_nil
-  end 
-
   it "should handle chip borrow" do
     lab_group_1 = mock_model(LabGroup, :name => "Smith Lab")
     lab_group_2 = mock_model(LabGroup, :name => "Johnson Lab")
