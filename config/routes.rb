@@ -18,9 +18,6 @@ ActionController::Routing::Routes.draw do |map|
   # Use with Rails 2.3
   #map.from_plugin :naming_schemer
   map.resources :naming_schemes
-  map.resources :users do |users|
-    users.resources :lab_memberships, :name_prefix => "user_"
-  end
   
   #SLIMarray routes
   map.resources :bioanalyzer_runs, :member => {:pdf => :get}
