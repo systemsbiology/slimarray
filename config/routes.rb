@@ -42,6 +42,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :chip_intergroup_purchases, :only => [:new, :create]
   map.resources :chip_borrows, :only => [:new, :create]
   map.resources :chip_returns, :only => [:new, :create]
+  map.resources :chip_types
   map.resources :organisms
   map.resources :projects
   map.resources :samples

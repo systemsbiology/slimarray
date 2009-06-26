@@ -1,28 +1,36 @@
 class ChipTypesController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
+  before_filter :load_dropdown_selections, :except => [:index, :destroy]
   
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
-    populate_arrays_from_tables
     @chip_types = ChipType.find(
       :all,
       :order => "name ASC",
       :include => :organism
     )
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @chip_types }
+      format.json { render :json => @chip_types }
+    end
+  end
+
+  def show
+    @chip_type = ChipType.find(params[:id])
+
+    respond_to do |format|
+      format.xml  { render :xml => @chip_type }
+      format.json  { render :json => @chip_type }
+    end
   end
 
   def new
-    populate_arrays_from_tables
     @chip_type = ChipType.new
   end
 
   def create
-    populate_arrays_from_tables
     @chip_type = ChipType.new(params[:chip_type])
     
     # if a new organism was specified, use that name
@@ -36,33 +44,31 @@ class ChipTypesController < ApplicationController
     # try to save the new chip type
     if(@chip_type.save)
       flash[:notice] = 'ChipType was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :action => 'index'
     else
       render :action => 'new'
     end
   end
 
   def edit
-    populate_arrays_from_tables
     @chip_type = ChipType.find(params[:id])
   end
 
   def update
-    populate_arrays_from_tables
     @chip_type = ChipType.find(params[:id])
     
     # catch StaleObjectErrors
     begin
       if @chip_type.update_attributes(params[:chip_type])
-        # if a new organism was specified, use that name
-        if(params[:organism] != nil && params[:organism].size > 0)
-          @organism = Organism.new(:name => params[:organism])
-          @organism.save
-          @chip_type.update_attribute('organism_id', @organism.id)
+        # if a new chip_type was specified, use that name
+        if(params[:chip_type] != nil && params[:chip_type].size > 0)
+          @chip_type = Organism.new(:name => params[:chip_type])
+          @chip_type.save
+          @chip_type.update_attribute('chip_type_id', @chip_type.id)
         end
       
         flash[:notice] = 'ChipType was successfully updated.'
-        redirect_to :action => 'list', :id => @chip_type
+        redirect_to :action => 'index'
       else
         render :action => 'edit'
       end
@@ -76,17 +82,18 @@ class ChipTypesController < ApplicationController
   def destroy
     begin
       ChipType.find(params[:id]).destroy
-      redirect_to :action => 'list'
+      redirect_to :action => 'index'
     rescue
       flash[:warning] = "Cannot delete chip type due to association " +
                         "with chip transactions or hybridizations."
-      list
-      render :action => 'list'
+      index
+      render :action => 'index'
     end
   end
   
   private
-  def populate_arrays_from_tables
-    @organisms = Organism.find(:all, :order => "name ASC")
+
+  def load_dropdown_selections
+    @chip_types = ChipType.find(:all, :order => "name ASC")
   end
 end

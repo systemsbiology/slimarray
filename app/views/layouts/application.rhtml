@@ -21,8 +21,7 @@
             <li><%= link_to 'Chip Inventory', {:controller => 'inventory', :action => 'index'} %></li>
             <%= link_if_staff_or_admin 'Inventory Checks', {:controller => 'inventory_checks', :action => 'list'}, 
             :wrap_in => 'li'%>
-            <%= link_if_staff_or_admin 'Chip Types', {:controller => 'chip_types', :action => 'list'}, 
-            :wrap_in => 'li'%>
+            <%= link_if_staff_or_admin 'Chip Types', chip_types_path, :wrap_in => 'li'%>
           <% end %>
           <% if SiteConfig.track_hybridizations? %>
             <li class="category">Samples</li>
