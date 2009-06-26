@@ -1,8 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Hybridization do
-  fixtures :site_config 
-
   describe "recording chip transactions" do
     def do_record
       @chip_transactions = Hybridization.record_as_chip_transactions(@hybridizations)
@@ -29,7 +27,7 @@ describe Hybridization do
       do_record
 
       @chip_transactions.size.should == 1
-      @chip_transactions[0].lab_group_id == project.lab_group_id
+      @chip_transactions[0].lab_group.should == project.lab_group
       @chip_transactions[0].chip_type.should == chip_type
       @chip_transactions[0].used.should == 3
     end

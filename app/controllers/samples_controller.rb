@@ -144,7 +144,7 @@ class SamplesController < ApplicationController
 
         for element in @naming_elements
           # put underscores between terms
-          if(element.include_in_sample_name && @samples[n].sample_name.length > 0)
+          if(element.include_in_sample_description && @samples[n].sample_name.length > 0)
             @samples[n].sample_name << "_"
             
             # add an underscore between group terms
@@ -159,7 +159,7 @@ class SamplesController < ApplicationController
             sample_texts[n] << sample_text
 
             # include in the sample name if desired, and field isn't blank
-            if( element.include_in_sample_name && !schemed_name[element.name].nil? )
+            if( element.include_in_sample_description && !schemed_name[element.name].nil? )
               @samples[n].sample_name << schemed_name[element.name]
 
               # add to group name if this is a group element
@@ -185,7 +185,7 @@ class SamplesController < ApplicationController
                                             :naming_term_id => naming_term.id )
               sample_terms[n] << sample_term
               
-              if( element.include_in_sample_name )
+              if( element.include_in_sample_description )
                 @samples[n].sample_name << naming_term.abbreviated_term
 
                 # add to group name if this is a group element
@@ -345,7 +345,7 @@ class SamplesController < ApplicationController
 
       for element in @naming_elements
         # put underscores between terms
-        if(element.include_in_sample_name && @samples[0].sample_name.length > 0)
+        if(element.include_in_sample_description && @samples[0].sample_name.length > 0)
           @samples[0].sample_name << "_"
           
           # add an underscore between group terms
@@ -361,7 +361,7 @@ class SamplesController < ApplicationController
           sample_text = SampleText.new( :text => schemed_name[element.name],
                                         :naming_element_id => element.id )
           sample_texts[0] << sample_text
-          if(element.include_in_sample_name)
+          if(element.include_in_sample_description)
             @samples[0].sample_name << schemed_name[element.name].to_s
 
             # add to group name if this is a group element
@@ -381,7 +381,7 @@ class SamplesController < ApplicationController
                                           :naming_term_id => naming_term.id )
             sample_terms[0] << sample_term
             
-            if(element.include_in_sample_name)
+            if(element.include_in_sample_description)
               @samples[0].sample_name << naming_term.abbreviated_term
 
               # add to group name if this is a group element

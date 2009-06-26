@@ -223,7 +223,7 @@ describe "Sample" do
     age_elements = NamingElement.find(:all,
       :conditions => { :name => "Age", :element_order => 1, :group_element => true,
         :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
-        :include_in_sample_name => true
+        :include_in_sample_description => true
       }
     )
     age_elements.size.should == 1
@@ -232,7 +232,7 @@ describe "Sample" do
     disposition_elements = NamingElement.find(:all,
       :conditions => { :name => "Disposition", :element_order => 2, :group_element => true,
         :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
-        :include_in_sample_name => true
+        :include_in_sample_description => true
       }
     )
     disposition_elements.size.should == 1

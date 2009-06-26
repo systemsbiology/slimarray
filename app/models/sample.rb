@@ -258,7 +258,7 @@ class Sample < ActiveRecord::Base
                   :optional => true,
                   :naming_scheme_id => naming_scheme.id,
                   :free_text => false,
-                  :include_in_sample_name => true,
+                  :include_in_sample_description => true,
                   :dependent_element_id => 0)
                 current_element_order += 1
               end
