@@ -166,6 +166,18 @@ class Hybridization < ActiveRecord::Base
     agcc_file.close
   end
 
+  def self.highest_chip_number(date)
+      highest_chip_number_hyb = Hybridization.find(:first, 
+        :conditions => {:hybridization_date => date},
+        :order => "chip_number DESC"
+      )
+      if(highest_chip_number_hyb != nil)
+        current_hyb_number = highest_chip_number_hyb.chip_number
+      else
+        current_hyb_number = 0
+      end
+  end
+
 private
 
   def hybridization_date_number_string

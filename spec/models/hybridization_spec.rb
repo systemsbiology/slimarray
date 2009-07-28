@@ -83,4 +83,20 @@ describe Hybridization do
     File.exists?("#{RAILS_ROOT}/20090225_01_test.ARR").should be_true
     FileUtils.rm("#{RAILS_ROOT}/20090225_01_test.ARR")
   end
+
+  describe "providing the highest chip number for a particular date" do
+
+    it "should provide 0 if there are no hybridizations on that date" do
+      Hybridization.highest_chip_number('2009-06-30').should == 0
+    end
+
+    it "should provide the highest chip_number for that date if hybridiations exist" do
+      create_hybridization(:hybridization_date => '2009-06-29', :chip_number => 1)
+      create_hybridization(:hybridization_date => '2009-06-29', :chip_number => 2)
+
+      Hybridization.highest_chip_number('2009-06-29').should == 2
+    end
+
+  end
+
 end
