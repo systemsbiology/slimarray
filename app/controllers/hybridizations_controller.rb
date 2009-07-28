@@ -1,120 +1,51 @@
 class HybridizationsController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
+  before_filter :load_dropdown_choices, :only => [:index, :new, :add, :create, :edit]
 
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
-    populate_arrays_from_tables
-  
-      @hybridization_pages, @hybridizations =
-        paginate :hybridizations, :per_page => 40, :order => "hybridization_date DESC, chip_number ASC",
-                 :include => { :sample => :project }
+    @hybridizations = Hybridization.find(
+      :all,
+      :order => "hybridization_date DESC, chip_number ASC",
+      :include => { :sample => :project }
+    )
   end
 
   def new
-    populate_arrays_from_tables
-
     @available_samples = Sample.find(:all, :conditions => [ "status = 'submitted'" ],
                                      :order => "id ASC")
   
     # clear out hybridization record since this is a 'new' set
     session[:hybridizations] = Array.new
-    session[:hybridization_number] = 0
+    session[:hybridization_number] = nil
   
     @submit_hybridizations = SubmitHybridizations.new
   end
 
   def add
-    populate_arrays_from_tables
+    @available_samples = Sample.available_to_hybridize
+    selected_samples = Sample.find_selected(params[:selected_samples], @available_samples)
 
-    @available_samples = Sample.find(:all, :conditions => [ "status = 'submitted'" ],
-                                     :order => "submission_date DESC, id ASC")
-  
-    @submit_hybridizations = SubmitHybridizations.new
-
-    # build Array of Sample objects from the checkboxes
-    # in the sample list
-    selected_samples = params[:selected_samples]
-    @samples = Array.new
-    if selected_samples != nil
-      #for sample_id in selected_samples.keys
-      for sample in   @available_samples
-        if selected_samples[sample.id.to_s] == '1'
-          @samples << Sample.find(sample.id)
-        end
-      end
-    end
-    
     @hybridizations = session[:hybridizations]
     
-    @submit_hybridizations = SubmitHybridizations.new(params[:submit_hybridizations])
-    
+    submit_hybridizations = SubmitHybridizations.new(params[:submit_hybridizations])
+
     current_hyb_number = session[:hybridization_number]
-    
-    # if there aren't already hybs added in the session, check for other
-    # hybs on the same date
-    if(current_hyb_number == 0)
-      highest_chip_number_hyb = Hybridization.find(:first, 
-        :conditions => {:hybridization_date => @submit_hybridizations.hybridization_date},
-        :order => "chip_number DESC"
-      )
-      if(highest_chip_number_hyb != nil)
-        current_hyb_number = highest_chip_number_hyb.chip_number
-      end
-    end
+    current_hyb_number = current_hyb_number ||
+      Hybridization.highest_chip_number(submit_hybridizations.hybridization_date)
 
     # only add more hyb slots if that's what was asked
-    if(@submit_hybridizations.valid?) 
-      for sample in @samples
-        project = sample.project
-        # does user want charge set(s) created based on projects?
-        if(@submit_hybridizations.charge_set_id == -1)
-          # get latest charge period
-          charge_period = ChargePeriod.find(:first, :order => "name DESC")
+    if(submit_hybridizations.valid?) 
+      @hybridizations.concat(
+        submit_hybridizations.hybridizations_for_selected_samples(selected_samples, current_hyb_number)
+      )
 
-          # if no charge periods exist, make a default one
-          if( charge_period == nil )
-            charge_period = ChargePeriod.new(:name => "Default Charge Period")
-            charge_period.save
-          end
-          
-          @charge_set = ChargeSet.find(:first, :conditions => ["name = ? AND lab_group_id = ? AND budget = ? AND charge_period_id = ?",
-                                       project.name, project.lab_group_id, project.budget, charge_period.id])
-
-          # see if new charge set need to be created
-          if(@charge_set == nil)  
-            @charge_set = ChargeSet.new(:charge_period_id => charge_period.id,
-                                        :name => project.name,
-                                        :lab_group_id => project.lab_group_id,
-                                        :budget => project.budget
-                                        )
-            @charge_set.save
-          end
-          
-          @submit_hybridizations.charge_set_id = @charge_set.id
-        end
-        current_hyb_number += 1
-        @hybridizations << Hybridization.new(:hybridization_date => @submit_hybridizations.hybridization_date,
-              :chip_number => current_hyb_number,
-              :charge_set_id => @submit_hybridizations.charge_set_id,
-              :charge_template_id => @submit_hybridizations.charge_template_id,
-              :sample_id => sample.id)
-      end
       session[:hybridizations] = @hybridizations
       session[:hybridization_number] = current_hyb_number
     end
+
     
-    # remove samples in the hybridization table from the sample list
-    for hybridization in @hybridizations
-      sample = hybridization.sample
-      if( @available_samples.include?(sample) )
-        @available_samples.delete(sample)
-      end
-    end
+    @available_samples = Sample.available_to_hybridize(@hybridizations)
   end
   
   def order_hybridizations
@@ -132,7 +63,6 @@ class HybridizationsController < ApplicationController
   end
   
   def create
-    populate_arrays_from_tables  
     @hybridizations = session[:hybridizations]
 
     failed = false 
@@ -229,7 +159,6 @@ class HybridizationsController < ApplicationController
   end
 
   def edit
-    populate_arrays_from_tables
     @hybridization = Hybridization.find(params[:id])
     @sample = Sample.find(@hybridization.sample_id)
 
@@ -237,7 +166,6 @@ class HybridizationsController < ApplicationController
   end
 
   def update
-    populate_arrays_from_tables
     hybridization = Hybridization.find(params[:id])
 
     begin
@@ -371,7 +299,7 @@ class HybridizationsController < ApplicationController
   end
 
   private
-  def populate_arrays_from_tables
+  def load_dropdown_choices
     # grab SBEAMS configuration parameter here, rather than
     # grabbing it in the list view for every element displayed
     @using_sbeams = SiteConfig.find(1).using_sbeams?
