@@ -40,7 +40,7 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
     <% end %>
       <td><%=h sample.status %></td>
       <td><%= link_to 'Edit', :controller => 'samples', :action => 'edit', :id => sample %></td>
-      <td><%= link_to 'Destroy', { :controller => 'samples', :action => 'destroy', :id => sample }, :confirm => 'Are you sure?' %></td>
+      <td><%= link_to 'Destroy', sample_path(sample), :method => :delete, :confirm => 'Are you sure?' %></td>
     </tr>
   <% end %>
   </table>
