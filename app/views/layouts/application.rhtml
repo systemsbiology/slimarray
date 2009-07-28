@@ -27,7 +27,7 @@
             <li class="category">Samples</li>
             <li><%= link_to 'Bioanalyzer Results', bioanalyzer_runs_path %></li>
             <li><%= link_to 'Samples', samples_path %></li>
-            <%= link_if_staff_or_admin 'Hybridizations', {:controller => 'hybridizations', :action => 'list'}, 
+            <%= link_if_staff_or_admin 'Hybridizations', hybridizations_path, 
             :wrap_in => 'li'%>
           <% end %>
           <% if SiteConfig.track_charges? %>
