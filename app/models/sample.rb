@@ -450,4 +450,32 @@ class Sample < ActiveRecord::Base
       :chip_type => chip_type.short_name
     }
   end
+
+  def self.find_selected(selected_samples, available_samples)
+    samples = Array.new
+
+    if selected_samples != nil
+      for sample in available_samples
+        if selected_samples[sample.id.to_s] == '1'
+          samples << Sample.find(sample.id)
+        end
+      end
+    end
+
+    return samples
+  end
+
+  def self.available_to_hybridize(excluded_hybridizations = [])
+    available_samples = Sample.find(:all, :conditions => [ "status = 'submitted'" ],
+                                    :order => "submission_date DESC, id ASC")
+
+    for hybridization in excluded_hybridizations 
+      sample = hybridization.sample
+      if( available_samples.include?(sample) )
+        available_samples.delete(sample)
+      end
+    end
+
+    return available_samples
+  end
 end

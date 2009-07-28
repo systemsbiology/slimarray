@@ -296,4 +296,31 @@ describe "Sample" do
       column += 1
     end
   end
+
+  it "should take sample selections and provide the corresponding samples" do
+    sample_1 = create_sample
+    sample_2 = create_sample
+    sample_3 = create_sample
+    available_samples = [sample_1, sample_2, sample_3]
+
+    selections = Hash.new
+    selections[sample_1.id.to_s] = '1'
+    selections[sample_3.id.to_s] = '1'
+
+    Sample.find_selected(selections, available_samples).should == [sample_1, sample_3]
+  end
+
+  it "should provide all samples available to hybridize with no excluded hybridizations" do
+    Sample.available_to_hybridize.should == [ samples(:sample6), samples(:sample5),
+      samples(:sample1), samples(:sample3) ]
+  end
+
+  it "should provide all samples available to hybridize excluding any given hybridizations" do
+    hybridization_1 = new_hybridization(:sample => samples(:sample3))
+    hybridization_2 = new_hybridization(:sample => samples(:sample5))
+    excluded_hybridizations = [hybridization_1, hybridization_2]
+
+    Sample.available_to_hybridize(excluded_hybridizations).
+      should == [ samples(:sample6), samples(:sample1) ]
+  end
 end
