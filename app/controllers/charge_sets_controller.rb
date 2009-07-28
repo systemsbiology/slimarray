@@ -1,7 +1,7 @@
 class ChargeSetsController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
-  before_filter :cache_lab_groups
+  #before_filter :cache_lab_groups
   
   # GET /charge_sets
   # GET /charge_sets.xml
