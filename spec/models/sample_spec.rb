@@ -141,7 +141,7 @@ describe "Sample" do
   end
 
   it "should load a csv of updated unschemed samples" do
-    csv_file = "#{RAILS_ROOT}/test/fixtures/csv/updated_unschemed_samples.csv"
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_unschemed_samples.csv"
   
     errors = Sample.from_csv(csv_file)
 
@@ -162,7 +162,7 @@ describe "Sample" do
   end
   
   it "from csv updated schemed samples" do
-    csv_file = "#{RAILS_ROOT}/test/fixtures/csv/updated_yeast_scheme_samples.csv"
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_yeast_scheme_samples.csv"
     
     errors = Sample.from_csv(csv_file)
     
@@ -184,7 +184,7 @@ describe "Sample" do
   end
   
   it "should load a csv of sample info going from no scheme to scheme" do
-    csv_file = "#{RAILS_ROOT}/test/fixtures/csv/no_scheme_to_scheme.csv"
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/no_scheme_to_scheme.csv"
 
     errors = Sample.from_csv(csv_file)
 
@@ -209,7 +209,7 @@ describe "Sample" do
   end
 
   it "should load a csv of sample info with a new naming scheme" do
-    csv_file = "#{RAILS_ROOT}/test/fixtures/csv/update_samples_new_scheme.csv"
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/update_samples_new_scheme.csv"
 
     errors = Sample.from_csv(csv_file, true)
 

@@ -45,8 +45,8 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
   <% end %>
   </table>
 
-  <p><%= link_to 'Hybridize Samples', :controller => 'hybridizations', :action => 'new' %></p>
+  <p><%= link_to 'Hybridize Samples', new_hybridization_set_path %></p>
 <% else %>
   <p>There are no samples submitted for hybridization.</p>  
 <% end %>
-  <p><%= link_to 'Submit New Samples', :controller => 'samples', :action => 'new' %></p>
+  <p><%= link_to 'Submit New Samples', new_sample_path %></p>

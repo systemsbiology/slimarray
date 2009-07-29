@@ -178,6 +178,51 @@ class Hybridization < ActiveRecord::Base
       end
   end
 
+  def self.record_charges(hybridizations)  
+    for hybridization in hybridizations
+      sample = hybridization.sample
+      
+      template = ChargeTemplate.find(hybridization.charge_template_id)
+      charge = Charge.new(:charge_set_id => hybridization.charge_set_id,
+                          :date => hybridization.hybridization_date,
+                          :description => sample.sample_name,
+                          :chips_used => template.chips_used,
+                          :chip_cost => template.chip_cost,
+                          :labeling_cost => template.labeling_cost,
+                          :hybridization_cost => template.hybridization_cost,
+                          :qc_cost => template.qc_cost,
+                          :other_cost => template.other_cost)
+      charge.save
+    end
+  end
+
+  def self.output_trace_images(hybridizations)
+    for hybridization in hybridizations
+      sample = hybridization.sample
+      hybridization_year_month = hybridization.hybridization_date.year.to_s + ("%02d" % hybridization.hybridization_date.month)
+      hybridization_date_number_string =  hybridization_year_month + ("%02d" % hybridization.hybridization_date.day) + 
+                                          "_" + ("%02d" % hybridization.chip_number)
+      chip_name = hybridization_date_number_string + "_" + sample.sample_name
+
+      output_path = SiteConfig.quality_trace_dropoff + "/" + hybridization_year_month
+
+      # output each quality trace image if it exists
+      if( sample.starting_quality_trace != nil )
+        copy_image_based_on_chip_name( sample.starting_quality_trace, output_path, chip_name + ".EGRAM_T.jpg" )
+      end
+      if( sample.amplified_quality_trace != nil )
+        copy_image_based_on_chip_name( sample.amplified_quality_trace, output_path, chip_name + ".EGRAM_PF.jpg" )
+      end
+      if( sample.fragmented_quality_trace != nil )
+        copy_image_based_on_chip_name( sample.fragmented_quality_trace, output_path, chip_name + ".EGRAM_F.jpg" )
+      end
+    end
+  end
+  
+  def self.copy_image_based_on_chip_name(quality_trace, output_path, image_name)
+    FileUtils.cp( "#{RAILS_ROOT}/public/" + quality_trace.image_path, output_path + "/" + image_name )
+  end
+
 private
 
   def hybridization_date_number_string

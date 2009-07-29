@@ -43,7 +43,7 @@ SLIMarray web site</a> for documentation and additional information.</p>
 	    <p>Your lab groups have no submitted samples that have not been hybridized.</p>
 	<% end %>
 	
-	<%= link_to 'Submit New Samples', :controller => 'samples', :action => 'new' %>
+	<%= link_to 'Submit New Samples', new_sample_path %>
 <% end %>
 
 <% if(SiteConfig.track_inventory?) %>
