@@ -44,7 +44,9 @@ describe ChipTypesController do
   describe "handling GET /chip_types.xml" do
 
     before(:each) do
-      @chip_types = mock("Array of ChipTypes", :to_xml => "XML")
+      @chip_type_1 = mock_model(ChipType, :summary_hash => {:n => 1})
+      @chip_type_2 = mock_model(ChipType, :summary_hash => {:n => 2})
+      @chip_types = [@chip_type_1, @chip_type_2]
       ChipType.stub!(:find).and_return(@chip_types)
     end
   
@@ -66,16 +68,17 @@ describe ChipTypesController do
     end
   
     it "should render the found chip_types as xml" do
-      @chip_types.should_receive(:to_xml).and_return("XML")
       do_get
-      response.body.should == "XML"
+      response.body.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<records type=\"array\">\n  <record>\n    <n type=\"integer\">1</n>\n  </record>\n  " +
+        "<record>\n    <n type=\"integer\">2</n>\n  </record>\n</records>\n"
     end
   end
 
   describe "handling GET /chip_types/1.xml" do
 
     before(:each) do
-      @chip_type = mock_model(ChipType, :to_xml => "XML")
+      @chip_type = mock_model(ChipType, :detail_hash => {:n => 1})
       ChipType.stub!(:find).and_return(@chip_type)
     end
   
@@ -95,16 +98,17 @@ describe ChipTypesController do
     end
   
     it "should render the found chip_type as xml" do
-      @chip_type.should_receive(:to_xml).and_return("XML")
+      @chip_type.should_receive(:detail_hash).and_return({:n => 1})
       do_get
-      response.body.should == "XML"
+      response.body.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  " +
+        "<n type=\"integer\">1</n>\n</hash>\n"
     end
   end
 
   describe "handling GET /chip_types/1.json" do
 
     before(:each) do
-      @chip_type = mock_model(ChipType, :to_json => "JSON")
+      @chip_type = mock_model(ChipType, :detail_hash => {:n => 1})
       ChipType.stub!(:find).and_return(@chip_type)
     end
   
@@ -124,9 +128,9 @@ describe ChipTypesController do
     end
   
     it "should render the found chip_type as json" do
-      @chip_type.should_receive(:to_json).and_return("JSON")
+      @chip_type.should_receive(:detail_hash).and_return({:n => 1})
       do_get
-      response.body.should == "JSON"
+      response.body.should == "{\"n\": 1}"
     end
   end
   

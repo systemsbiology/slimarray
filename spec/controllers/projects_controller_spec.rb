@@ -6,10 +6,6 @@ describe ProjectsController do
 
   before(:each) do
     login_as_staff
-
-    mock_lab_groups = [ mock_model(LabGroup),mock_model(LabGroup) ]
-    LabGroup.stub!(:find).and_return(mock_lab_groups)
-    @current_user.stub!(:lab_groups).and_return(mock_lab_groups)
   end
   
   describe "responding to GET index" do
@@ -35,11 +31,15 @@ describe ProjectsController do
     describe "with mime type of xml" do
   
       it "should render all projects as xml" do
+        @project_1.should_receive(:summary_hash).and_return( {:n => 1} )
+        @project_2.should_receive(:summary_hash).and_return( {:n => 2} )
+
         request.env["HTTP_ACCEPT"] = "application/xml"
         Project.should_receive(:find).with(:all, :order => "name ASC").and_return(@projects)
-        @projects.should_receive(:to_xml).and_return("generated XML")
         get :index
-        response.body.should == "generated XML"
+        response.body.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+          "<records type=\"array\">\n  <record>\n    <n type=\"integer\">1</n>\n  " +
+          "</record>\n  <record>\n    <n type=\"integer\">2</n>\n  </record>\n</records>\n"
       end
     
     end
@@ -47,12 +47,14 @@ describe ProjectsController do
     describe "with mime type of json" do
   
       it "should render flow cell lane summaries as json" do
+        @project_1.should_receive(:summary_hash).and_return( {:n => 1} )
+        @project_2.should_receive(:summary_hash).and_return( {:n => 2} )
+        
         request.env["HTTP_ACCEPT"] = "application/json"
         Project.should_receive(:find).with(:all, :order => "name ASC").
           and_return(@projects)
-        @projects.should_receive(:to_json).and_return("generated JSON")
         get :index
-        response.body.should == "generated JSON"
+        response.body.should == "[{\"n\":1},{\"n\":2}]"
       end
     
     end
@@ -84,7 +86,7 @@ describe ProjectsController do
         request.env["HTTP_ACCEPT"] = "application/json"
         Project.should_receive(:find).with("37").and_return(@project)
         get :show, :id => 37
-        response.body.should match(/\{\"n\":\s*1\}/)
+        response.body.should == "{\"n\":1}"
       end
     
     end
@@ -94,6 +96,8 @@ describe ProjectsController do
   describe "handling GET /projects/new" do
 
     before(:each) do
+      @current_user.should_receive(:accessible_lab_groups)
+      
       @project = mock_model(Project)
       Project.stub!(:new).and_return(@project)
     end
@@ -128,9 +132,50 @@ describe ProjectsController do
     end
   end
 
+  describe "handling GET /projects/new_inline" do
+
+    before(:each) do
+      @current_user.should_receive(:accessible_lab_groups)
+
+      @project = mock_model(Project)
+      Project.stub!(:new).and_return(@project)
+    end
+
+    def do_get
+      get :new_inline
+    end
+
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end
+
+    it "should render new_inline partial" do
+      do_get
+      response.should render_template('_new_inline')
+    end
+
+    it "should create an new project" do
+      Project.should_receive(:new).and_return(@project)
+      do_get
+    end
+
+    it "should not save the new project" do
+      @project.should_not_receive(:save)
+      do_get
+    end
+
+    it "should assign the new project for the view" do
+      do_get
+      assigns[:project].should equal(@project)
+    end
+  end
+
   describe "handling GET /projects/1/edit" do
 
     before(:each) do
+      @current_user.should_receive(:accessible_lab_groups)
+      
       @project = mock_model(Project)
       Project.stub!(:find).and_return(@project)
     end
@@ -163,6 +208,8 @@ describe ProjectsController do
   describe "handling POST /projects" do
 
     before(:each) do
+      @current_user.should_receive(:accessible_lab_groups)
+
       @project = mock_model(Project, :to_param => "1")
       Project.stub!(:new).and_return(@project)
     end
@@ -201,9 +248,67 @@ describe ProjectsController do
     end
   end
 
+  describe "handling POST /projects/create_inline" do
+
+    before(:each) do
+      @current_user.should_receive(:accessible_lab_groups)
+
+      @project = mock_model(Project, :to_param => "1")
+      Project.stub!(:new).and_return(@project)
+      @sample_set = mock_model(SampleSet)
+      SampleSet.stub!(:new).and_return(@sample_set)
+    end
+
+    describe "with successful save" do
+
+      before(:each) do
+        Project.should_receive(:accessible_to_user)
+      end
+
+      def do_post
+        @project.should_receive(:save).and_return(true)
+        post :create_inline, :project => {"name" => "My Project"}
+      end
+
+      it "should create a new project" do
+        Project.should_receive(:new).and_return(@project)
+        do_post
+      end
+
+      it "should make a new sample set that pointed at this project" do
+        SampleSet.should_receive(:new).
+          with(:project_id => @project.id).
+          and_return(@sample_set)
+        do_post
+      end
+
+      it "should render the sample_sets/projects partial" do
+        do_post
+        response.should render_template('sample_sets/_projects')
+      end
+
+    end
+
+    describe "with failed save" do
+
+      def do_post
+        @project.should_receive(:save).and_return(false)
+        post :create_inline, :project => {}
+      end
+
+      it "should re-render 'new_inline'" do
+        do_post
+        response.should render_template('new_inline')
+      end
+
+    end
+  end
+
   describe "handling PUT /projects/1" do
 
     before(:each) do
+      @current_user.should_receive(:accessible_lab_groups)
+
       @project = mock_model(Project, :to_param => "1")
       Project.stub!(:find).and_return(@project)
     end

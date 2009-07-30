@@ -9,6 +9,26 @@ class HybridizationsController < ApplicationController
       :order => "hybridization_date DESC, chip_number ASC",
       :include => { :sample => :project }
     )
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @hybridizations.
+        collect{|x| x.summary_hash}
+      }
+      format.json  { render :json => @hybridizations.
+        collect{|x| x.summary_hash}.to_json
+      }
+    end
+  end
+
+  def show
+    @hybridization = Hybridization.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @hybridization.detail_hash }
+      format.json  { render :json => @hybridization.detail_hash }
+    end
   end
 
   def edit

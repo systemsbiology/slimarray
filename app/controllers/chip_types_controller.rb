@@ -12,8 +12,12 @@ class ChipTypesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @chip_types }
-      format.json { render :json => @chip_types }
+      format.xml  { render :xml => @chip_types.
+        collect{|x| x.summary_hash}
+       }
+      format.json { render :json => @chip_types.
+        collect{|x| x.summary_hash}
+        }
     end
   end
 
@@ -21,8 +25,8 @@ class ChipTypesController < ApplicationController
     @chip_type = ChipType.find(params[:id])
 
     respond_to do |format|
-      format.xml  { render :xml => @chip_type }
-      format.json  { render :json => @chip_type }
+      format.xml  { render :xml => @chip_type.detail_hash }
+      format.json  { render :json => @chip_type.detail_hash }
     end
   end
 
