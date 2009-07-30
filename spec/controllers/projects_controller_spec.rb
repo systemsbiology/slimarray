@@ -54,7 +54,7 @@ describe ProjectsController do
         Project.should_receive(:find).with(:all, :order => "name ASC").
           and_return(@projects)
         get :index
-        response.body.should == "[{\"n\":1},{\"n\":2}]"
+        response.body.should =~ /[{\"n\":\s*1},{\"n\":\s*2}]/
       end
     
     end
@@ -86,7 +86,7 @@ describe ProjectsController do
         request.env["HTTP_ACCEPT"] = "application/json"
         Project.should_receive(:find).with("37").and_return(@project)
         get :show, :id => 37
-        response.body.should == "{\"n\":1}"
+        response.body.should =~ /\{\"n\":\s*1\}/
       end
     
     end
@@ -152,7 +152,7 @@ describe ProjectsController do
 
     it "should render new_inline partial" do
       do_get
-      response.should render_template('_new_inline')
+      response.should render_template('projects/_new_inline')
     end
 
     it "should create an new project" do
@@ -298,7 +298,7 @@ describe ProjectsController do
 
       it "should re-render 'new_inline'" do
         do_post
-        response.should render_template('new_inline')
+        response.should render_template('projects/_new_inline')
       end
 
     end
