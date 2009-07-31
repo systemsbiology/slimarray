@@ -59,4 +59,50 @@ describe "Project" do
     end
   end
 
+  it "should provide a hash of summary attributes" do
+    SiteConfig.should_receive(:site_url).and_return("http://example.com")
+    project = create_project(:name => "Fungus Project")
+
+    project.summary_hash.should == {
+      :id => project.id,
+      :name => "Fungus Project",
+      :updated_at => project.updated_at,
+      :uri => "http://example.com/projects/#{project.id}"
+    }
+  end
+
+  it "should provide a hash of detailed attributes" do
+    SiteConfig.should_receive(:site_url).exactly(3).times.and_return("http://example.com")
+    lab_group = mock("LabGroup", :id => 3, :name => "Fungus Group")
+
+    project = create_project(
+      :name => "Fungus Project"
+    )
+    project.stub!(:lab_group_id).and_return(3)
+    project.stub!(:lab_group).and_return(lab_group)
+
+    sample_1 = create_sample(:project => project)
+    sample_2 = create_sample(:project => project)
+
+    project.detail_hash.should == {
+      :id => project.id,
+      :name => "Fungus Project",
+      :lab_group => "Fungus Group",
+      :lab_group_uri => "http://example.com/lab_groups/#{lab_group.id}",
+      :updated_at => project.updated_at,
+      :sample_uris => ["http://example.com/samples/#{sample_1.id}",
+                        "http://example.com/samples/#{sample_2.id}"]
+    }
+  end
+
+  it "should provide projects associated with a lab group" do
+    lab_group_1 = mock_model(LabGroup)
+    lab_group_2 = mock_model(LabGroup)
+    project_1 = create_project(:lab_group => lab_group_1)
+    project_2 = create_project(:lab_group => lab_group_1)
+    project_3 = create_project(:lab_group => lab_group_2)
+
+    Project.for_lab_group(lab_group_1).should == [project_1, project_2]
+  end
+
 end

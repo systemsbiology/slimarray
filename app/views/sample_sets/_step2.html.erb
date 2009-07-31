@@ -1,0 +1,53 @@
+<% form_tag :action => 'create' do -%>
+  <%= hidden_field 'sample_set', 'submission_date'  %>
+  <%= hidden_field 'sample_set', 'number_of_samples' %>
+  <%= hidden_field 'sample_set', 'project_id' %>
+  <%= hidden_field 'sample_set', 'chip_type_id' %>
+  <%= hidden_field 'sample_set', 'naming_scheme_id' %>
+  <%= hidden_field 'sample_set', 'sbeams_user' %>
+
+  <table id="table" class="nonsortable" cellpadding="0" cellspacing="0" border="0">
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Name on the sample tube</th>
+      <% if @sample_set.naming_scheme_id == nil %>
+        <th>Sample Description</th>
+      <% else %>
+        <% for element in @naming_elements %>
+          <th><%=h element.name %></th>
+        <% end %>
+      <% end %>
+      <th>Chip Type</th>
+    </tr>
+    </thead>
+    <% for @n in 0..@samples.size-1 %>    
+      <tr>
+        <% @sample = @samples[@n] %>
+        <%= error_messages_for 'sample' %>
+          <td><%=h @sample.submission_date %>
+              <%= hidden_field :sample, :submission_date, :index =>@n %></td>
+          <td><%= text_field :sample, :short_sample_name, :index =>@n,
+                  :size => 10 %></td>
+
+          <% if @naming_scheme == nil %>
+            <td><%= text_field :sample, :sample_name, :index =>@n,
+                    :size => 30 %></td>
+          <% else %>
+            <%= render :partial => 'samples/schemed_sample_description' %>
+          <% end %>
+          
+          <td><%=h @sample.chip_type.name %>
+              <%= hidden_field :sample, :chip_type_id, :index =>@n %></td>
+          <%= hidden_field :sample, :project_id, :index =>@n %>
+          <%= hidden_field :sample, :naming_scheme_id, :index =>@n %>
+          <%= hidden_field :sample, :sbeams_user, :index =>@n %>
+          <%= hidden_field :sample, :status, :index =>@n %>
+      </tr>
+    <% end %>
+  </table>
+
+  <%= hidden_field :sample, :submission_date, :index =>@n %>
+  
+  <%= submit_tag "Create Samples" %>
+<% end -%>

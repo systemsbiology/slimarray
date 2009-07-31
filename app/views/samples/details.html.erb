@@ -1,0 +1,41 @@
+<h2>Samples</h2>
+
+<% if(@samples != nil && @samples.size > 0) %>
+
+  <h3>Sample Information</h3>
+  <% for sample in @samples %>
+    <b><%=h sample.short_sample_name %></b>: <%=h sample.sample_name %><br>
+  <% end %>
+
+  <h3>Quality Information</h3>
+  <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+    <thead>
+      <tr>
+        <th><h3>Sample</h3></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for sample in @samples %>
+        <% for lane in sample.flow_cell_lanes %>
+          <tr>
+            <td><%=h sample.name_on_tube %></td>
+          </tr>
+        <% end %>
+      <% end %> 
+    </tbody>
+  </table>
+  <%= render :partial => 'shared/tinytable_nonpaged', :locals => {:sort_column => nil} %>
+
+  <h3>Data Location</h3>
+  <% for sample in @samples %>
+    <p><b><%=h sample.short_sample_name %></b>: 
+    <% if sample.hybridization %>
+      <%= sample.hybridization.raw_data_path %><br></p>
+    <% else %>
+      Not hybridized
+    <% end %>
+  <% end %> 
+
+<% else %>
+  No samples were selected. <%= link_to "Go Back", url_for(:back) %>
+<% end %>

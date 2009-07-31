@@ -1,0 +1,42 @@
+<%= error_messages_for 'sample_set' %>
+
+<% form_tag :action => 'new' do -%>
+  <%= hidden_field_tag 'step', '2' %>
+
+  <p><label for="sample_set_submission_date">Date Samples will be submitted</label><br/>
+  <%= date_select 'sample_set', 'submission_date'  %></p>
+
+  <p><label for="sample_set_number_of_samples">Number of samples</label><br/>
+  <%= text_field 'sample_set', 'number_of_samples', :size => 4 %></p>
+
+  <p><label for="sample_set_chip_type_id">Chip Type</label><br/>
+  <%= collection_select 'sample_set', 'chip_type_id',
+    @chip_types, 'id', 'name', {:prompt => true} %><br/>
+    * Contact the facility to add a new chip type</p>
+
+  <% if @naming_schemes.size > 0 %>
+    <p><label for="sample_set_naming_scheme_id">Naming Scheme</label><br/>
+    <select id='sample_set_naming_scheme_id' name='sample_set[naming_scheme_id]'>
+      <option value="">- None -</option>
+      <%= options_from_collection_for_select @naming_schemes, "id", "name",
+        selected = @sample_set.naming_scheme_id %>
+    </select></p>
+  <% end %>
+
+  <% if SiteConfig.using_affy_arrays? && SiteConfig.create_gcos_files? && SiteConfig.using_sbeams? %>
+    <p><label for="sample_set_sbeams_user">SBEAMS User</label><br/>
+      <input type="text" id="sample_set_sbeams_user" name="sample_set[sbeams_user]"
+      size="20" value="<%=h current_user.login%>" /></p>
+  <% elsif SiteConfig.using_affy_arrays? && SiteConfig.create_gcos_files? %>
+    <p><label for="sample_set_sbeams_user">Array User Name</label><br/>
+      <input type="text" id="sample_set_sbeams_user" name="sample_set[sbeams_user]"
+      size="20" value="<%=h current_user.login%>" /></p>
+  <% else %>
+    <input type="hidden" id="sample_set_sbeams_user" name="sample_set[sbeams_user]"
+    size="20"/>
+  <% end %>
+
+  <%= render :partial => 'projects' %>
+  
+  <%= submit_tag "Next ->" %>
+<% end -%>

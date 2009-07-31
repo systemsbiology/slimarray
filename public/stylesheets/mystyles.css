@@ -188,3 +188,9 @@ table#quality_traces {
 table#quality_traces td {
     padding: 15px;
 }
+
+#new_project_box {
+    border: 1px solid;
+    padding: 5px;
+    width: 30em;
+}

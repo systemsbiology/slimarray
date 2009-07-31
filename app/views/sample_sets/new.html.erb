@@ -1,0 +1,14 @@
+<h2>Enter Samples</h2>
+
+<% if(@projects.size > 0 || current_user.staff_or_admin?) %>
+  <% if params[:step] == "2" %>
+    <%= render :partial => 'step2' %>
+  <% else %>
+    <%= render :partial => 'step1' %>
+  <% end %>
+<% else %>
+  <p>You need to belong to one or more lab groups before you can see or submit any samples.
+  Please contact your administrator at <a href="mailto:<%=h SiteConfig.administrator_email %>">
+                                          <%=h SiteConfig.administrator_email %></a>
+  if you need<br>to be added to any lab groups.</p>
+<% end %>

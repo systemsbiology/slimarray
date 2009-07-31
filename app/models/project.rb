@@ -40,4 +40,30 @@ class Project < ActiveRecord::Base
       return projects.sort {|x,y| x.name <=> y.name }
     end  
   end
+
+  def self.for_lab_group(lab_group)
+    return Project.find(:all, :conditions => {:lab_group_id => lab_group.id})    
+  end
+
+  def summary_hash
+    return {
+      :id => id,
+      :name => name,
+      :updated_at => updated_at,
+      :uri => "#{SiteConfig.site_url}/projects/#{id}"
+    }
+  end
+  
+  def detail_hash
+    return {
+      :id => id,
+      :name => name,
+      :lab_group => lab_group.name,
+      :lab_group_uri => "#{SiteConfig.site_url}/lab_groups/#{lab_group.id}",
+      :updated_at => updated_at,
+      :sample_uris => sample_ids.sort.
+        collect {|x| "#{SiteConfig.site_url}/samples/#{x}" }
+    }
+  end
+
 end
