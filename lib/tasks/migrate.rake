@@ -3,7 +3,7 @@ namespace :db do
   namespace :migrate do
 
     desc "Transfer users, lab groups and lab memberships from in-house database to SLIMcore"
-    task :slimcore => :environment do
+    task :slimcore => "db:migrate" do
       puts "== Migrating to SLIMcore =="
 
       # custom model declarations here to prevent model name conflicts
