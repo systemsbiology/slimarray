@@ -29,6 +29,7 @@ available when retrieving single projects (see GET /projects/[project id]).
   
   def index
     @projects = Project.find(:all, :order => "name ASC")
+    @lab_groups_by_id = LabGroup.all_by_id
     
     respond_to do |format|
       format.html # index.rhtml
