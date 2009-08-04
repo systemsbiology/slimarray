@@ -68,7 +68,7 @@ class SampleSetsController < ApplicationController
 private
 
   def load_dropdown_selections
-    @projects = Project.accessible_to_user(current_user)
+    @projects = Project.accessible_to_user(current_user, true)
     @naming_schemes = NamingScheme.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
   end
