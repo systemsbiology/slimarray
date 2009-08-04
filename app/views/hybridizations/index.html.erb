@@ -1,24 +1,26 @@
 <h2>Hybridizations</h2>
 
-<p><%= link_if_staff_or_admin 'New Hybridizations', :action => 'new' %></p>
+<p><%= link_if_staff_or_admin 'New Hybridizations', new_hybridization_set_path %></p>
 
 <% if @hybridizations.size > 0 %>
       <% form_tag :action => 'bulk_handler' do -%>
-    <table class="sortable" id="hybridized_samples">
-      <tr>
-        <th>Select</th>
-        <th>Date Hybridized</th>
-        <th>Chip Number</th>
-        <th>Short Sample Name</th>
-        <th>Sample Name</th>
-        <th>Sample Group Name</th>
-        <th>Project</th>
-        <% if SiteConfig.using_sbeams? %>
-          <th>SBEAMS User</th>
-        <% end %>
-        <th>Edit</th>
-        <th>Destroy</th>
-      </tr>
+    <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+      <thead>
+        <tr>
+          <th><h3>Select</h3></th>
+          <th><h3>Date Hybridized</h3></th>
+          <th><h3>Chip Number</h3></th>
+          <th><h3>Short Sample Name</h3></th>
+          <th><h3>Sample Name</h3></th>
+          <th><h3>Sample Group Name</h3></th>
+          <th><h3>Project</h3></th>
+          <% if SiteConfig.using_sbeams? %>
+            <th><h3>SBEAMS User</h3></th>
+          <% end %>
+          <th><h3 class="nosort">Edit</h3></th>
+          <th><h3 class="nosort">Destroy</h3></th>
+        </tr>
+      </thead>
   
     <% for hybridization in @hybridizations %>
         <tr>
@@ -37,6 +39,8 @@
         </tr>
       <% end %>
     </table>
+
+    <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
 
     <p><%= submit_tag 'Delete Hybridizations' %></p>
     <% if SiteConfig.create_gcos_files? %>
