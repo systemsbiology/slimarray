@@ -15,4 +15,8 @@ class ApplicationController < ActionController::Base
 
   # caching help for slimcore
   include SlimcoreCaching
+
+  def redirect_back
+    redirect_to :back rescue redirect_to root_path
+  end
 end
