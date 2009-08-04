@@ -28,9 +28,17 @@ class Project < ActiveRecord::Base
       lab_groups = user.lab_groups
       lab_groups.each do |g|
         if(active_only)
-          projects << g.projects.find(:all, :conditions => {:active => true})
+          projects << Project.find(
+            :all,
+            :conditions => { :lab_group_id => g.id, :active => true },
+            :order => "name ASC"
+          )
         else
-          projects << g.projects
+          projects << Project.find(
+            :all,
+            :conditions => { :lab_group_id => g.id },
+            :order => "name ASC"
+          )
         end
       end
       
@@ -40,7 +48,7 @@ class Project < ActiveRecord::Base
       return projects.sort {|x,y| x.name <=> y.name }
     end  
   end
-
+  
   def self.for_lab_group(lab_group)
     return Project.find(:all, :conditions => {:lab_group_id => lab_group.id})    
   end

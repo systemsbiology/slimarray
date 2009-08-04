@@ -16,8 +16,8 @@ describe "Project" do
       @lab_group_1 = mock("Lab Group")
       @lab_group_2 = mock("Lab Group")
       @lab_groups = [@lab_group_1, @lab_group_2]
-      @project_1 = create_project(:name => "Aardvark Project")
-      @project_2 = create_project(:name => "Badget Project")
+      @project_1 = create_project(:name => "Aardvark Project", :lab_group_id => @lab_group_1.id)
+      @project_2 = create_project(:name => "Badget Project", :lab_group_id => @lab_group_2.id)
       @lab_1_projects = [@project_1]
       @lab_2_projects = [@project_2]
     end
@@ -33,10 +33,16 @@ describe "Project" do
       it "should provide user-accessible active projects for non-staff or admin users" do
         @user.should_receive(:staff_or_admin?).and_return(false)
         @user.should_receive(:lab_groups).and_return(@lab_groups)
-        @lab_group_1.should_receive(:projects).and_return(@lab_1_projects)
-        @lab_1_projects.should_receive(:find).and_return(@lab_1_projects)
-        @lab_group_2.should_receive(:projects).and_return(@lab_2_projects)
-        @lab_2_projects.should_receive(:find).and_return(@lab_2_projects)
+        Project.should_receive(:find).with(
+          :all,
+          :conditions => { :lab_group_id => @lab_group_1.id, :active => true },
+          :order => "name ASC"
+        ).and_return( [@project_1] )
+        Project.should_receive(:find).with(
+          :all,
+          :conditions => { :lab_group_id => @lab_group_2.id, :active => true },
+          :order => "name ASC"
+        ).and_return( [@project_2] )
         Project.accessible_to_user(@user, true).should == [@project_1, @project_2]
       end
     end
@@ -52,8 +58,16 @@ describe "Project" do
       it "should provide all user-accessible projects for non-staff or admin users" do
         @user.should_receive(:staff_or_admin?).and_return(false)
         @user.should_receive(:lab_groups).and_return(@lab_groups)
-        @lab_group_1.should_receive(:projects).and_return(@lab_1_projects)
-        @lab_group_2.should_receive(:projects).and_return(@lab_2_projects)
+        Project.should_receive(:find).with(
+          :all,
+          :conditions => { :lab_group_id => @lab_group_1.id },
+          :order => "name ASC"
+        ).and_return( [@project_1] )
+        Project.should_receive(:find).with(
+          :all,
+          :conditions => { :lab_group_id => @lab_group_2.id },
+          :order => "name ASC"
+        ).and_return( [@project_2] )
         Project.accessible_to_user(@user, false).should == [@project_1, @project_2]
       end
     end
