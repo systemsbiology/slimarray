@@ -1,25 +1,28 @@
 <h2>Listing Bioanalyzer Runs</h2>
 
 <% if @bioanalyzer_runs != nil %>
-    <table class="sortable">
+  <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+    <thead>
       <tr>
-        <th>Date</th>
-        <th>Run Name</th>
-        <th>Show</th>
-        <th>Destroy</th>
+        <th><h3>Date</h3></th>
+        <th><h3>Run Name</h3></th>
+        <th><h3 class="nosort">Show</h3></th>
+        <th><h3 class="nosort">Destroy</h3></th>
       </tr>
+    </thead>
       
     <% for bioanalyzer_run in @bioanalyzer_runs %>
       <tr>
-        <td><%=h bioanalyzer_run.date %></td>
+        <td><%=h bioanalyzer_run.date.strftime("%Y/%m/%d") %></td>
         <td><%= link_to bioanalyzer_run.name, :action => 'show', :id => bioanalyzer_run %></td>
         <td><%= link_to 'Show', :action => 'show', :id => bioanalyzer_run %></td>
         <td><%= link_to 'Destroy', { :action => 'destroy', :id => bioanalyzer_run }, 
                                      :confirm => bioanalyzer_run.destroy_warning, :post => true %></td>
       </tr>
     <% end %>
-    </table>
+  </table>
     
+  <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
 <% else %>
     <p>There are currently no Bioanalyzer runs that you have access to.</p>
 <% end %>
