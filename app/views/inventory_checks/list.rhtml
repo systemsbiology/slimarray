@@ -1,21 +1,25 @@
 <h2>Listing Inventory Check</h2>
 
+<p><%= link_to 'New inventory_check', :action => 'new' %></p>
+
 <% if @inventory_checks.size > 0 %>
-	<table class="sortable" id="inventory_checks">
-	  <tr>
-	    <th>Date</th>
-	    <th>Lab Group</th>
-	    <th>Chip Type</th>
-	    <th>Number Expected</th>
-	    <th>Number Counted</th>
-	    <th>Edit</th>
-	    <th>Destroy</th>
-	  </tr>
+  <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+    <thead>
+      <tr>
+        <th><h3>Date</h3></th>
+        <th><h3>Lab Group</h3></th>
+        <th><h3>Chip Type</h3></th>
+        <th><h3>Number Expected</h3></th>
+        <th><h3>Number Counted</h3></th>
+        <th><h3>Edit</h3></th>
+        <th><h3>Destroy</h3></th>
+      </tr>
+    </thead>
 	  <% for inventory_check in @inventory_checks %>
 	  <tr>
-	    <td><%=h inventory_check.date %></td>
-	    <td><%=h  LabGroup.find(inventory_check.lab_group_id).name %></td>
-	    <td><%=h  ChipType.find(inventory_check.chip_type_id).name %></td>
+	    <td><%=h inventory_check.date.strftime("%Y/%m/%d") %></td>
+	    <td><%=h @lab_groups_by_id[inventory_check.lab_group_id].name %></td>
+	    <td><%=h ChipType.find(inventory_check.chip_type_id).name %></td>
 	    <td><%=h inventory_check.number_expected %></td>
 	    <td><%=h inventory_check.number_counted %></td>
 	    <td><%= link_to 'Edit', :action => 'edit', :id => inventory_check %></td>
@@ -23,8 +27,8 @@
 	  </tr>
 	  <% end %>
 	</table>
+
+  <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
 <% else %>
     <p>There are currently no inventory checks</p>
 <% end %>
-
-<%= link_to 'New inventory_check', :action => 'new' %>

@@ -9,6 +9,7 @@ class InventoryChecksController < ApplicationController
 
   def list
     @inventory_checks = InventoryCheck.find(:all, :order => 'date DESC')
+    @lab_groups_by_id = LabGroup.all_by_id
   end
 
   def new
