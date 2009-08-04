@@ -34,7 +34,7 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 
   <% for sample in @samples %>
     <tr>
-      <td><%=h sample.submission_date %></td>
+      <td><%=h sample.submission_date.strftime("%Y/%m/%d") %></td>
       <td><%=h sample.short_sample_name %></td>
       <td><%=h sample.sample_name %></td>
       <td><%=h sample.sample_group_name %></td>
