@@ -65,10 +65,10 @@ class ChipTypesController < ApplicationController
     begin
       if @chip_type.update_attributes(params[:chip_type])
         # if a new chip_type was specified, use that name
-        if(params[:chip_type] != nil && params[:chip_type].size > 0)
-          @chip_type = Organism.new(:name => params[:chip_type])
-          @chip_type.save
-          @chip_type.update_attribute('chip_type_id', @chip_type.id)
+        if(params[:organism] != nil && params[:organism].size > 0)
+          @organism = Organism.new(:name => params[:organism])
+          @organism.save
+          @chip_type.update_attribute('organism_id', @organism.id)
         end
       
         flash[:notice] = 'ChipType was successfully updated.'
@@ -98,6 +98,6 @@ class ChipTypesController < ApplicationController
   private
 
   def load_dropdown_selections
-    @chip_types = ChipType.find(:all, :order => "name ASC")
+    @organisms = Organism.find(:all, :order => "name ASC")
   end
 end
