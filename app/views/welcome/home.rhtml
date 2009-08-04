@@ -4,24 +4,28 @@
 software for <%= SiteConfig.organization_name %>.<br>Please visit the <a href="http://slimarray.systemsbiology.net">
 SLIMarray web site</a> for documentation and additional information.</p>
 
+<%= link_to 'Submit New Samples', new_sample_set_path %>
+
 <% if(SiteConfig.track_hybridizations?) %>
 	<h3>Samples Submitted for Hybridization</h3>
 	
 	<% if @samples != nil && @samples.size > 0 %>
-		<table class="sortable" id="samples">
-		  <tr>
-		    <th>Date</th>
-		    <th>Short Sample Name</th>
-		    <th>Sample Name</th>
-		    <th>Sample Group Name</th>
-		    <th>Project</th>
-		  <% if @using_sbeams %>
-		    <th>SBEAMS User</th>
-		  <% end %>
-		    <th>Status</th>
-		    <th>Edit</th>
-		    <th>Destroy</th>
-		  </tr>
+    <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+      <thead>
+        <tr>
+          <th><h3>Date</h3></th>
+          <th><h3>Short Sample Name</h3></th>
+          <th><h3>Sample Name</h3></th>
+          <th><h3>Sample Group Name</h3></th>
+          <th><h3>Project</h3></th>
+        <% if @using_sbeams %>
+          <th><h3>SBEAMS User</h3></th>
+        <% end %>
+          <th><h3>Status</h3></th>
+          <th class="nosort"><h3>Edit</h3></th>
+          <th class="nosort"><h3>Destroy</h3></th>
+        </tr>
+      </thead>
 		  
 		<% for sample in @samples %>
 		  <tr>
@@ -39,11 +43,12 @@ SLIMarray web site</a> for documentation and additional information.</p>
 		  </tr>
 		<% end %>
 		</table>
+      
+    <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
 	<% else %>
 	    <p>Your lab groups have no submitted samples that have not been hybridized.</p>
 	<% end %>
 	
-	<%= link_to 'Submit New Samples', new_sample_set_path %>
 <% end %>
 
 <% if(SiteConfig.track_inventory?) %>
