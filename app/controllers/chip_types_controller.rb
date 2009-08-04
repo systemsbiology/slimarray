@@ -86,7 +86,7 @@ class ChipTypesController < ApplicationController
   def destroy
     begin
       ChipType.find(params[:id]).destroy
-      redirect_to :action => 'index'
+      redirect_to chip_types_url
     rescue
       flash[:warning] = "Cannot delete chip type due to association " +
                         "with chip transactions or hybridizations."

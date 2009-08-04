@@ -24,8 +24,8 @@
   <td><%=h chip_type.library_package %></td>
       <td><%=h chip_type.organism.name %></td>
       <td><%= link_to 'Edit', :action => 'edit', :id => chip_type %></td>
-      <td><%= link_to 'Destroy', { :action => 'destroy', :id => chip_type },
-                      :confirm => chip_type.destroy_warning %></td>
+      <td><%= link_to 'Destroy', chip_type,
+        :confirm => chip_type.destroy_warning, :method => :delete %></td>
     </tr>
   <% end %>
   </table>
