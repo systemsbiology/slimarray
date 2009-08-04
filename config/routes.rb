@@ -46,6 +46,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :organisms
   map.resources :projects
   map.resources :samples, :collection => {:browse => :get, :search => :get, :all => :get}
+  map.resources :sample_sets, :only => [:new, :create, :cancel_new_project]
   map.resources :hybridizations
   map.resources :hybridization_sets
 

@@ -203,10 +203,10 @@ describe SamplesController do
         assigns(:sample).should equal(mock_sample)
       end
 
-      it "should redirect to the sample" do
+      it "should redirect to the sample url" do
         Sample.stub!(:find).and_return(mock_sample(:update_attributes => true))
         put :update, :id => "37", :sample => { "0" => {:these => 'params'} }
-        response.should redirect_to(samples_url)
+        response.should redirect_to( root_url )
       end
 
     end
@@ -307,8 +307,8 @@ describe SamplesController do
           # turn the current user into an admin
           @current_user.should_receive(:staff_or_admin?).any_number_of_times.and_return(true)
       
-          @sample1.should_receive(:name_on_tube).and_return("s1")
-          @sample2.should_receive(:name_on_tube).and_return("s2")
+          @sample1.should_receive(:short_sample_name).and_return("s1")
+          @sample2.should_receive(:short_sample_name).and_return("s2")
         end
 
         it "should allow bulk destroy of submitted samples" do

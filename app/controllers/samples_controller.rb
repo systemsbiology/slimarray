@@ -90,7 +90,7 @@ Get detailed information about a single sample.
     respond_to do |format|
       if @sample.update_attributes(params[:sample]["0"])
         flash[:notice] = 'Sample was successfully updated.'
-        format.html { redirect_to(samples_url) }
+        format.html { redirect_back }
         format.xml  { head :ok }
         format.json  { head :ok }
       else
@@ -133,10 +133,10 @@ Get detailed information about a single sample.
         @samples.each do |s|
           if(s.submitted?)
             s.destroy
-            flash[:notice] += "Sample #{s.name_on_tube} was destroyed<br>"
+            flash[:notice] += "Sample #{s.short_sample_name} was destroyed<br>"
           else
             flash[:warning] += 
-              "Sample #{s.name_on_tube} has already been clustered, and can't be destroyed<br>"
+              "Sample #{s.short_sample_name} has already been hybridized, and can't be destroyed<br>"
           end
         end
       else
@@ -187,6 +187,7 @@ private
     @projects = Project.accessible_to_user(current_user)
     @naming_schemes = NamingScheme.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
+    @organisms = Organism.find(:all, :order => "name ASC")
   end
 
   def sorted_categories(params)

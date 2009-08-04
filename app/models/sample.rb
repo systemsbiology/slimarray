@@ -32,6 +32,10 @@ class Sample < ActiveRecord::Base
   attr_accessor :naming_element_selections, :naming_element_visibility,
     :text_values, :schemed_name
   
+  def submitted?
+    status == "submitted"
+  end
+
   # override new method to handle naming scheme stuff
   def self.new(attributes=nil)
     sample = super(attributes)

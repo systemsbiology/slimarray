@@ -35,4 +35,5 @@ module ApplicationHelper
   def staff_or_admin?
     current_user.staff_or_admin?
   end
+
 end
