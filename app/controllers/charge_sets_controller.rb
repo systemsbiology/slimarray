@@ -10,6 +10,7 @@ class ChargeSetsController < ApplicationController
     @charge_periods = ChargePeriod.find(:all, :order => "name DESC",
                                         :limit => 4)
     @charge_sets = ChargeSet.find(:all)
+    @lab_groups_by_id = LabGroup.all_by_id
 
     respond_to do |format|
       format.html # index.html.erb
@@ -20,6 +21,7 @@ class ChargeSetsController < ApplicationController
 
   def list_all
     @charge_periods = ChargePeriod.find(:all, :order => "name DESC")
+    @lab_groups_by_id = LabGroup.all_by_id
 
     respond_to do |format|
       format.html { render :action => 'index' }
