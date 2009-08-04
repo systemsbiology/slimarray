@@ -17,6 +17,8 @@ describe ChargeSetsController do
       @mock_charge_periods = mock("Charge periods")
       ChargePeriod.stub!(:find).
         and_return(@mock_charge_periods)
+      @lab_groups_by_id = mock("Lab group hash by id")
+      LabGroup.stub!(:all_by_id).and_return(@lab_groups_by_id)
     end
   
     def do_get
@@ -56,6 +58,7 @@ describe ChargeSetsController do
     before(:each) do
       @charge_sets = mock("Array of ChargeSets", :to_xml => "XML")
       ChargeSet.stub!(:find).and_return(@charge_sets)
+      LabGroup.stub!(:all_by_id).and_return(@lab_groups_by_id)
     end
   
     def do_get
@@ -86,6 +89,7 @@ describe ChargeSetsController do
       @mock_charge_periods = mock("Charge periods")
       ChargePeriod.stub!(:find).
         and_return(@mock_charge_periods)
+      LabGroup.stub!(:all_by_id).and_return(@lab_groups_by_id)
     end
 
     def do_get
