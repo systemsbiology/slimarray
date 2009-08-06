@@ -2,20 +2,22 @@
 
 <!--[form:add_samples]-->
 <h3>Submitted Samples</h3>
-<table class="sortable" id="available_samples">
-  <tr>
-    <th>Select</th>
-    <th>Date Submitted</th>
-    <th>Short Sample Name</th>
-    <th>Sample Name</th>
-    <th>Sample Group Name</th>
-    <th>Project</th>
-  <% if SiteConfig.using_sbeams? %>
-    <th>SBEAMS User</th>
-  <% end %>
-    <th>Edit</th>
-    <th>Destroy</th>
-  </tr>
+<table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+  <thead>
+    <tr>
+      <th><h3>Select</h3></th>
+      <th><h3>Date Submitted</h3></th>
+      <th><h3>Short Sample Name</h3></th>
+      <th><h3>Sample Name</h3></th>
+      <th><h3>Sample Group Name</h3></th>
+      <th><h3>Project</h3></th>
+    <% if SiteConfig.using_sbeams? %>
+      <th><h3>SBEAMS User</h3></th>
+    <% end %>
+      <th><h3 class="nosort">Edit</h3></th>
+      <th><h3 class="nosort">Destroy</h3></th>
+    </tr>
+  </thead>
   
 <% for sample in @available_samples %>
   <tr>
@@ -33,6 +35,8 @@
   </tr>
 <% end %>
 </table>
+
+<%= render :partial => 'shared/tinytable_nonpaged', :locals => {:sort_column => 0} %>
 
 <input type="button" name="CheckAll" value="Select All"
 onClick="checkAll(document.add_samples)">
