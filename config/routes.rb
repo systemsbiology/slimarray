@@ -20,17 +20,17 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :naming_schemes
   
   #SLIMarray routes
-  map.resources :bioanalyzer_runs, :member => {:pdf => :get}
+  map.resources :bioanalyzer_runs, :collection => {:grid => :get}, :member => {:pdf => :get}
   map.resources :charge_periods, :member => {:pdf => :get, :excel => :get}
 
   map.resources :charge_sets, :collection => {:list_all => :get} do |charge_sets|
    charge_sets.resources :charges, :collection => {:bulk_edit_move_or_destroy => :post, :new_from_template => :post}
   end
 
-  map.resources :charge_templates
+  map.resources :charge_templates, :collection => {:grid => :get}
   map.resources :lab_groups do |lab_groups|
     lab_groups.resources :chip_types do |chip_types|
-      chip_types.resources :chip_transactions
+      chip_types.resources :chip_transactions, :collection => {:grid => :get}
       chip_types.resources :chip_purchases, :only => [:new, :create]
       chip_types.resources :chip_intergroup_purchases, :only => [:new, :create]
       chip_types.resources :chip_borrows, :only => [:new, :create]
@@ -42,12 +42,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :chip_intergroup_purchases, :only => [:new, :create]
   map.resources :chip_borrows, :only => [:new, :create]
   map.resources :chip_returns, :only => [:new, :create]
-  map.resources :chip_types
-  map.resources :organisms
-  map.resources :projects
-  map.resources :samples, :collection => {:browse => :get, :search => :get, :all => :get}
+  map.resources :chip_types, :collection => {:grid => :get}
+  map.resources :inventory_checks, :collection => {:grid => :get}
+  map.resources :organisms, :collection => {:grid => :get}
+  map.resources :projects, :collection => {:grid => :get}
+  map.resources :samples, :collection => {:browse => :get, :search => :get, :all => :get, :grid => :get}
   map.resources :sample_sets, :only => [:new, :create, :cancel_new_project]
-  map.resources :hybridizations
+  map.resources :hybridizations, :collection => {:grid => :get}
   map.resources :hybridization_sets, :collection => {:clear => :get}
 
   # The priority is based upon order of creation: first created -> highest priority.

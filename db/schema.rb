@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090507170104) do
+ActiveRecord::Schema.define(:version => 20090825211658) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20090507170104) do
   end
 
   add_index "chip_types", ["organism_id"], :name => "default_organism_id"
+  add_index "chip_types", ["organism_id"], :name => "index_chip_types_on_organism_id"
 
   create_table "engine_schema_info", :id => false, :force => true do |t|
     t.string  "engine_name"
@@ -143,6 +144,8 @@ ActiveRecord::Schema.define(:version => 20090507170104) do
   end
 
   add_index "inventory_checks", ["chip_type_id"], :name => "chip_type_id"
+  add_index "inventory_checks", ["chip_type_id"], :name => "index_inventory_checks_on_chip_type_id"
+  add_index "inventory_checks", ["lab_group_id"], :name => "index_inventory_checks_on_lab_group_id"
   add_index "inventory_checks", ["lab_group_id"], :name => "lab_group_id"
 
   create_table "lab_group_profiles", :force => true do |t|
@@ -256,6 +259,18 @@ ActiveRecord::Schema.define(:version => 20090507170104) do
     t.boolean "system_role", :default => false, :null => false
   end
 
+  create_table "sample_list_samples", :force => true do |t|
+    t.integer  "sample_id"
+    t.integer  "sample_list_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sample_lists", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sample_terms", :force => true do |t|
     t.integer  "term_order"
     t.integer  "sample_id"
@@ -301,9 +316,11 @@ ActiveRecord::Schema.define(:version => 20090507170104) do
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"
   add_index "samples", ["chip_type_id"], :name => "index_samples_on_chip_type_id"
   add_index "samples", ["fragmented_quality_trace_id"], :name => "index_samples_on_fragmented_quality_trace_id"
+  add_index "samples", ["naming_scheme_id"], :name => "index_samples_on_naming_scheme_id"
   add_index "samples", ["organism_id"], :name => "index_samples_on_organism_id"
   add_index "samples", ["project_id"], :name => "index_samples_on_project_id"
   add_index "samples", ["starting_quality_trace_id"], :name => "index_samples_on_starting_quality_trace_id"
+  add_index "samples", ["submission_date"], :name => "index_samples_on_submission_date"
 
   create_table "site_config", :force => true do |t|
     t.string   "site_name",             :limit => 50

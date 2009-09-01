@@ -2,55 +2,20 @@
 
 <p><%= link_if_staff_or_admin 'New Hybridizations', new_hybridization_set_path %></p>
 
-<% if @hybridizations.size > 0 %>
-      <% form_tag :action => 'bulk_handler' do -%>
-    <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
-      <thead>
-        <tr>
-          <th><h3>Select</h3></th>
-          <th><h3>Date Hybridized</h3></th>
-          <th><h3>Chip Number</h3></th>
-          <th><h3>Short Sample Name</h3></th>
-          <th><h3>Sample Name</h3></th>
-          <th><h3>Sample Group Name</h3></th>
-          <th><h3>Project</h3></th>
-          <% if SiteConfig.using_sbeams? %>
-            <th><h3>SBEAMS User</h3></th>
-          <% end %>
-          <th><h3 class="nosort">Edit</h3></th>
-          <th><h3 class="nosort">Destroy</h3></th>
-        </tr>
-      </thead>
-  
-    <% for hybridization in @hybridizations %>
-        <tr>
-          <td><%= check_box 'selected_hybridizations', hybridization.id %></td>
-          <td><%=h hybridization.hybridization_date %></td>
-          <td><%=h hybridization.chip_number %></td>
-          <td><%=h hybridization.sample.short_sample_name %></td>
-          <td><%=h hybridization.sample.sample_name %></td>
-          <td><%=h hybridization.sample.sample_group_name %></td>
-          <% if @using_sbeams %>
-            <td><%=h hybridization.sample.sbeams_user %></td>
-          <% end %>
-          <td><%=h hybridization.sample.project.name %></td>
-          <td><%= link_to 'Edit', :action => 'edit', :id => hybridization %></td>
-          <td><%= link_to 'Destroy', { :action => 'destroy', :id => hybridization }, :confirm => 'Are you sure?' %></td>
-        </tr>
-      <% end %>
-    </table>
+<%= jqgrid("Hybridizations", "data_grid", grid_hybridizations_path,
+	[
+    { :field => "hybridization_date", :label => "Date Hybridized", :width => 140 },
+    { :field => "chip_number", :label => "Chip Number", :width => 120 },
+    { :field => "samples.sample_name", :label => "Sample Name", :width => 400 },
+    { :field => "samples.sbeams_user", :label => "User", :width => 100 },
+    { :field => "projects.name", :label => "Project", :width => 100 },
+  ],
+  :height => 550,
+  :sort_column => "hybridization_date",
+  :sort_order => "desc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
 
-    <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
-
-    <p><%= submit_tag 'Delete Hybridizations' %></p>
-    <% if SiteConfig.create_gcos_files? %>
-      <p><%= submit_tag 'Export GCOS Files' %></p>
-    <% end %>
-    <% if SiteConfig.create_agcc_files? %>
-      <p><%= submit_tag 'Export AGCC Files' %></p>
-    <% end %>
-    <p><%= submit_tag 'Export Bioanalyzer Images' %></p>
-  <% end -%>
-<% else %>
-  <p>There are currently no hybridizations.</p>
-<% end %>
+<p><%= submit_tag "Edit Selected Hybridization", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Hybridization", :id => "bddata" %></p>

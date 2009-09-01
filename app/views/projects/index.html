@@ -1,26 +1,20 @@
 <h1>Listing projects</h1>
 
-<table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
-  <thead>
-    <tr>
-    <% for column in ["Name", "Budget", "Lab Group", "Active", "Edit", "Destroy"] %>
-    <th><h3><%= column %></h3></th>
-    <% end %>
-    </tr>
-  </thead>
-  
-<% for project in @projects %>
-  <tr>
-    <td><%=h project.name %></td>
-    <td><%=h project.budget %></td>
-    <td><%=h @lab_groups_by_id[project.lab_group_id].name %></td>
-    <td><%= project.active ? "Yes" : "No" %>
-    <td><%= link_to 'Edit', :action => 'edit', :id => project %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => project }, :confirm => 'Are you sure?', :post => true %></td>
-  </tr>
-<% end %>
-</table>
+<p><%= link_to 'New project', :action => 'new' %></p>
 
-<%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
+<%= jqgrid("Projects", "data_grid", grid_projects_path,
+	[
+		{ :field => "name", :label => "Name" },
+		{ :field => "budget", :label => "Budget/PO" },
+    { :field => "lab_group_name", :label => "Lab Group", :sortable => false },
+    { :field => "active", :label => "Active" },				
+  ],
+  :height => 550,
+  :sort_column => "name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
 
-<%= link_to 'New project', :action => 'new' %>
+<p><%= submit_tag "Edit Selected Project", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Project", :id => "bddata" %></p>

@@ -2,21 +2,16 @@
 
 <p><%= link_to 'New organism', :action => 'new' %></p>
 
-<table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
-  <thead>
-    <tr>
-    <% for column in ["Name", "Edit", "Destroy"] %>
-      <th><h3><%= column %></h3></th>
-    <% end %>
-    </tr>
-  </thead>
-<% for organism in @organisms %>
-  <tr>
-    <td><%=h organism.name %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => organism %></td>
-    <td><%= link_to 'Destroy', organism, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<%= jqgrid("Organisms", "data_grid", grid_organisms_path,
+	[
+    { :field => "name", :label => "Name", :width => 400 },
+  ],
+  :height => 550,
+  :sort_column => "name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
 
-<%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
+<p><%= submit_tag "Edit Selected Organism", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Organism", :id => "bddata" %></p>

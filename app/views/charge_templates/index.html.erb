@@ -1,31 +1,24 @@
 <h2>Listing Charge Templates</h2>
 
-<% if @charge_templates.size > 0 %>
-  <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
-    <thead>
-      <tr>
-        <% for column in ChargeTemplate.content_columns %>
-          <th><h3><%= column.human_name %></h3></th>
-        <% end %>
-        <th><h3 class="nosort">Edit</h3></th>
-        <th><h3 class="nosort">Destroy</h3></th>
-      </tr>
-    </thead>
-	  
-	<% for charge_template in @charge_templates %>
-	  <tr>
-	  <% for column in ChargeTemplate.content_columns %>
-	    <td><%=h charge_template.send(column.name) %></td>
-	  <% end %>
-	    <td><%= link_to 'Edit', :action => 'edit', :id => charge_template %></td>
-	    <td><%= link_to 'Destroy', { :action => 'destroy', :id => charge_template }, :confirm => 'Are you sure?' %></td>
-	  </tr>
-	<% end %>
-	</table>
+<p><%= link_to 'New charge_template', :action => 'new' %></p>
 
-  <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
-<% else %>
-    <p>There are currently no charge templates.</p>
-<% end %>
+<%= jqgrid("Charge Templates", "data_grid", grid_charge_templates_path,
+	[
+    { :field => :name, :label => "Name", :width => 200 },
+    { :field => :description, :label => "Description" },
+    { :field => :chips_used, :label => "Chips Used", :width => 110 },
+    { :field => :chip_cost, :label => "Chip Cost", :width => 110 },
+    { :field => :labeling_cost, :label => "Labeling Cost", :width => 130 },
+    { :field => :hybridization_cost, :label => "Hybridization Cost" },
+    { :field => :qc_cost, :label => "QC Cost", :width => 110 },
+    { :field => :other_cost, :label => "Other Cost", :width => 110 },
+  ],
+  :height => 550,
+  :sort_column => "name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
 
-<%= link_to 'New charge_template', :action => 'new' %>
+<p><%= submit_tag "Edit Selected Charge Template", :id => "bedata" %> 
+  <%= submit_tag "Destroy Selected Charge Template", :id => "bddata" %></p>

@@ -85,4 +85,27 @@ class ChargeTemplatesController < ApplicationController
     end
   end
 
+  def grid
+    charge_templates = ChargeTemplate.find(:all) do
+      if params[:_search] == "true"
+        name               =~ "%#{params[:name]}%" if params[:name].present?
+        description        =~ "%#{params[:description]}%" if params[:description].present?
+        chips_used         =~ "%#{params[:chips_used]}%" if params[:chips_used].present?
+        chip_cost          =~ "%#{params[:chip_cost]}%" if params[:chip_cost].present?
+        labeling_cost      =~ "%#{params[:labeling_cost]}%" if params[:labeling_cost].present?
+        hybridization_cost =~ "%#{params[:hybridization_cost]}%" if params[:hybridization_cost].present?
+        qc_cost            =~ "%#{params[:qc_cost]}%" if params[:qc_cost].present?
+        other_cost         =~ "%#{params[:other_cost]}%" if params[:other_cost].present?
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => charge_templates.to_jqgrid_json(
+      [:name, :description, :chips_used, :chip_cost, :labeling_cost, :hybridization_cost,
+       :qc_cost, :other_cost], 
+      params[:page], params[:rows], charge_templates.total_entries
+    )
+  end
+
 end

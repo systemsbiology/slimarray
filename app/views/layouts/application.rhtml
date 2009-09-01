@@ -4,9 +4,11 @@
       <%= stylesheet_link_tag 'mystyles' %>
       <%= stylesheet_link_tag 'tinytable.css' %>
       <%= stylesheet_link_tag 'print', :media => 'print' %>
+      <%= jqgrid_stylesheets %>
       <%= javascript_include_tag 'checkall' %>
       <%= javascript_include_tag 'tinytable-packed' %>
-      <%= javascript_include_tag :defaults %>
+      <%= jqgrid_javascripts %>
+      <%= javascript_include_tag 'application' %>
   </head>
   <body>
     <div id="title_bar">
@@ -19,7 +21,7 @@
           <% if SiteConfig.track_inventory? %>
             <li class="category">Chips</li>
             <li><%= link_to 'Chip Inventory', {:controller => 'inventory', :action => 'index'} %></li>
-            <%= link_if_staff_or_admin 'Inventory Checks', {:controller => 'inventory_checks', :action => 'list'}, 
+            <%= link_if_staff_or_admin 'Inventory Checks', inventory_checks_path, 
             :wrap_in => 'li'%>
             <%= link_if_staff_or_admin 'Chip Types', chip_types_path, :wrap_in => 'li'%>
           <% end %>

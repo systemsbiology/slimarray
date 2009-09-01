@@ -13,6 +13,14 @@ class Project < ActiveRecord::Base
     end
   end
   
+  cattr_accessor :cached_lab_groups_by_id
+
+  def lab_group_name
+    @@cached_lab_groups_by_id ||= LabGroup.all_by_id
+
+    return @@cached_lab_groups_by_id[lab_group_id].name
+  end
+
   def name_and_budget
     return "#{name} (#{budget})"
   end
@@ -74,4 +82,7 @@ class Project < ActiveRecord::Base
     }
   end
 
+  def active_yes_or_no
+    active ? "Yes" : "No"
+  end
 end

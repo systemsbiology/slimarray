@@ -161,22 +161,66 @@ Get detailed information about a single sample.
   end
 
   def search
-    accessible_samples = Sample.accessible_to_user(current_user)
-    search_samples = Sample.find_by_sanitized_conditions(params)
+    respond_to do |format|
+      format.html {
+        # create a cache for the samples queried
+        sample_list = SampleList.create
 
-    @samples = accessible_samples & search_samples
+        @grid_action = request.url + "&sample_list_id=" + sample_list.id.to_s
+        render :action => "list"
+      }
+      format.json {
+        # see if this search is cached
+        sample_list = SampleList.find(params[:sample_list_id]) if params[:sample_list_id]
+
+        if(sample_list && sample_list.samples.size > 0)
+          samples = sample_list.samples          
+        else
+          accessible_samples = Sample.accessible_to_user(current_user)
+          search_samples = Sample.find_by_sanitized_conditions(params)
+          samples = accessible_samples & search_samples
+
+          # cache samples queried
+          if(sample_list)
+            sample_list << samples
+          end
+        end
+
+        paged_samples = paginate(samples, params[:page].to_i, params[:rows].to_i)
+
+        render :json => paged_samples.to_jqgrid_json(
+          [:short_sample_name, :sample_name], 
+          params[:page], params[:rows], samples.size
+        )
+      }
+    end
+  end
+
+  def all
+    @grid_action = "/samples/grid"
 
     respond_to do |format|
       format.html { render :action => "list" }
     end
   end
 
-  def all
-    @samples = Sample.accessible_to_user(current_user)
-
-    respond_to do |format|
-      format.html { render :action => "list" }
+  def grid
+    samples = Sample.find(:all, :include => :project) do
+      if params[:_search] == "true"
+        submission_date   =~ "%#{params[:submission_date]}%" if params[:submission_date].present?                
+        short_sample_name =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
+        sample_name       =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
+        sbeams_user       =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
+        project.name      =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
     end
+
+    render :json => samples.to_jqgrid_json(
+      [:submission_date, :short_sample_name, :sample_name, :sbeams_user, "project.name"], 
+      params[:page], params[:rows], samples.total_entries
+    )
   end
 
 private
@@ -198,5 +242,13 @@ private
     end
 
     return categories
+  end
+
+  def paginate(samples, page, rows_per_page)
+    pages = samples.size / rows_per_page.to_i
+    start_index = (page - 1) * rows_per_page + 1
+    end_index = page * rows_per_page
+
+    return samples[start_index..end_index]
   end
 end

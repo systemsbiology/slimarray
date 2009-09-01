@@ -119,4 +119,12 @@ describe "Project" do
     Project.for_lab_group(lab_group_1).should == [project_1, project_2]
   end
 
+  it "should provide the name of the associated lab group" do
+    project = create_project
+    lab_group = mock_model(LabGroup, :name => "Yeast Lab")
+    project.stub!(:lab_group_id).and_return(lab_group.id)
+    LabGroup.stub!(:all_by_id).and_return({lab_group.id => lab_group})
+
+    project.lab_group_name.should == "Yeast Lab"
+  end
 end

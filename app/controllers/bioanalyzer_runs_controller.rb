@@ -28,4 +28,20 @@ class BioanalyzerRunsController < ApplicationController
     redirect_to bioanalyzer_runs_url
   end
   
+  def grid
+    bioanalyzer_runs = BioanalyzerRun.find(:all, :include => [:quality_traces]) do
+      if params[:_search] == "true"
+        date =~ "%#{params[:date]}%" if params[:date].present?
+        bioanalyzer_run.name =~ "%#{params[:name]}%" if params[:name].present?                
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => bioanalyzer_runs.to_jqgrid_json(
+      [:date, :name], 
+      params[:page], params[:rows], bioanalyzer_runs.total_entries
+    )
+  end
+
 end

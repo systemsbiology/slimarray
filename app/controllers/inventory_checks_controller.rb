@@ -3,13 +3,7 @@ class InventoryChecksController < ApplicationController
   before_filter :staff_or_admin_required
   
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
-    @inventory_checks = InventoryCheck.find(:all, :order => 'date DESC')
-    @lab_groups_by_id = LabGroup.all_by_id
+    # just render jqGrid, which loads data from the 'grid' action
   end
 
   def new
@@ -52,7 +46,7 @@ class InventoryChecksController < ApplicationController
     begin
       if @inventory_check.update_attributes(params[:inventory_check])
         flash[:notice] = 'InventoryCheck was successfully updated.'
-        redirect_to :action => 'list', :id => @inventory_check
+        redirect_to inventory_checks_url 
       else
         render :action => 'edit'
       end
@@ -65,9 +59,26 @@ class InventoryChecksController < ApplicationController
 
   def destroy
     InventoryCheck.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    redirect_to inventory_checks_url 
   end
   
+  def grid
+    inventory_checks = InventoryCheck.find(:all, :include => [:chip_type]) do
+      if params[:_search] == "true"
+        inventory_check.date =~ "%#{params["inventory_checks.date"]}%" if params["inventory_checks.date"].present?
+        lab_group.name       =~ "%#{params["lab_groups.name"]}%" if params["lab_groups.name"].present?                
+        chip_type.name       =~ "%#{params["chip_types.name"]}%" if params["chip_types.name"].present?
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => inventory_checks.to_jqgrid_json(
+      [:date, "lab_group_name", "chip_type.name", :number_expected, :number_counted], 
+      params[:page], params[:rows], inventory_checks.total_entries
+    )
+  end
+
   private
   def populate_arrays_from_tables
     @lab_groups = LabGroup.find(:all, :order => "name ASC")

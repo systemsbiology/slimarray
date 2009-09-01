@@ -119,6 +119,24 @@ Get detailed information about a single project.
     redirect_to projects_url
   end
 
+  def grid
+    projects = Project.find(:all) do
+      if params[:_search] == "true"
+        name      =~ "%#{params[:name]}%" if params[:name].present?
+        budget    =~ "%#{params[:budget]}%" if params[:budget].present?
+        lab_group =~ "%#{params[:lab_group]}%" if params[:lab_group].present?
+        active    =~ "%#{params[:active]}%" if params[:active].present?
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => projects.to_jqgrid_json(
+      [:name, :budget, :lab_group_name, :active_yes_or_no], 
+      params[:page], params[:rows], projects.total_entries
+    )
+  end
+
   private
   
   def load_dropdown_selections

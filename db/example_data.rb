@@ -55,8 +55,11 @@ module FixtureReplacement
     h.charge_set = default_charge_set
   end
 
-  attributes_for :inventory_check do |a|
-    
+  attributes_for :inventory_check do |ic|
+    ic.date = Date.today
+    ic.chip_type = default_chip_type
+    ic.number_expected = 10
+    ic.number_counted = 10
 	end
 
   attributes_for :lab_membership do |a|

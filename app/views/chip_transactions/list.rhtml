@@ -43,43 +43,26 @@
 <% end %>
 
 <h2>Individual Transactions</h2>
-<table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
-  <thead>
-    <tr>
-      <th><h3>Date</h3></th>
-      <th><h3>Description</h3></th>
-      <th><h3>Acquired</h3></th>
-      <th><h3>Used</h3></th>
-      <th><h3>Traded or Sold</h3></th>
-      <th><h3>Borrowed(In)</h3></th>
-      <th><h3>Returned(Out)</h3></th>
-      <th><h3>Borrowed(Out)</h3></th>
-      <th><h3>Returned(In)</h3></th>
-      <% if staff_or_admin? %>
-        <th><h3 class="nosort">Edit</h3></th>
-        <th><h3 class="nosort">Destroy</h3></th>
-      <% end %>
-    </tr>  
-  </thead>
 
-    <% for chip_transaction in @chip_transactions %>
-  <tr>
-    <td class="table"><%=h chip_transaction.date %></td>
-    <td class="table"><%=h chip_transaction.description %></td>
-    <td class="table"><%=h chip_transaction.acquired %></td>
-    <td class="table"><%=h chip_transaction.used %></td>
-    <td class="table"><%=h chip_transaction.traded_sold %></td>
-    <td class="table"><%=h chip_transaction.borrowed_in %></td>
-    <td class="table"><%=h chip_transaction.returned_out %></td>
-    <td class="table"><%=h chip_transaction.borrowed_out %></td>
-    <td class="table"><%=h chip_transaction.returned_in %></td>  
-    <% if staff_or_admin? %>
-      <td class="table"><%= link_to 'Edit', :action => 'edit', :id => chip_transaction %></td>
-      <td class="table"><%= link_to 'Destroy', chip_transaction_path(chip_transaction),
-        :method => :delete, :confirm => 'Are you sure?' %></td>
-    <% end %>
-  </tr>
-    <% end %>
-</table>
+<%= jqgrid("Transactions", "data_grid", grid_lab_group_chip_type_chip_transactions_path(@lab_group, @chip_type),
+	[
+    { :field => "date", :label => "Date", :width => 80 },
+    { :field => "description", :label => "Description", :width => 200 },
+    { :field => "acquired", :label => "Acquired", :width => 90 },
+		{ :field => "used", :label => "Used", :width => 60 },
+		{ :field => "traded_sold", :label => "Traded or Sold", :width => 130 },
+		{ :field => "borrowed_in", :label => "Borrowed(In)", :width => 120 },
+		{ :field => "returned_out", :label => "Returned(Out)", :width => 130 },
+		{ :field => "borrowed_out", :label => "Borrowed(Out)", :width => 130 },
+		{ :field => "returned_in", :label => "Returned(In)", :width => 120 },
+  ],
+  :height => 550,
+  :sort_column => "date",
+  :sort_order => "desc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
 
-<%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
+<p><%= submit_tag "Edit Selected Transaction", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Transaction", :id => "bddata" %></p>
+

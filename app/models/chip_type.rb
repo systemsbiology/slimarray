@@ -27,4 +27,9 @@ class ChipType < ActiveRecord::Base
       errors.add("Organism")
     end
   end
+
+  def organism_name
+    organism && organism.name
+  end
+
 end

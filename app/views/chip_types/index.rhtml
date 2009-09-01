@@ -2,37 +2,20 @@
 
 <p><%= link_to 'New chip_type', :action => 'new' %></p>
 
-<% if @chip_types.size > 0 %>
-  <table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
-    <thead>
-      <tr>
-        <th><h3>Name</h3></th>
-        <th><h3>Short Name</h3></th>
-        <th><h3>Array Platform</h3></th>
-        <th><h3>Library Package</h3></th>
-        <th><h3>Organism</h3></th>
-        <th><h3 class="nosort">Edit</h3></th>
-          <th><h3 class="nosort">Destroy</h3></th>
-      </tr>
-    </thead>
-    
-  <% for chip_type in @chip_types %>
-    <tr>
-      <td><%=h chip_type.name %></td>
-      <td><%=h chip_type.short_name %></td>
-      <td><%=h chip_type.array_platform %></td>
-  <td><%=h chip_type.library_package %></td>
-      <td><%=h chip_type.organism.name %></td>
-      <td><%= link_to 'Edit', :action => 'edit', :id => chip_type %></td>
-      <td><%= link_to 'Destroy', chip_type,
-        :confirm => chip_type.destroy_warning, :method => :delete %></td>
-    </tr>
-  <% end %>
-  </table>
+<%= jqgrid("Chip Types", "data_grid", "/chip_types/grid",
+	[
+		{ :field => "chip_types.name", :label => "Name" },
+		{ :field => "short_name", :label => "Short Name" },
+		{ :field => "array_platform", :label => "Array Platform" },
+		{ :field => "library_package", :label => "Library Package" },
+    { :field => "organisms.name", :label => "Organism", :width => 100 },				
+  ],
+  :height => 550,
+  :sort_column => "chip_types.name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
 
-  <%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
-
-<% else %>
-    <p>There are currently no chip types</p>
-<% end %>
-
+<p><%= submit_tag "Edit Selected Chip Type", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Chip Type", :id => "bddata" %></p>

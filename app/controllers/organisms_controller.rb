@@ -98,4 +98,20 @@ class OrganismsController < ApplicationController
       format.json  { head :ok }
     end
   end
+
+  def grid
+    organisms = Organism.find(:all) do
+      if params[:_search] == "true"
+        name      =~ "%#{params[:name]}%" if params[:name].present?
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => organisms.to_jqgrid_json(
+      [:name], 
+      params[:page], params[:rows], organisms.total_entries
+    )
+  end
+
 end

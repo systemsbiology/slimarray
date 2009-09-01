@@ -1,6 +1,6 @@
 class ChipTransactionsController < ApplicationController
   before_filter :login_required
-  before_filter :staff_or_admin_required
+  before_filter :staff_or_admin_required, :except => [:index, :grid]
   before_filter :get_lab_group_and_chip_type
   before_filter :populate_lab_group_and_chip_type_choices, :only => [:new, :create, :edit, :update]
 
@@ -73,6 +73,31 @@ class ChipTransactionsController < ApplicationController
     redirect_to lab_group_chip_type_chip_transactions_url(@chip_transaction.lab_group, @chip_transaction.chip_type)
   end
   
+  def grid
+    chip_transactions = ChipTransaction.find(:all) do
+      if params[:_search] == "true"
+        date         =~ "%#{params[:date]}%" if params[:date].present?
+        description  =~ "%#{params[:description]}%" if params[:description].present?
+        acquired     =~ "%#{params[:acquired]}%" if params[:acquired].present?
+        used         =~ "%#{params[:used]}%" if params[:used].present?
+        traded_sold  =~ "%#{params[:traded_sold]}%" if params[:traded_sold].present?
+        borrowed_in  =~ "%#{params[:borrowed_in]}%" if params[:borrowed_in].present?
+        returned_out =~ "%#{params[:returned_out]}%" if params[:returned_out].present?
+        borrowed_out =~ "%#{params[:borrowed_out]}%" if params[:borrowed_out].present?
+        returned_in  =~ "%#{params[:returned_in]}%" if params[:returned_in].present?
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => chip_transactions.to_jqgrid_json(
+      [:date, :description, :acquired, :used, :traded_sold, :borrowed_in, :returned_out,
+       :borrowed_out, :returned_in], 
+      params[:page], params[:rows], chip_transactions.total_entries
+    )
+  end
+
+
   private
 
   def get_lab_group_and_chip_type

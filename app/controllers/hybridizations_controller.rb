@@ -44,7 +44,7 @@ class HybridizationsController < ApplicationController
     begin
       if hybridization.update_attributes(params[:hybridization])
         flash[:notice] = 'Hybridization was successfully updated.'
-        redirect_to :action => 'list'
+        redirect_to hybridizations_url
       else
         @samples = Sample.find(:all, :order => "sample_name ASC")
         render :action => 'edit'
@@ -63,7 +63,7 @@ class HybridizationsController < ApplicationController
     sample = Sample.find(hybridization.sample_id)
     hybridization.destroy
     sample.update_attribute('status', 'submitted')
-    redirect_to :action => 'list'
+    redirect_to hybridizations_url
   end
 
   def bulk_handler
@@ -123,9 +123,28 @@ class HybridizationsController < ApplicationController
       flash[:warning] = "No hybridizations were selected"
     end
 
-    redirect_to :action => 'list'
+    redirect_to hybridizations_url
   end
   
+  def grid
+    hybridizations = Hybridization.find(:all, :include => {:sample => :project}) do
+      if params[:_search] == "true"
+        hybridization_date  =~ "%#{params[:hybridization_date]}%" if params[:hybridization_date].present?
+        chip_number         =~ "%#{params[:chip_number]}%" if params[:chip_number].present?
+        sample.sample_name  =~ "%#{params["samples.sample_name"]}%" if params["samples.sample_name"].present?                
+        sample.sbeams_user  =~ "%#{params["samples.sbeams_user"]}%" if params["samples.sbeams_user"].present?                
+        sample.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+      end
+      paginate :page => params[:page], :per_page => params[:rows]      
+      order_by "#{params[:sidx]} #{params[:sord]}"
+    end
+
+    render :json => hybridizations.to_jqgrid_json(
+      [:hybridization_date, :chip_number, "sample.sample_name", "sample.sbeams_user", "sample.project.name"], 
+      params[:page], params[:rows], hybridizations.total_entries
+    )
+  end
+
   private
   def load_dropdown_choices
     # grab SBEAMS configuration parameter here, rather than
