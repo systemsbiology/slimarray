@@ -194,3 +194,17 @@ table#quality_traces td {
     padding: 5px;
     width: 30em;
 }
+
+table.simple {
+  border-collapse: collapse;
+  margin: 5px;
+}
+
+table.simple th {
+  font-size: 12px;
+}
+
+table.simple td, table.simple th {
+  border: 1pt inset;
+  padding: 2px;
+}

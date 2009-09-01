@@ -3,7 +3,7 @@
 <h2>Listing Charges for <%= @charge_set.name %></h2>
 
 <% form_tag( { :action => 'bulk_edit_move_or_destroy' }, { :name => 'bulk_edit_move_or_destroy' } ) do -%>
-	<table class="sortable" id="charges">
+	<table class="simple" id="charges">
 	  <tr>
 	    <th>Select</th>
 	    <th>Date</th>
