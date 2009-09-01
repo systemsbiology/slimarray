@@ -1,8 +1,8 @@
 <h1>Editing project</h1>
 
-<% form_tag :action => 'update', :id => @project do -%>
+<% form_for(@project) do |@f| %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
-<% end -%>
+<% end %>
 
 <%= link_to 'Back', :action => 'list' %>
