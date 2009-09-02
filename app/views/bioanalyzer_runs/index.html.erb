@@ -1,6 +1,6 @@
 <h2>Listing Bioanalyzer Runs</h2>
 
-<%= jqgrid("Bioanalyzer Runs", "data_grid", "/bioanalyzer_runs/grid",
+<%= jqgrid("Bioanalyzer Runs", "data_grid", grid_bioanalyzer_runs_path,
 	[
 		{ :field => "date", :label => "Date" },
     { :field => "bioanalyzer_runs.name", :label => "Run Name", :width => 600 },

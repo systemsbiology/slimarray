@@ -2,7 +2,7 @@
 
 <p><%= link_to 'New chip_type', :action => 'new' %></p>
 
-<%= jqgrid("Chip Types", "data_grid", "/chip_types/grid",
+<%= jqgrid("Chip Types", "data_grid", grid_chip_types_path,
 	[
 		{ :field => "chip_types.name", :label => "Name" },
 		{ :field => "short_name", :label => "Short Name" },

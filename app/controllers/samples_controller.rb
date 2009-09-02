@@ -197,7 +197,7 @@ Get detailed information about a single sample.
   end
 
   def all
-    @grid_action = "/samples/grid"
+    @grid_action = grid_samples_url
 
     respond_to do |format|
       format.html { render :action => "list" }

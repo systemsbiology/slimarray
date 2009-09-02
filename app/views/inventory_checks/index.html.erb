@@ -2,7 +2,7 @@
 
 <p><%= link_to 'New inventory_check', :action => 'new' %></p>
 
-<%= jqgrid("Inventory Checks", "data_grid", "/inventory_checks/grid",
+<%= jqgrid("Inventory Checks", "data_grid", grid_inventory_checks_path,
 	[
 		{ :field => "inventory_checks.date", :label => "Date" },
     { :field => "lab_group_name", :label => "Lab Group", :sortable => false },

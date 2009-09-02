@@ -15,7 +15,7 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 
 <h3>Samples Submitted for Hybridization</h3>
 
-<%= jqgrid("Samples", "sample_grid", "/welcome/grid",
+<%= jqgrid("Samples", "sample_grid", url_for(:action => "grid"),
   [
     { :field => "submission_date", :label => "Date Submitted", :width => 150 },
     { :field => "short_sample_name", :label => "Name On Tube", :width => 150 },
