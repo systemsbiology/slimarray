@@ -10,6 +10,7 @@
       <%= javascript_include_tag 'jqgrid/jquery', 'jqgrid/jquery-ui-1.7.1.custom.min.js', 'jqgrid/jquery.layout',
         'jqgrid/i18n/grid.locale-en', 'jqgrid/jquery.jqGrid.min', 'jqgrid/jquery.tablednd', 'jqgrid/jquery.contextmenu' %>
       <%= javascript_include_tag 'application' %>
+      <%= javascript_tag "var samples_url = '#{url_for(:controller => "samples", :only_path => false)}'" %>
   </head>
   <body>
     <div id="title_bar">

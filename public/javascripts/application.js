@@ -26,7 +26,7 @@ $(document).ready(function(){
   $("#besample").click(function(){
     var s; s = jQuery("#sample_grid").getGridParam('selarrrow');
     if( s != null ) {
-      if( s.length == 1) window.location.assign("/samples/" + s + "/edit");
+      if( s.length == 1) window.location.assign(samples_url + "/" + s + "/edit");
       else alert("Only one record can be edited at a time");
     }
     else alert("Please select a row to edit");
@@ -38,7 +38,7 @@ $(document).ready(function(){
     else if( s.length > 1 ) alert("Only one record can be destroyed at a time");
     else {
       if( confirm("Are you sure you want to delete this record?") )
-        $('<form method="post" action="' + "/samples/" + s + '" />')
+        $('<form method="post" action="' + samples_url + "/" + s + '" />')
             .append('<input type="hidden" name="_method" value="delete" />')
             .appendTo('body')
             .submit();
