@@ -4,10 +4,11 @@
       <%= stylesheet_link_tag 'mystyles' %>
       <%= stylesheet_link_tag 'tinytable.css' %>
       <%= stylesheet_link_tag 'print', :media => 'print' %>
-      <%= jqgrid_stylesheets %>
+      <%= stylesheet_link_tag 'jqgrid/jquery-ui-1.7.1.custom', 'jqgrid/ui.jqgrid' %>
       <%= javascript_include_tag 'checkall' %>
       <%= javascript_include_tag 'tinytable-packed' %>
-      <%= jqgrid_javascripts %>
+      <%= javascript_include_tag 'jqgrid/jquery', 'jqgrid/jquery-ui-1.7.1.custom.min.js', 'jqgrid/jquery.layout',
+        'jqgrid/i18n/grid.locale-en', 'jqgrid/jquery.jqGrid.min', 'jqgrid/jquery.tablednd', 'jqgrid/jquery.contextmenu' %>
       <%= javascript_include_tag 'application' %>
   </head>
   <body>
