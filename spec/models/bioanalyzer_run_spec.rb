@@ -6,7 +6,7 @@ describe "BioanalyzerRun" do
   before(:each) do
     # point site settings at test set of bioanalyzer files
     site_config = SiteConfig.find(1)
-    site_config.bioanalyzer_pickup = "#{RAILS_ROOT}/test/fixtures/bioanalyzer_files"
+    site_config.bioanalyzer_pickup = "#{RAILS_ROOT}/spec/fixtures/bioanalyzer_files"
     site_config.save
   end
       
