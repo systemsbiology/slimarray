@@ -403,34 +403,11 @@ describe SamplesController do
   
     before(:each) do
       login_as_user
-
-      @sample_1 = mock_model(Sample)
-      @sample_2 = mock_model(Sample)
-      @sample_3 = mock_model(Sample)
-      @accessible_samples = [@sample_1, @sample_3]
-      @search_samples = [@sample_1, @sample_2]
-      Sample.stub!(:accessible_to_user).and_return(@accessible_samples)
-      Sample.stub!(:find_by_sanitized_conditions).and_return(@search_samples)
     end
 
-    it "should get the samples accessible to the user" do
-      Sample.should_receive(:accessible_to_user).with(@current_user).
-        and_return(@accessible_samples)
-      get :search, :project_id => 5
-    end
-
-    it "should find samples with the given parameters" do
-      Sample.should_receive(:find_by_sanitized_conditions).with(
-        "controller" => "samples",
-        "action" => "search",
-        "project_id" => "5"
-      ).and_return(@search_samples)
-      get :search, :project_id => 5
-    end
-
-    it "should expose the searched samples that are accessible to the user" do
-      get :search, :project_id => 5
-      assigns(:samples).should == [@sample_1]
+    it "should render the 'list' view" do
+      get :search
+      response.should render_template('list')
     end
 
   end
@@ -439,15 +416,7 @@ describe SamplesController do
     
     before(:each) do
       login_as_user
-
-      @mock_samples = mock("Array of samples")
-      Sample.should_receive(:accessible_to_user).and_return(@mock_samples)
     end
-
-    it "should expose all accessible samples as @samples" do
-      get :all
-      assigns(:samples).should == @mock_samples
-    end 
 
     it "should render the 'list' view" do
       get :all
