@@ -3,10 +3,6 @@ name:: /samples
 
 This resource can be used to list a summary of all samples, or show details for 
 a particular sample.<br><br>
-A sample can be be run on any number of different flow cells (and therefore 
-flow cell lanes), and/or multiple lanes on a particular flow cell. It is also 
-conceivable that multiple samples could be run in one flow cell lane, however 
-SLIMseq does not yet support this ability.
 =end
 
 class SamplesController < ApplicationController

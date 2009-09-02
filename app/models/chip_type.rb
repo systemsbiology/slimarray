@@ -32,4 +32,23 @@ class ChipType < ActiveRecord::Base
     organism && organism.name
   end
 
+  def summary_hash
+    return {
+      :id => id,
+      :name => name,
+      :updated_at => updated_at,
+      :uri => "#{SiteConfig.site_url}/chip_types/#{id}"
+    }
+  end
+  
+  def detail_hash
+    return {
+      :id => id,
+      :name => name,
+      :short_name => short_name,
+      :array_platform => array_platform,
+      :updated_at => updated_at,
+    }
+  end
+
 end

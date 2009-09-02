@@ -481,7 +481,10 @@ class Sample < ActiveRecord::Base
   
   def summary_hash
     return {
-      :file_root => file_root,
+      :id => id,
+      :sample_description => sample_name,
+      :submission_date => submission_date,
+      :updated_at => updated_at,
       :uri => "#{SiteConfig.site_url}/samples/#{id}"
     }
   end
@@ -517,7 +520,7 @@ class Sample < ActiveRecord::Base
       :raw_data_path => raw_data_path,
       :file_root => file_root,
       :organism => organism.name,
-      :chip_type => chip_type.short_name
+      :chip_type_uri => "#{SiteConfig.site_url}/chip_types/#{chip_type_id}"
     }
   end
 
