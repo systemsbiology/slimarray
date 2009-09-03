@@ -1,0 +1,93 @@
+<a href="../api">&laquo; Back to index</a>
+
+<h1>/naming_schemes</h1>
+<p class="summary">
+This resource can be used to list a summary of all naming_schemes, or show details for 
+a particular naming_scheme.
+</p>
+
+
+
+
+
+  <div style="padding:30px; padding-top:0px;border-bottom:1px solid #ddd;">
+  
+  
+  <h2><span style='color:#ff6600; width:200px;margin-right:20px;'>GET</span>/naming_schemes</h2>
+  
+  <p>
+Get a list of all naming_schemes, which doesn't have all the details that are 
+available when retrieving single naming_schemes (see GET /naming_schemes/[naming_scheme id]).
+</p>
+  
+  <p><strong>Example:</strong> GET <%= SiteConfig.site_url %>/naming_schemes<p/>
+  
+  <p><strong>Access:</strong> HTTP Basic authentication, Customer access or higher<p/>
+
+  <p><strong>Parameters:</strong>
+  
+    None
+  
+  </p>
+
+   
+    <strong>Response:</strong> A list of all summary information on all naming_schemes</br>
+
+    
+    JSON example: <br /><a href="#" onclick="javascript:$('#jsonrep-576013531').toggle()">(toggle code)</a><br />
+    <textarea style="width:600px;height:400px;display:none;" id="jsonrep-576013531"><%= JsonPrinter.render(NamingScheme.find(:all, :limit => 5).collect{|x| x.summary_hash}) %></textarea></br>
+    
+
+    
+    XML example: <br /><a href="#" onclick="javascript:$('#xmlrep-576013531').toggle()">(toggle code)</a><br/>
+    <textarea style="width:600px;height:400px;display:none;" id="xmlrep-576013531"><%= NamingScheme.find(:all, :limit => 5).collect{|x| x.summary_hash}.to_xml %></textarea>
+    
+
+  
+  
+</div>
+
+
+
+
+  <div style="padding:30px; padding-top:0px;border-bottom:1px solid #ddd;">
+  
+  
+  <h2><span style='color:#ff6600; width:200px;margin-right:20px;'>GET</span>/naming_schemes/[naming_scheme id]</h2>
+  
+  <p>
+Get detailed information about a single naming_scheme.
+</p>
+  
+  <p><strong>Example:</strong> GET <%= SiteConfig.site_url %>/naming_schemes/1.json<p/>
+  
+  <p><strong>Access:</strong> HTTP Basic authentication, Customer access or higher<p/>
+
+  <p><strong>Parameters:</strong>
+  
+    None
+  
+  </p>
+
+   
+    <strong>Response:</strong> Detailed attributes of a particular naming_scheme</br>
+
+    
+    JSON example: <br /><a href="#" onclick="javascript:$('#jsonrep-1484943110').toggle()">(toggle code)</a><br />
+    <textarea style="width:600px;height:400px;display:none;" id="jsonrep-1484943110"><%= JsonPrinter.render(NamingScheme.find(:first).detail_hash) %></textarea></br>
+    
+
+    
+    XML example: <br /><a href="#" onclick="javascript:$('#xmlrep-1484943110').toggle()">(toggle code)</a><br/>
+    <textarea style="width:600px;height:400px;display:none;" id="xmlrep-1484943110"><%= NamingScheme.find(:first).detail_hash.to_xml %></textarea>
+    
+
+  
+  
+</div>
+
+
+
+
+
+

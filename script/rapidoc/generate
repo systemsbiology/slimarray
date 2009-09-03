@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/classes/rapidoc.rb'
+
+# define your resources here
+resources = [ 
+  ResourceDoc.new("sample", "/samples", "samples_controller.rb" ),
+  ResourceDoc.new("project", "/projects", "projects_controller.rb" ),
+  ResourceDoc.new("chip_type", "/chip_types", "chip_types_controller.rb" ),
+  ResourceDoc.new("naming_scheme", "/naming_schemes", "../../vendor/plugins/naming_schemer/app/controllers/naming_schemes_controller.rb" ),
+  ResourceDoc.new("lab_group", "/lab_groups", "../../vendor/plugins/slimcore_authorizer/app/controllers/lab_groups_controller.rb" ),
+  ResourceDoc.new("user", "/users", "../../vendor/plugins/slimcore_authorizer/app/controllers/users_controller.rb" )
+]
+
+# generate the apidoc
+RAPIDoc.new(resources)

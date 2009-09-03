@@ -1,7 +1,27 @@
+=begin rapidoc
+name:: /chip_types
+
+This resource can be used to list a summary of all chip types, or show details for 
+a particular chip type.<br><br>
+=end
+
 class ChipTypesController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
   before_filter :load_dropdown_selections, :except => [:index, :destroy]
+  
+=begin rapidoc
+url:: /chip_types
+method:: GET
+example:: <%= SiteConfig.site_url %>/chip_types
+access:: HTTP Basic authentication, Customer access or higher
+json:: <%= JsonPrinter.render(ChipType.find(:all, :limit => 5).collect{|x| x.summary_hash}) %>
+xml:: <%= ChipType.find(:all, :limit => 5).collect{|x| x.summary_hash}.to_xml %>
+return:: A list of all summary information on all chip types
+
+Get a list of all chip types, which doesn't have all the details that are 
+available when retrieving single chip types (see GET /chip_types/[chip type id]).
+=end
   
    def index
     @chip_types = ChipType.find(
@@ -21,6 +41,18 @@ class ChipTypesController < ApplicationController
     end
   end
   
+=begin rapidoc
+url:: /chip_types/[chip type id]
+method:: GET
+example:: <%= SiteConfig.site_url %>/chip_types/5.json
+access:: HTTP Basic authentication, Customer access or higher
+json:: <%= JsonPrinter.render(ChipType.find(:first).detail_hash) %>
+xml:: <%= ChipType.find(:first).detail_hash.to_xml %>
+return:: Detailed attributes of a particular chip type
+
+Get detailed information about a single chip type.
+=end
+
   def show
     @chip_type = ChipType.find(params[:id])
 

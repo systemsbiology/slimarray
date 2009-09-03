@@ -1,0 +1,93 @@
+<a href="../api">&laquo; Back to index</a>
+
+<h1>/chip_types</h1>
+<p class="summary">
+This resource can be used to list a summary of all chip types, or show details for 
+a particular chip type.<br><br>
+</p>
+
+
+
+
+
+  <div style="padding:30px; padding-top:0px;border-bottom:1px solid #ddd;">
+  
+  
+  <h2><span style='color:#ff6600; width:200px;margin-right:20px;'>GET</span>/chip_types</h2>
+  
+  <p>
+Get a list of all chip types, which doesn't have all the details that are 
+available when retrieving single chip types (see GET /chip_types/[chip type id]).
+</p>
+  
+  <p><strong>Example:</strong> GET <%= SiteConfig.site_url %>/chip_types<p/>
+  
+  <p><strong>Access:</strong> HTTP Basic authentication, Customer access or higher<p/>
+
+  <p><strong>Parameters:</strong>
+  
+    None
+  
+  </p>
+
+   
+    <strong>Response:</strong> A list of all summary information on all chip types</br>
+
+    
+    JSON example: <br /><a href="#" onclick="javascript:$('#jsonrep-695825458').toggle()">(toggle code)</a><br />
+    <textarea style="width:600px;height:400px;display:none;" id="jsonrep-695825458"><%= JsonPrinter.render(ChipType.find(:all, :limit => 5).collect{|x| x.summary_hash}) %></textarea></br>
+    
+
+    
+    XML example: <br /><a href="#" onclick="javascript:$('#xmlrep-695825458').toggle()">(toggle code)</a><br/>
+    <textarea style="width:600px;height:400px;display:none;" id="xmlrep-695825458"><%= ChipType.find(:all, :limit => 5).collect{|x| x.summary_hash}.to_xml %></textarea>
+    
+
+  
+  
+</div>
+
+
+
+
+  <div style="padding:30px; padding-top:0px;border-bottom:1px solid #ddd;">
+  
+  
+  <h2><span style='color:#ff6600; width:200px;margin-right:20px;'>GET</span>/chip_types/[chip type id]</h2>
+  
+  <p>
+Get detailed information about a single chip type.
+</p>
+  
+  <p><strong>Example:</strong> GET <%= SiteConfig.site_url %>/chip_types/5.json<p/>
+  
+  <p><strong>Access:</strong> HTTP Basic authentication, Customer access or higher<p/>
+
+  <p><strong>Parameters:</strong>
+  
+    None
+  
+  </p>
+
+   
+    <strong>Response:</strong> Detailed attributes of a particular chip type</br>
+
+    
+    JSON example: <br /><a href="#" onclick="javascript:$('#jsonrep--2046233206').toggle()">(toggle code)</a><br />
+    <textarea style="width:600px;height:400px;display:none;" id="jsonrep--2046233206"><%= JsonPrinter.render(ChipType.find(:first).detail_hash) %></textarea></br>
+    
+
+    
+    XML example: <br /><a href="#" onclick="javascript:$('#xmlrep--2046233206').toggle()">(toggle code)</a><br/>
+    <textarea style="width:600px;height:400px;display:none;" id="xmlrep--2046233206"><%= ChipType.find(:first).detail_hash.to_xml %></textarea>
+    
+
+  
+  
+</div>
+
+
+
+
+
+
