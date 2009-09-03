@@ -16,6 +16,10 @@ class UserProfile < ActiveRecord::Base
     end
   end
 
+  def detail_hash
+    return {}
+  end
+  
   ###############################################################################################
   # Authorization:
   #
