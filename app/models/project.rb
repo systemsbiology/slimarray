@@ -74,8 +74,8 @@ class Project < ActiveRecord::Base
     return {
       :id => id,
       :name => name,
-      :lab_group => lab_group.name,
-      :lab_group_uri => "#{SiteConfig.site_url}/lab_groups/#{lab_group.id}",
+      :lab_group => lab_group_name,
+      :lab_group_uri => "#{SiteConfig.site_url}/lab_groups/#{lab_group_id}",
       :updated_at => updated_at,
       :sample_uris => sample_ids.sort.
         collect {|x| "#{SiteConfig.site_url}/samples/#{x}" }
