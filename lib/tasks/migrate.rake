@@ -108,6 +108,21 @@ namespace :db do
         c.update_attribute( 'lab_group_id', solo_to_core_lab_group_id(c.lab_group_id) )
       end
 
+      puts "Migrating chip transactions"
+      ChipTransaction.find(:all).each do |t|
+        t.update_attribute( 'lab_group_id', solo_to_core_lab_group_id(t.lab_group_id) )
+      end
+
+      puts "Migrating inventory checks"
+      InventoryCheck.find(:all).each do |i|
+        i.update_attribute( 'lab_group_id', solo_to_core_lab_group_id(i.lab_group_id) )
+      end
+
+      puts "Migrating quality traces"
+      QualityTrace.find(:all).each do |q|
+        q.update_attribute( 'lab_group_id', solo_to_core_lab_group_id(q.lab_group_id) )
+      end
+
       puts "== Finished migrating to SLIMcore"
     end
 
