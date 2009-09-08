@@ -52,7 +52,7 @@ $(document).ready(function(){
     if( s == null || s.length == 0 ) alert("Please select one or more rows to destroy");
     else {
       var selection_fields = "";
-      for each (var id in s) {
+      for (var id in s) {
         selection_fields += '<input type="hidden" name="selected_hybridizations[' + id + ']" value="1" />'
       }
       $('<form method="post" action="' + location.href + '/bulk_handler" />')
