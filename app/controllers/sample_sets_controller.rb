@@ -50,7 +50,7 @@ class SampleSetsController < ApplicationController
       Notifier.deliver_sample_submission_notification(@samples)
       
       flash[:notice] = 'Samples were successfully created.'
-      redirect_to('/')
+      redirect_to(root_url)
     else
       @naming_scheme = @sample_set.naming_scheme
       if(@naming_scheme != nil)
