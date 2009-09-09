@@ -4,3 +4,6 @@ config/database.yml
 config/application.yml
 doc/app
 script/rapidoc/structure
+vendor/plugins/slimcore_authorizer
+vendor/plugins/newrelic_rpm
+public/plugin_assets/2dc_jqgrid
