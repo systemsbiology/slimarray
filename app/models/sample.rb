@@ -519,7 +519,7 @@ class Sample < ActiveRecord::Base
       :sample_texts => sample_text_array,
       :raw_data_path => raw_data_path,
       :file_root => file_root,
-      :organism => organism.name,
+      :organism => organism ? organism.name : "",
       :chip_type_uri => "#{SiteConfig.site_url}/chip_types/#{chip_type_id}"
     }
   end
