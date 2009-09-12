@@ -510,7 +510,7 @@ class Sample < ActiveRecord::Base
       :user => sbeams_user,
       :project => project.name,
       :name_on_tube => short_sample_name,
-      :sample_name => sample_name,
+      :sample_description => sample_name,
       :sample_group_name => sample_group_name,
       :submission_date => submission_date,
       :updated_at => updated_at,
