@@ -75,6 +75,8 @@ class ChipTransactionsController < ApplicationController
   
   def grid
     chip_transactions = ChipTransaction.find(:all) do
+      lab_group_id == params[:lab_group_id]
+      chip_type_id == params[:chip_type_id]
       if params[:_search] == "true"
         date         =~ "%#{params[:date]}%" if params[:date].present?
         description  =~ "%#{params[:description]}%" if params[:description].present?
