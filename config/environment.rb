@@ -65,6 +65,7 @@ Rails::Initializer.run do |config|
   config.gem 'pdf-writer', :lib => 'pdf/writer'
   config.gem 'validatable'
   config.gem 'ar-extensions'
+  config.gem 'json'
 end
 
 AUTHENTICATION_SALT = 'mmm_kosher_rocks' unless defined? AUTHENTICATION_SALT
