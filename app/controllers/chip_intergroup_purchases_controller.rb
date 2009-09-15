@@ -5,7 +5,8 @@ class ChipIntergroupPurchasesController < ApplicationController
 
   def new
     @chip_intergroup_purchase = ChipIntergroupPurchase.new(
-      :lab_group_id => params[:lab_group_id],
+      :to_lab_group_id => params[:to_lab_group_id],
+      :from_lab_group_id => params[:from_lab_group_id],      
       :chip_type_id => params[:chip_type_id]
     )
 
@@ -20,7 +21,7 @@ class ChipIntergroupPurchasesController < ApplicationController
     respond_to do |format|
       # have to run valid? here to generate errors on Validatable attributes
       if @chip_intergroup_purchase.valid? && @chip_intergroup_purchase.save
-        lab_group = LabGroup.find(@chip_intergroup_purchase.lab_group_id)
+        lab_group = LabGroup.find(@chip_intergroup_purchase.to_lab_group_id)
         chip_type = ChipType.find(@chip_intergroup_purchase.chip_type_id)
 
         flash[:notice] = 'Chip purchase was successfully created.'
