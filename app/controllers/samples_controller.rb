@@ -242,7 +242,7 @@ private
 
   def paginate(samples, page, rows_per_page)
     pages = samples.size / rows_per_page.to_i
-    start_index = (page - 1) * rows_per_page + 1
+    start_index = (page - 1) * rows_per_page
     end_index = page * rows_per_page
 
     return samples[start_index..end_index]
