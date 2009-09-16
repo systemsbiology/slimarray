@@ -185,7 +185,7 @@ Get detailed information about a single sample.
         paged_samples = paginate(samples, params[:page].to_i, params[:rows].to_i)
 
         render :json => paged_samples.to_jqgrid_json(
-          [:short_sample_name, :sample_name], 
+          [:submission_date, :short_sample_name, :sample_name, :sbeams_user, "project.name"], 
           params[:page], params[:rows], samples.size
         )
       }
