@@ -41,7 +41,7 @@ class HybridizationSet
     for sample in samples
       project = sample.project
       # does user want charge set(s) created based on projects?
-      if(@charge_set_id == -1)
+      if(@charge_set_id == "-1")
         # get latest charge period
         charge_period = ChargePeriod.find(:first, :order => "name DESC")
 
