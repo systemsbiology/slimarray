@@ -18,6 +18,7 @@ class SampleSetsController < ApplicationController
             :submission_date => @sample_set.submission_date,
             :project_id => @sample_set.project_id,
             :naming_scheme_id => @sample_set.naming_scheme_id,
+            :organism_id => @sample_set.chip_type.organism_id,
             :chip_type_id => @sample_set.chip_type_id,
             :sbeams_user => @sample_set.sbeams_user,
             :sample_set => @sample_set
@@ -71,5 +72,6 @@ private
     @projects = Project.accessible_to_user(current_user, true)
     @naming_schemes = NamingScheme.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
+    @organisms = Organism.find(:all, :order => "name ASC")
   end
 end

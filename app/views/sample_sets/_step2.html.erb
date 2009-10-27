@@ -21,6 +21,7 @@
           <th><%=h element.name %></th>
         <% end %>
       <% end %>
+      <th>Organism</th>
       <th>Chip Type</th>
     </tr>
     </thead>
@@ -39,6 +40,9 @@
           <% else %>
             <%= render :partial => 'samples/schemed_sample_description' %>
           <% end %>
+          
+          <td><%= collection_select :sample, :organism_id, @organisms, :id,
+            :name, {}, { :index => @n } %></td>
           
           <td><%=h @sample.chip_type.name %>
               <%= hidden_field :sample, :chip_type_id, :index =>@n %></td>

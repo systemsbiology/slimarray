@@ -20,4 +20,8 @@ class SampleSet < ActiveRecord::BaseWithoutTable
   def project
     return Project.find(project_id)
   end
+
+  def chip_type
+    return ChipType.find(chip_type_id)
+  end
 end
