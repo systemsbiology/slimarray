@@ -19,4 +19,15 @@ class ApplicationController < ActionController::Base
   def redirect_back
     redirect_to :back rescue redirect_to root_path
   end
+
+  def rescue_action_locally(exception)
+		case exception
+      # deal with SLIMcore being down
+      when Errno::ECONNREFUSED
+        render :text => "Could not connect to SLIMcore. Ensure it is up and running, and your application.yml " +
+                        "file is configured correctly."
+      else
+        super
+		end
+	end
 end
