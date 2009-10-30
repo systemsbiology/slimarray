@@ -35,7 +35,7 @@ class ChipReturn
       :lab_group_id => @to_lab_group_id,
       :chip_type_id => @chip_type_id,
       :description => "Returned to #{from.name}",
-      :acquired => @number
+      :returned_in => @number
     )
 
     sell_transaction = ChipTransaction.new(
@@ -43,7 +43,7 @@ class ChipReturn
       :lab_group_id => @from_lab_group_id,
       :chip_type_id => @chip_type_id,
       :description => "Returned by #{to.name}",
-      :traded_sold => @number
+      :returned_out => @number
     )
 
     buy_transaction.save && sell_transaction.save

@@ -1,6 +1,5 @@
 class ChipBorrow
   include Validatable
-  include DateParser
   
   attr_accessor :date
   attr_accessor :to_lab_group_id
@@ -19,7 +18,7 @@ class ChipBorrow
   # * <tt>chip_type</tt> - The ChipType being bought
   # * <tt>number</tt> - The number of arrays bought
   def initialize(options = {})
-    @date = parse_date(options["date(1i)"], options["date(2i)"], options["date(3i)"])
+    @date = options[:date] || Date.today
     @to_lab_group_id = options[:to_lab_group_id]
     @from_lab_group_id = options[:from_lab_group_id]
     @chip_type_id = options[:chip_type_id]
@@ -35,7 +34,7 @@ class ChipBorrow
       :lab_group_id => @to_lab_group_id,
       :chip_type_id => @chip_type_id,
       :description => "Borrowed from #{from.name}",
-      :acquired => @number
+      :borrowed_in => @number
     )
 
     sell_transaction = ChipTransaction.new(
@@ -43,7 +42,7 @@ class ChipBorrow
       :lab_group_id => @from_lab_group_id,
       :chip_type_id => @chip_type_id,
       :description => "Borrowed by #{to.name}",
-      :traded_sold => @number
+      :borrowed_out => @number
     )
 
     buy_transaction.save && sell_transaction.save

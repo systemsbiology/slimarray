@@ -24,7 +24,7 @@ describe "ChipBorrow" do
       :date => Date.today,
       :lab_group_id => lab_group_1.id,
       :chip_type_id => chip_type.id,
-      :acquired => 5,
+      :borrowed_in => 5,
       :description => "Borrowed from Johnson Lab"
     }).should_not be_nil
 
@@ -32,7 +32,7 @@ describe "ChipBorrow" do
       :date => Date.today,
       :lab_group_id => lab_group_2.id,
       :chip_type_id => chip_type.id,
-      :traded_sold => 5,
+      :borrowed_out => 5,
       :description => "Borrowed by Smith Lab"
     }).should_not be_nil
   end 

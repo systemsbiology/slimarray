@@ -24,7 +24,7 @@ describe "ChipReturn" do
       :date => Date.today,
       :lab_group_id => lab_group_1.id,
       :chip_type_id => chip_type.id,
-      :acquired => 5,
+      :returned_in => 5,
       :description => "Returned to Johnson Lab"
     }).should_not be_nil
 
@@ -32,7 +32,7 @@ describe "ChipReturn" do
       :date => Date.today,
       :lab_group_id => lab_group_2.id,
       :chip_type_id => chip_type.id,
-      :traded_sold => 5,
+      :returned_out => 5,
       :description => "Returned by Smith Lab"
     }).should_not be_nil
   end 
