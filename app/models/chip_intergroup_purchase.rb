@@ -1,5 +1,6 @@
 class ChipIntergroupPurchase
   include Validatable
+  include DateParser
   
   attr_accessor :date
   attr_accessor :to_lab_group_id
@@ -18,7 +19,7 @@ class ChipIntergroupPurchase
   # * <tt>chip_type</tt> - The ChipType being bought
   # * <tt>number</tt> - The number of arrays bought
   def initialize(options = {})
-    @date = options[:date] || Date.today
+    @date = parse_date(options["date(1i)"], options["date(2i)"], options["date(3i)"])
     @to_lab_group_id = options[:to_lab_group_id]
     @from_lab_group_id = options[:from_lab_group_id]
     @chip_type_id = options[:chip_type_id]

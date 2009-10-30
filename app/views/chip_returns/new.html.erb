@@ -16,7 +16,7 @@
   <%= options_from_collection_for_select @chip_types, "id", "name",
   @chip_return.chip_type_id %></select></p>
 
-  <p><label for="chip_trasaction_to_lab_group_id">Buying From</label><br/>
+  <p><label for="chip_trasaction_to_lab_group_id">Returning To</label><br/>
   <select id="to_lab_group_id" name="chip_return[to_lab_group_id]">
   <%= options_from_collection_for_select @lab_groups, "id", "name",
   @chip_return.to_lab_group_id %></select></p>
