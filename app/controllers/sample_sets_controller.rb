@@ -39,7 +39,7 @@ class SampleSetsController < ApplicationController
     @sample_set = SampleSet.new(params[:sample_set])
 
     @samples = Array.new
-    params[:sample].each_value { |sample| @samples << Sample.new(sample) }
+    params[:sample].sort.each { |sample| @samples << Sample.new(sample[1]) }
     @sample_set.samples = @samples
 
     if @sample_set.valid?
