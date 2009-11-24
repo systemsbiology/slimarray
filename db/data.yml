@@ -1,0 +1,55 @@
+
+--- 
+site_config: 
+  columns: 
+  - id
+  - site_name
+  - organization_name
+  - facility_name
+  - array_platform
+  - track_inventory
+  - track_hybridizations
+  - track_charges
+  - create_gcos_files
+  - using_sbeams
+  - gcos_output_path
+  - use_LDAP
+  - LDAP_server
+  - LDAP_DN
+  - lock_version
+  - administrator_email
+  - bioanalyzer_pickup
+  - quality_trace_dropoff
+  - sbeams_address
+  - raw_data_root_path
+  - site_url
+  - created_at
+  - updated_at
+  - agcc_output_path
+  - create_agcc_files
+  records: 
+  - - "1"
+    - SLIMarray
+    - Name of Your Organization Here
+    - Your Facility Name Here
+    - both
+    - true
+    - true
+    - true
+    - false
+    - false
+    - /tmp/
+    - false
+    - localhost
+    - cn=users,dc=localhost
+    - "3"
+    - webmaster@your.site.com
+    - /tmp/
+    - /tmp/
+    - http://myserver/sbeams
+    - 
+    - 
+    - 
+    - 
+    - /tmp
+    - false

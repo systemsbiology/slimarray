@@ -1,0 +1,11 @@
+production:
+  adapter: sqlite3
+  database: db/slimarray_production.sqlite3
+
+development:
+  adapter: sqlite3
+  database: db/slimarray_development.sqlite3
+  
+test:
+  adapter: sqlite3
+  database: db/slimarray_test.sqlite3
