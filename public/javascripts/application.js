@@ -1,11 +1,9 @@
 $(document).ready(function(){
   $("#bedata").click(function(){
     var s; s = jQuery("#data_grid").getGridParam('selarrrow');
-    if( s != null ) {
-      if( s.length == 1) window.location.assign(location.href + "/" + s + "/edit");
-      else alert("Only one record can be edited at a time");
-    }
-    else alert("Please select a row to edit");
+    if( s == null || s.length == 0 ) alert("Please select a row to edit");
+    else if( s.length == 1) window.location.assign(location.href + "/" + s + "/edit");
+    else alert("Only one record can be edited at a time");
   }); 
 
   $("#bddata").click(function(){
@@ -49,12 +47,12 @@ $(document).ready(function(){
 
   $(".bulk_handle_button").click(function(){
     var s; s = jQuery("#data_grid").getGridParam('selarrrow');
-    if( s == null || s.length == 0 ) alert("Please select one or more rows to destroy");
+    if( s == null || s.length == 0 ) alert("Please select one or more rows");
     else {
       var selection_fields = "";
-      for (var id in s) {
+      s.forEach( function(id) {
         selection_fields += '<input type="hidden" name="selected_hybridizations[' + id + ']" value="1" />'
-      }
+      });
       $('<form method="post" action="' + location.href + '/bulk_handler" />')
           .append(selection_fields)
           .append('<input type="hidden" value="' + $(this)[0].value + '" name="commit"/>')
