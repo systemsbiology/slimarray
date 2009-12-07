@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090825211658) do
+ActiveRecord::Schema.define(:version => 20091203234833) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -39,8 +39,10 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.datetime "updated_at"
   end
 
+  add_index "charge_sets", ["charge_period_id"], :name => "charge_period_id"
   add_index "charge_sets", ["charge_period_id"], :name => "index_charge_sets_on_charge_period_id"
   add_index "charge_sets", ["lab_group_id"], :name => "index_charge_sets_on_lab_group_id"
+  add_index "charge_sets", ["lab_group_id"], :name => "lab_group_id"
 
   create_table "charge_templates", :force => true do |t|
     t.string   "name",               :limit => 40
@@ -71,53 +73,72 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.datetime "updated_at"
   end
 
+  add_index "charges", ["charge_set_id"], :name => "charge_set_id"
   add_index "charges", ["charge_set_id"], :name => "index_charges_on_charge_set_id"
 
   create_table "chip_transactions", :force => true do |t|
-    t.integer  "lab_group_id",              :default => 0, :null => false
-    t.integer  "chip_type_id",              :default => 0, :null => false
-    t.date     "date",                                     :null => false
+    t.integer  "lab_group_id", :default => 0, :null => false
+    t.integer  "chip_type_id", :default => 0, :null => false
+    t.date     "date",                        :null => false
     t.string   "description"
-    t.integer  "acquired",     :limit => 5
-    t.integer  "used",         :limit => 5
-    t.integer  "traded_sold",  :limit => 5
-    t.integer  "borrowed_in",  :limit => 5
-    t.integer  "returned_out", :limit => 5
-    t.integer  "borrowed_out", :limit => 5
-    t.integer  "returned_in",  :limit => 5
-    t.integer  "lock_version",              :default => 0
+    t.integer  "acquired"
+    t.integer  "used"
+    t.integer  "traded_sold"
+    t.integer  "borrowed_in"
+    t.integer  "returned_out"
+    t.integer  "borrowed_out"
+    t.integer  "returned_in"
+    t.integer  "lock_version", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "chip_transactions", ["chip_type_id"], :name => "chip_type_id"
+  add_index "chip_transactions", ["lab_group_id"], :name => "lab_groups_id"
+
   create_table "chip_types", :force => true do |t|
-    t.string   "name",            :limit => 250, :default => "", :null => false
-    t.string   "short_name",      :limit => 100, :default => "", :null => false
-    t.integer  "organism_id",                    :default => 0,  :null => false
+    t.string   "name",            :limit => 250, :default => ""
+    t.string   "short_name",      :limit => 100, :default => ""
+    t.integer  "organism_id"
     t.integer  "lock_version",                   :default => 0
-    t.string   "array_platform",  :limit => 50
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "library_package"
+    t.integer  "platform_id"
+    t.integer  "arrays_per_chip",                :default => 1,  :null => false
   end
 
+  add_index "chip_types", ["organism_id"], :name => "default_organism_id"
   add_index "chip_types", ["organism_id"], :name => "index_chip_types_on_organism_id"
+  add_index "chip_types", ["platform_id"], :name => "index_chip_types_on_platform_id"
 
-  create_table "hybridizations", :force => true do |t|
-    t.date     "hybridization_date"
-    t.integer  "chip_number",        :limit => 4
-    t.integer  "charge_template_id"
-    t.integer  "lock_version",                      :default => 0
-    t.integer  "sample_id"
-    t.integer  "charge_set_id"
-    t.string   "raw_data_path",      :limit => 400
+  create_table "chips", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  create_table "engine_schema_info", :id => false, :force => true do |t|
+    t.string  "engine_name"
+    t.integer "version"
+  end
+
+  create_table "hybridizations", :force => true do |t|
+    t.date     "hybridization_date"
+    t.integer  "chip_number"
+    t.integer  "charge_template_id"
+    t.integer  "lock_version",       :default => 0
+    t.integer  "charge_set_id"
+    t.text     "raw_data_path"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "microarray_id"
+  end
+
   add_index "hybridizations", ["charge_set_id"], :name => "index_hybridizations_on_charge_set_id"
+  add_index "hybridizations", ["charge_template_id"], :name => "charge_template_id"
   add_index "hybridizations", ["charge_template_id"], :name => "index_hybridizations_on_charge_template_id"
-  add_index "hybridizations", ["sample_id"], :name => "index_hybridizations_on_sample_id"
+  add_index "hybridizations", ["microarray_id"], :name => "index_hybridizations_on_microarray_id"
 
   create_table "inventory_checks", :force => true do |t|
     t.date     "date",                           :null => false
@@ -130,8 +151,10 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.datetime "updated_at"
   end
 
+  add_index "inventory_checks", ["chip_type_id"], :name => "chip_type_id"
   add_index "inventory_checks", ["chip_type_id"], :name => "index_inventory_checks_on_chip_type_id"
   add_index "inventory_checks", ["lab_group_id"], :name => "index_inventory_checks_on_lab_group_id"
+  add_index "inventory_checks", ["lab_group_id"], :name => "lab_group_id"
 
   create_table "lab_group_profiles", :force => true do |t|
     t.integer  "lab_group_id"
@@ -140,7 +163,7 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
   end
 
   create_table "lab_groups", :force => true do |t|
-    t.string   "name",         :limit => 250, :default => "", :null => false
+    t.string   "name",         :limit => 250, :default => ""
     t.integer  "lock_version",                :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -152,6 +175,24 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "lab_memberships", ["lab_group_id"], :name => "lab_memberships_ibfk_1"
+  add_index "lab_memberships", ["user_id"], :name => "lab_memberships_ibfk_2"
+
+  create_table "labels", :force => true do |t|
+    t.string   "name",       :default => "", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "microarrays", :force => true do |t|
+    t.integer  "chip_id"
+    t.integer  "array_number", :default => 1, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "microarrays", ["chip_id"], :name => "index_microarrays_on_chip_id"
 
   create_table "naming_elements", :force => true do |t|
     t.string   "name",                          :limit => 100
@@ -196,6 +237,30 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.datetime "updated_at"
   end
 
+  create_table "permissions", :force => true do |t|
+    t.string "controller",  :default => "", :null => false
+    t.string "action",      :default => "", :null => false
+    t.string "description"
+  end
+
+  create_table "permissions_roles", :id => false, :force => true do |t|
+    t.integer "permission_id", :default => 0, :null => false
+    t.integer "role_id",       :default => 0, :null => false
+  end
+
+  create_table "platforms", :force => true do |t|
+    t.string   "name",                  :default => "",        :null => false
+    t.boolean  "has_multi_array_chips", :default => false,     :null => false
+    t.boolean  "uses_chip_numbers",     :default => false,     :null => false
+    t.boolean  "multiple_labels",       :default => true,      :null => false
+    t.integer  "default_label_id",      :default => 0,         :null => false
+    t.string   "raw_data_type",         :default => "Unknown", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "platforms", ["default_label_id"], :name => "index_platforms_on_default_label_id"
+
   create_table "projects", :force => true do |t|
     t.string   "name",         :limit => 250
     t.string   "budget",       :limit => 100
@@ -221,6 +286,13 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.integer  "lock_version",                      :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string  "name",        :default => "",    :null => false
+    t.string  "description"
+    t.boolean "omnipotent",  :default => false, :null => false
+    t.boolean "system_role", :default => false, :null => false
   end
 
   create_table "sample_list_samples", :force => true do |t|
@@ -275,11 +347,15 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.integer  "naming_scheme_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "label_id"
+    t.integer  "hybridization_id"
   end
 
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"
   add_index "samples", ["chip_type_id"], :name => "index_samples_on_chip_type_id"
   add_index "samples", ["fragmented_quality_trace_id"], :name => "index_samples_on_fragmented_quality_trace_id"
+  add_index "samples", ["hybridization_id"], :name => "index_samples_on_hybridization_id"
+  add_index "samples", ["label_id"], :name => "index_samples_on_label_id"
   add_index "samples", ["naming_scheme_id"], :name => "index_samples_on_naming_scheme_id"
   add_index "samples", ["organism_id"], :name => "index_samples_on_organism_id"
   add_index "samples", ["project_id"], :name => "index_samples_on_project_id"
@@ -323,7 +399,7 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
 
   create_table "users", :force => true do |t|
     t.string   "login",                     :limit => 80, :default => "",         :null => false
-    t.string   "crypted_password",          :limit => 40, :default => "",         :null => false
+    t.string   "crypted_password",          :limit => 40
     t.string   "email",                     :limit => 60, :default => "",         :null => false
     t.string   "firstname",                 :limit => 40
     t.string   "lastname",                  :limit => 40
@@ -335,6 +411,11 @@ ActiveRecord::Schema.define(:version => 20090825211658) do
     t.datetime "updated_at"
     t.integer  "current_naming_scheme_id"
     t.string   "name",                                    :default => "customer"
+  end
+
+  create_table "users_roles", :id => false, :force => true do |t|
+    t.integer "user_id", :default => 0, :null => false
+    t.integer "role_id", :default => 0, :null => false
   end
 
 end
