@@ -50,6 +50,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :sample_sets, :only => [:new, :create, :cancel_new_project]
   map.resources :hybridizations, :collection => {:grid => :get}
   map.resources :hybridization_sets, :collection => {:clear => :get}
+  map.resources :labels, :collection => {:grid => :get}
+  map.resources :platforms, :collection => {:grid => :get}
 
   # The priority is based upon order of creation: first created -> highest priority.
 
