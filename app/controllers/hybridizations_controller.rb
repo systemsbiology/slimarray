@@ -106,20 +106,20 @@ class HybridizationsController < ApplicationController
   end
   
   def grid
-    hybridizations = Hybridization.find(:all, :include => {:sample => :project}) do
+    hybridizations = Hybridization.find(:all, :include => {:samples => :project}) do
       if params[:_search] == "true"
-        hybridization_date  =~ "%#{params[:hybridization_date]}%" if params[:hybridization_date].present?
-        chip_number         =~ "%#{params[:chip_number]}%" if params[:chip_number].present?
-        sample.sample_name  =~ "%#{params["samples.sample_name"]}%" if params["samples.sample_name"].present?                
-        sample.sbeams_user  =~ "%#{params["samples.sbeams_user"]}%" if params["samples.sbeams_user"].present?                
-        sample.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+        hybridization_date   =~ "%#{params[:hybridization_date]}%" if params[:hybridization_date].present?
+        chip_number          =~ "%#{params[:chip_number]}%" if params[:chip_number].present?
+        samples.sample_name  =~ "%#{params["samples.sample_name"]}%" if params["samples.sample_name"].present? 
+        samples.sbeams_user  =~ "%#{params["samples.sbeams_user"]}%" if params["samples.sbeams_user"].present? 
+        samples.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
     end
 
     render :json => hybridizations.to_jqgrid_json(
-      [:hybridization_date, :chip_number, "sample.sample_name", "sample.sbeams_user", "sample.project.name"], 
+      [:hybridization_date, :chip_number, "sample_names", "sbeams_user", "project_name"], 
       params[:page], params[:rows], hybridizations.total_entries
     )
   end

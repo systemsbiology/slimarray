@@ -26,6 +26,18 @@ class Hybridization < ActiveRecord::Base
     end
   end
 
+  def sample_names
+    samples.collect {|s| s.sample_name}.join("\t")
+  end
+
+  def sbeams_user
+    samples.first && samples.first.sbeams_user
+  end
+
+  def project_name
+    samples.first && samples.first.project.name
+  end
+
   def self.populate_all_raw_data_paths
     hybridizations = Hybridization.find(:all)
     
