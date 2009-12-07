@@ -130,7 +130,7 @@ describe ChipTypesController do
     it "should render the found chip_type as json" do
       @chip_type.should_receive(:detail_hash).and_return({:n => 1})
       do_get
-      response.body.should == "{\"n\": 1}"
+      response.body.should =~ /\{\"n\":\s*1\}/
     end
   end
   

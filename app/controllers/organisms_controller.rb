@@ -2,7 +2,6 @@ class OrganismsController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
   
-  
   # GET /organisms
   # GET /organisms.xml
   def index

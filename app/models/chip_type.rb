@@ -1,5 +1,6 @@
 class ChipType < ActiveRecord::Base
   belongs_to :organism
+  belongs_to :platform
   has_many :chip_transactions, :dependent => :destroy
   has_many :samples, :dependent => :destroy
   has_many :inventory_checks, :dependent => :destroy
@@ -42,6 +43,8 @@ class ChipType < ActiveRecord::Base
   end
   
   def detail_hash
+    array_platform = platform && platform.name
+
     return {
       :id => id,
       :name => name,

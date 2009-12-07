@@ -132,16 +132,17 @@ Get detailed information about a single chip type.
       if params[:_search] == "true"
         name =~ "%#{params["chip_types.name"]}%" if params["chip_types.name"].present?
         short_name      =~ "%#{params[:short_name]}%" if params[:short_name].present?                
-        array_platform  =~ "%#{params[:array_platform]}%" if params[:array_platform].present?
-        library_package =~ "%#{params[:array_platform]}%" if params[:array_platform].present?        
-        organism.name   =~ "%#{params["organisms.name"]}%" if params["organisms.name"].present?        
+        platform.name   =~ "%#{params[:platform]}%" if params[:platform].present?
+        arrays_per_chip =~ "%#{params[:arrays_per_chip]}%" if params[:arrays_per_chip].present?
+        library_package =~ "%#{params[:library_package]}%" if params[:libarary_package].present?
+        organism.name   =~ "%#{params["organisms.name"]}%" if params["organisms.name"].present?
       end
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
     end
 
     render :json => chip_types.to_jqgrid_json(
-      ["name",:short_name,:array_platform,:library_package,"organism.name"], 
+      ["name",:short_name,"platform.name",:arrays_per_chip,:library_package,"organism.name"], 
       params[:page], params[:rows], ChipType.count
     )
   end
@@ -150,5 +151,6 @@ Get detailed information about a single chip type.
 
   def load_dropdown_selections
     @organisms = Organism.find(:all, :order => "name ASC")
+    @platforms = Platform.find(:all, :order => "name ASC")
   end
 end
