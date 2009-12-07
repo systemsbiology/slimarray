@@ -13,8 +13,8 @@ describe "Project" do
     before(:each) do
       @user = mock( "User" )
       @projects = mock("Project list")
-      @lab_group_1 = mock("Lab Group")
-      @lab_group_2 = mock("Lab Group")
+      @lab_group_1 = mock("Lab Group", :id => 123)
+      @lab_group_2 = mock("Lab Group", :id => 124)
       @lab_groups = [@lab_group_1, @lab_group_2]
       @project_1 = create_project(:name => "Aardvark Project", :lab_group_id => @lab_group_1.id)
       @project_2 = create_project(:name => "Badget Project", :lab_group_id => @lab_group_2.id)
@@ -86,8 +86,12 @@ describe "Project" do
   end
 
   it "should provide a hash of detailed attributes" do
+    # reset the lab groups by id cache between specs
+    Project.cached_lab_groups_by_id = nil
+
     SiteConfig.should_receive(:site_url).exactly(3).times.and_return("http://example.com")
     lab_group = mock("LabGroup", :id => 3, :name => "Fungus Group")
+    LabGroup.stub!(:all_by_id).and_return({lab_group.id => lab_group})
 
     project = create_project(
       :name => "Fungus Project"
@@ -120,6 +124,9 @@ describe "Project" do
   end
 
   it "should provide the name of the associated lab group" do
+    # reset the lab groups by id cache between specs
+    Project.cached_lab_groups_by_id = nil
+
     project = create_project
     lab_group = mock_model(LabGroup, :name => "Yeast Lab")
     project.stub!(:lab_group_id).and_return(lab_group.id)

@@ -310,20 +310,6 @@ describe "Sample" do
     Sample.find_selected(selections, available_samples).should == [sample_1, sample_3]
   end
 
-  it "should provide all samples available to hybridize with no excluded hybridizations" do
-    Sample.available_to_hybridize.should == [ samples(:sample6), samples(:sample5),
-      samples(:sample1), samples(:sample3) ]
-  end
-
-  it "should provide all samples available to hybridize excluding any given hybridizations" do
-    hybridization_1 = new_hybridization(:sample => samples(:sample3))
-    hybridization_2 = new_hybridization(:sample => samples(:sample5))
-    excluded_hybridizations = [hybridization_1, hybridization_2]
-
-    Sample.available_to_hybridize(excluded_hybridizations).
-      should == [ samples(:sample6), samples(:sample1) ]
-  end
-
   it "should provide the samples accessible to a user" do
     lab_group_1 = mock_model(LabGroup)
     lab_group_2 = mock_model(LabGroup)

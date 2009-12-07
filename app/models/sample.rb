@@ -4,7 +4,7 @@ class Sample < ActiveRecord::Base
   require 'csv'
   include Spreadsheet
   
-  has_one :hybridization, :dependent => :destroy
+  belongs_to :hybridization, :dependent => :destroy
 
   belongs_to :chip_type
   belongs_to :project
@@ -13,6 +13,8 @@ class Sample < ActiveRecord::Base
   belongs_to :amplified_quality_trace, :class_name => "QualityTrace", :foreign_key => "amplified_quality_trace_id"
   belongs_to :fragmented_quality_trace, :class_name => "QualityTrace", :foreign_key => "fragmented_quality_trace_id"
   belongs_to :naming_scheme
+  belongs_to :microarray
+  belongs_to :label
   
   has_many :sample_terms, :dependent => :destroy
   has_many :sample_texts, :dependent => :destroy
@@ -538,20 +540,6 @@ class Sample < ActiveRecord::Base
     end
 
     return samples
-  end
-
-  def self.available_to_hybridize(excluded_hybridizations = [])
-    available_samples = Sample.find(:all, :conditions => [ "status = 'submitted'" ],
-                                    :order => "submission_date DESC, id ASC")
-
-    for hybridization in excluded_hybridizations 
-      sample = hybridization.sample
-      if( available_samples.include?(sample) )
-        available_samples.delete(sample)
-      end
-    end
-
-    return available_samples
   end
 
   def self.accessible_to_user(user)

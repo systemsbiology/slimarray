@@ -1,7 +1,8 @@
 class Hybridization < ActiveRecord::Base
-  belongs_to :sample
+  has_many :samples
   belongs_to :charge_set
   belongs_to :charge_template
+  belongs_to :microarray
 
   validates_presence_of :hybridization_date
   validates_numericality_of :chip_number
@@ -13,6 +14,18 @@ class Hybridization < ActiveRecord::Base
     end
   end
   
+  def after_create
+    samples.each do |s|
+      s.update_attributes(:status => "hybridized")
+    end
+  end
+
+  def after_destroy
+    samples.each do |s|
+      s.update_attributes(:status => "submitted")
+    end
+  end
+
   def self.populate_all_raw_data_paths
     hybridizations = Hybridization.find(:all)
     
@@ -25,7 +38,7 @@ class Hybridization < ActiveRecord::Base
     for hybridization in hybridizations
       sample = hybridization.sample
       # only do this for affy samples
-      if( sample.chip_type.array_platform == "affy")
+      if( sample.chip_type.platform && sample.chip_type.platform.name == "Affymetrix")
         hybridization_year_month = hybridization.hybridization_date.year.to_s + 
                                    ("%02d" % hybridization.hybridization_date.month)
         hybridization_date_number_string = hybridization_year_month +
@@ -43,7 +56,7 @@ class Hybridization < ActiveRecord::Base
     hybs_per_group_chip = Hash.new(0)
 
     for hybridization in hybridizations
-      sample = hybridization.sample
+      sample = hybridization.samples.first
       hybridization_date_group_chip_key = hybridization.hybridization_date.to_s+
         "_"+sample.project.lab_group_id.to_s+"_"+sample.chip_type_id.to_s
       # if this hybridization_date/lab group/chip type combo hasn't been seen,
@@ -70,8 +83,11 @@ class Hybridization < ActiveRecord::Base
   end
 
   def create_gcos_import_file
+    # assume 1 sample since GCOS files are Affy-specific
+    sample = samples.first
+
     # only make hyb info record for GCOS if it's an affy array
-    if sample.chip_type.array_platform == "affy"
+    if( sample.chip_type.platform && sample.chip_type.platform.name == "Affymetrix")
       # open an output file for writing
       gcos_file = File.new(SiteConfig.gcos_output_path + "/" + hybridization_date_number_string +
                   "_" + sample.sample_name + ".txt", "w")
@@ -141,6 +157,9 @@ class Hybridization < ActiveRecord::Base
 
   def create_agcc_array_file
     require 'guid'
+
+    # assume 1 sample since AGCC files are Affy-specific
+    sample = samples.first
 
     chip_type_name = sample.chip_type.short_name
                          

@@ -11,15 +11,15 @@ describe Hybridization do
       chip_type = create_chip_type
       @hybridizations = [
         create_hybridization(
-          :sample => create_sample(:project => project, :chip_type => chip_type),
+          :samples => [create_sample(:project => project, :chip_type => chip_type)],
           :chip_number => 1
         ),
         create_hybridization(
-          :sample => create_sample(:project => project, :chip_type => chip_type),
+          :samples => [create_sample(:project => project, :chip_type => chip_type)],
           :chip_number => 2
         ),
         create_hybridization(
-          :sample => create_sample(:project => project, :chip_type => chip_type),
+          :samples => [create_sample(:project => project, :chip_type => chip_type)],
           :chip_number => 3
         )
       ]
@@ -35,11 +35,11 @@ describe Hybridization do
     it "should create two transaction when hybridizations span different labs/chips" do
       @hybridizations = [
         create_hybridization(
-          :sample => create_sample,
+          :samples => [create_sample],
           :chip_number => 1
         ),
         create_hybridization(
-          :sample => create_sample,
+          :samples => [create_sample],
           :chip_number => 2
         )
       ]
@@ -57,7 +57,7 @@ describe Hybridization do
     
     hybridization = create_hybridization(
       :hybridization_date => "2009-02-25",
-      :sample => create_sample(:sample_name => "test"),
+      :samples => [create_sample(:sample_name => "test")],
       :chip_number => 1
     )
     hybridization.create_gcos_import_file
@@ -74,7 +74,7 @@ describe Hybridization do
 
     hybridization = create_hybridization(
       :hybridization_date => "2009-02-25",
-      :sample => create_sample(:sample_name => "test"),
+      :samples => [create_sample(:sample_name => "test")],
       :chip_number => 1
     )
     hybridization.create_agcc_array_file

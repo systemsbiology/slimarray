@@ -49,6 +49,7 @@ sample2:
   sbeams_user: bob
   starting_quality_trace: quality_trace_00007
   fragmented_quality_trace: quality_trace_00015
+  hybridization: hyb1
 sample3: 
   organism: first
   status: submitted
@@ -71,3 +72,4 @@ sample4:
   submission_date: 2006-02-10
   chip_type: alligator
   sbeams_user: bob
+  hybridization: hyb2
