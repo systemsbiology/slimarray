@@ -1,0 +1,22 @@
+<h1>Listing platforms</h1>
+
+<p><%= link_to 'New platform', :action => 'new' %></p>
+
+<%= jqgrid("Platforms", "data_grid", grid_platforms_path,
+	[
+    { :field => "name", :label => "Name", :width => 200 },
+    { :field => "has_multi_array_chips", :label => "Multi-arrays", :width => 140 },
+    { :field => "uses_chip_numbers", :label => "Number chips", :width => 140 },
+    { :field => "multiple_labels", :label => "Multiple labels", :width => 140 },
+    { :field => "default_label.name", :label => "Default label", :width => 140 },
+    { :field => "raw_data_type", :label => "Raw Data Type", :width => 170 },
+  ],
+  :height => 550,
+  :sort_column => "name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
+
+<p><%= submit_tag "Edit Selected Platform", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Platform", :id => "bddata" %></p>

@@ -1,0 +1,18 @@
+<p>
+  <b>Name:</b>
+  <%=h @platform.name %>
+</p>
+
+<p>
+  <b>Has multi array chips:</b>
+  <%=h @platform.has_multi_array_chips %>
+</p>
+
+<p>
+  <b>Uses chip numbers:</b>
+  <%=h @platform.uses_chip_numbers %>
+</p>
+
+
+<%= link_to 'Edit', edit_platform_path(@platform) %> |
+<%= link_to 'Back', platforms_path %>

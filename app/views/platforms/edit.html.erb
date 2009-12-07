@@ -1,0 +1,32 @@
+<h1>Editing platform</h1>
+
+<% form_for(@platform) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.check_box :has_multi_array_chips %> 
+    <%= f.label :has_multi_array_chips, "Allows multiple arrays per chip/slide" %>
+  </p>
+  <p>
+    <%= f.check_box :uses_chip_numbers %> 
+    <%= f.label :uses_chip_numbers, "Number the chips hybridized each day" %>
+  </p>
+  <p>
+    <%= f.check_box :multiple_labels %> 
+    <%= f.label :multiple_labels, "Uses multiple labels (e.g. Cy3, Cy5)" %>
+  </p>
+  <p>
+    <%= f.label :default_label_id, "Default sample label" %>
+    <%= f.collection_select :default_label_id, @labels, :id, :name, {:prompt => true} %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @platform %> |
+<%= link_to 'Back', platforms_path %>
