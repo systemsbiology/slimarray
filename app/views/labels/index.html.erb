@@ -1,0 +1,17 @@
+<h1>Listing labels</h1>
+
+<p><%= link_to 'New label', :action => 'new' %></p>
+
+<%= jqgrid("Labels", "data_grid", grid_labels_path,
+	[
+    { :field => "name", :label => "Name", :width => 400 },
+  ],
+  :height => 550,
+  :sort_column => "name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
+
+<p><%= submit_tag "Edit Selected Label", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected Label", :id => "bddata" %></p>
