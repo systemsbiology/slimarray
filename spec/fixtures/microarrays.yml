@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  chip_id: 1
+  array_number: 1
+
+two:
+  chip_id: 1
+  array_number: 1
