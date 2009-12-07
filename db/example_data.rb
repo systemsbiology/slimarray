@@ -44,12 +44,12 @@ module FixtureReplacement
     ct.organism = default_organism
     ct.name = String.random(20)
     ct.short_name = String.random(10)
-    ct.array_platform = "affy"
+    ct.platform = Platform.find_by_name("Affymetrix") || create_platform(:name => "Affymetrix")
     ct.library_package = "Expression"
   end
 
   attributes_for :hybridization do |h|
-    h.sample = default_sample
+    h.samples = [create_sample]
     h.hybridization_date = Date.today
     h.chip_number = 1
     h.charge_set = default_charge_set
@@ -118,6 +118,7 @@ module FixtureReplacement
     s.sbeams_user = String.random(8)
     s.status = "submitted"
     s.project = default_project
+    s.microarray = default_microarray
   end
 
   attributes_for :site_config do |a|
@@ -127,5 +128,17 @@ module FixtureReplacement
   attributes_for :user_profile do |up|
     up.role = "customer"
     up.user_id = 1
+  end
+
+  attributes_for :platform do |p|
+    p.name = String.random(10)
+  end
+
+  attributes_for :chip do |c|
+    c.name = String.random(10)
+  end
+
+  attributes_for :microarray do |m|
+    m.chip = default_chip
   end
 end
