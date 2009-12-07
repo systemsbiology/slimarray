@@ -1,2 +1,35 @@
-<h1>HybridizationSets#create</h1>
-<p>Find me in app/views/hybridization_sets/create.html.erb</p>
+<h3>Step 3</h3>
+
+<table class="nonsortable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>
+        <% if @hybridization_set.platform.uses_chip_numbers %>
+          Chip Number
+        <% else %>
+          Chip Name
+        <% end %>
+      </th>
+      <th>Sample</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @hybridization_set.hybridizations.each do |hybridization| %>
+      <% sample = hybridization.sample %>
+      <tr>
+        <td><%=h hybridization.hybridization_date %></td>
+        <td>
+          <% if @hybridization_set.platform.uses_chip_numbers %>
+            <%=h hybridization.chip_number %>
+          <% else %>
+            <%=h hybridization.microarray.chip.name %>
+          <% end %>
+        </td>
+        <td>
+          <%=h "#{sample.short_sample_name}(#{sample.sample_name})" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

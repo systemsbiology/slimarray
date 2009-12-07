@@ -1,0 +1,20 @@
+<h3>Step 1</h3>
+
+<% form_for :hybridization_set, @hybridization_set, :url => hybridization_sets_path,
+   :html => {:method => :post} do |f| %>
+  <%= f.error_messages %>
+
+  <%= hidden_field_tag "hybridization_set[previous_step]", "step1" %>
+
+  <p>
+    <%= f.label :date, "Hybridization Date" %><br />
+    <%= f.date_select :date %>
+  </p>
+  <p>
+    <%= f.label :platform_id, "Platform" %><br />
+    <%= f.collection_select 'platform_id', @platforms, :id, :name, {:prompt => true} %>
+  </p>
+  <p>
+    <%= f.submit "Next" %>
+  </p>
+<% end %>

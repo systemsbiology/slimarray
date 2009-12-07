@@ -1,0 +1,34 @@
+<h3>Step 2</h3>
+
+<% form_for :hybridization_set, @hybridization_set, :url => hybridization_sets_path,
+   :html => {:method => :post} do |f| %>
+  <%= f.error_messages %>
+
+  <%= f.hidden_field :date %>
+  <%= f.hidden_field :platform_id %>
+  <%= hidden_field_tag "hybridization_set[previous_step]", "step2_no_multi_arrays" %>
+
+  <p>
+    <%= f.label :charge_template_id, "Charge Template" %><br />
+    <%= f.collection_select :charge_template_id, @charge_templates, :id, :name, {:prompt => true} %>
+  </p>
+  <p>
+    <%= f.label :chip_type_id, "Chip Type" %><br />
+    <%= f.collection_select :chip_type_id, @hybridization_set.chip_types, :id, :name, {:prompt => true} %>
+  </p>
+  <p>
+    <%= f.label :number_of_arrays, "Number of Arrays" %><br />
+    <%= f.text_field :number_of_arrays %>
+  </p>
+  <% if @hybridization_set.multiple_labels %>
+    <p>
+      <%= f.label :number_of_channels, "Number of channels (e.g. 2 for Cy3 + Cy5)" %><br />
+      <%= f.text_field :number_of_channels %>
+    </p>
+  <% else %>
+    <%= f.hidden_field :number_of_channels, :value => "1" %>
+  <% end %>
+  <p>
+    <%= f.submit "Next" %>
+  </p>
+<% end %>

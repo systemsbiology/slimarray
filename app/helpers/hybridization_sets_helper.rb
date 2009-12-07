@@ -1,22 +1,18 @@
 module HybridizationSetsHelper
 
-  def error_messages_for_hybridizations(options = {})
-    options = options.symbolize_keys
-    error_message = "";
-    for hybridization in @hybridizations
-      unless hybridization.errors.empty?
-        error_message << content_tag("div",
-            content_tag(
-            options[:header_tag] || "h2",
-            "#{pluralize(hybridization.errors.count, "error")} prohibited hybridization from being saved"
-            ) +
-            content_tag("p", "There were problems with the following fields:") +
-            content_tag("ul", hybridization.errors.full_messages.collect { |msg| content_tag("li", msg) }),
-            "id" => options[:id] || "errorExplanation", "class" => options[:class] || "errorExplanation"
-          )
-      end
+  def error_messages_for_hybridization_set
+    errors = @hybridization_set.array_entry_errors
+
+    if(errors)
+      contents = ''
+      contents << content_tag(:h2, "Errors in this hybridization set prevented it from being created")
+      contents << content_tag(:p, "Plese correct the following problems:")
+      contents << content_tag(:ul, errors)
+
+      content_tag(:div, contents, :class => "errorExplanation", :id => "errorExplanation")
+    else
+      ''
     end
-    return error_message
   end
 
 end

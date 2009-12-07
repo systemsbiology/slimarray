@@ -1,0 +1,73 @@
+<h3>Step 3</h3>
+
+<% form_for :hybridization_set, @hybridization_set, :url => hybridization_sets_path,
+   :html => {:method => :post} do |f| %>
+  <%= f.error_messages %>
+  <%= error_messages_for_hybridization_set %>
+
+  <%= hidden_field_tag "hybridization_set[previous_step]", "step3_no_multi_arrays" %>
+  <%= f.hidden_field :date %>
+  <%= f.hidden_field :platform_id %>
+  <%= f.hidden_field :charge_template_id %>
+  <%= f.hidden_field :number_of_arrays %>
+  <%= f.hidden_field :number_of_channels %>
+
+  <table class="nonsortable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>
+          <% if @hybridization_set.platform.uses_chip_numbers %>
+            Chip Number
+          <% else %>
+            Chip Name
+          <% end %>
+        </th>
+        <% if @hybridization_set.number_of_channels == 1 %>
+          <th>Sample</th>
+        <% else %>
+          <% (1..@hybridization_set.number_of_channels).each do |channel_number| %>
+            <th>Sample <%=h channel_number %></th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% (0..@hybridization_set.number_of_arrays-1).each do |chip_index| %>
+        <tr>
+          <td><%=h @hybridization_set.date %></td>
+          <td>
+            <% if @hybridization_set.platform.uses_chip_numbers %>
+              <%=h chip_index+1 %>
+            <% else %>
+              <input name="hybridization_set[chip_names][<%= chip_index %>]"/>
+            <% end %>
+          </td>
+          <% if @hybridization_set.number_of_channels == 1 %>
+            <td>
+              <select name="hybridization_set[sample_ids][<%= chip_index %>][0]">
+              <%= options_from_collection_for_select @hybridization_set.available_samples,
+                :id, :short_and_long_name, @hybridization_set.sample_ids &&
+                @hybridization_set.sample_ids[chip_index.to_s]['0'].to_i %>
+              </select>
+            </td>
+          <% else %>
+            <% (0..@hybridization_set.number_of_channels-1).each do |channel_index| %>
+              <td>
+                <select name="hybridization_set[sample_ids][<%= chip_index %>][<%= channel_index %>]">
+                <%= options_from_collection_for_select @hybridization_set.available_samples,
+                  :id, :short_and_long_name, @hybridization_set.sample_ids &&
+                  @hybridization_set.sample_ids[chip_index.to_s][channel_index.to_s].to_i %>
+                </select>
+              </td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p>
+    <%= f.submit "Create Hybridizations" %>
+  </p>
+<% end %>
