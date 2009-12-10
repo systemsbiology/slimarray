@@ -5,7 +5,7 @@ class HybridizationSet
   attr_accessor :previous_step
   attr_accessor :date
   attr_accessor :platform_id
-  attr_accessor :number_of_arrays
+  attr_accessor :number_of_chips
   attr_accessor :number_of_channels
   attr_accessor :charge_template_id
   attr_accessor :chip_type_id
@@ -25,7 +25,7 @@ class HybridizationSet
     :message => "must be selected",
     :groups => [:step2_no_multi_arrays, :step2_with_multi_arrays,
                 :step3_no_multi_arrays, :step3_with_multi_arrays]
-  validates_numericality_of :number_of_arrays,
+  validates_numericality_of :number_of_chips,
     :message => "must be entered",
     :groups => [:step2_no_multi_arrays, :step2_with_multi_arrays,
                 :step3_no_multi_arrays, :step3_with_multi_arrays]
@@ -42,7 +42,7 @@ class HybridizationSet
   # * <tt>previous_step</tt> - The name of the last step the user was on
   # * <tt>date</tt> - The date of the hybridization(s)
   # * <tt>platform_id</tt> - The platform that's going to be used
-  # * <tt>number_of_arrays</tt> - Number of samples that will be hybridized
+  # * <tt>number_of_chips</tt> - Number of samples that will be hybridized
   # * <tt>number_of_channels</tt> - Number of channels per array
   # * <tt>charge_template_id</tt> - The charge template to base the charges on
   # * <tt>chip_type_id</tt> - The chip type being used, only necessary for multi-arrays
@@ -53,7 +53,7 @@ class HybridizationSet
     @previous_step = options[:previous_step]
     @date = parse_date(options) || Date.today
     @platform_id = integer_or_nil(options[:platform_id])
-    @number_of_arrays = integer_or_nil(options[:number_of_arrays])
+    @number_of_chips = integer_or_nil(options[:number_of_chips])
     @number_of_channels = integer_or_nil(options[:number_of_channels])
     @charge_template_id = integer_or_nil(options[:charge_template_id])
     @chip_type_id = integer_or_nil(options[:chip_type_id])
@@ -102,8 +102,8 @@ class HybridizationSet
     return platform && platform.multiple_labels
   end
 
-  def number_of_chips
-    (number_of_arrays.to_f/chip_type.arrays_per_chip).ceil
+  def number_of_arrays
+    chip_type.arrays_per_chip
   end
 
   def save
@@ -128,7 +128,25 @@ class HybridizationSet
 
           # with multi arrays
           if multi_arrays
+            chip = Chip.create!(:name => chip_name)
 
+            chip_samples.each do |array_index, array_samples|
+              microarray = Microarray.create!(:chip_id => chip.id, :array_number => array_index.to_i+1)
+              hybridization = Hybridization.create!(
+                :hybridization_date => date,
+                :chip_number => current_chip_number,
+                :microarray_id => microarray.id,
+                :charge_template_id => charge_template_id
+              )
+
+              array_samples.each do |channel_index, sample_id|
+                sample = Sample.find(sample_id)
+                sample.update_attributes(:hybridization_id => hybridization.id)
+              end
+
+              self.hybridizations << hybridization
+            end
+            
           # no multi arrays
           else
             chip = Chip.create!(:name => chip_name)
@@ -169,15 +187,6 @@ class HybridizationSet
     return true
   end
 
-  def array_entries_complete?
-    case multi_arrays
-    when true
-      false
-    when false
-      sample_ids
-    end
-  end
-
   # samples that are available to hybridize for the current platform
   def available_samples
     @available_samples ||= Sample.find(
@@ -194,64 +203,6 @@ class HybridizationSet
       :conditions => {:platform_id => platform.id}
     )
   end
-
-#  def hybridizations(options = {})
-#    current_hyb_number = options[:last_hyb_number]
-#    available_samples = options[:available_samples]
-#
-#    samples = Array.new
-#    if selected_samples != nil
-#      for sample in available_samples
-#        if selected_samples[sample.id.to_s] == '1'
-#          samples << Sample.find(sample.id)
-#        end
-#      end
-#    end
-#
-#
-#    for sample in samples
-#      project = sample.project
-#      # does user want charge set(s) created based on projects?
-#      if(@charge_set_id == "-1")
-#        # get latest charge period
-#        charge_period = ChargePeriod.find(:first, :order => "name DESC")
-#
-#        # if no charge periods exist, make a default one
-#        if( charge_period == nil )
-#          charge_period = ChargePeriod.new(:name => "Default Charge Period")
-#          charge_period.save
-#        end
-#        
-#        charge_set = ChargeSet.find(:first, :conditions => ["name = ? AND lab_group_id = ? AND budget = ? AND charge_period_id = ?",
-#                                     project.name, project.lab_group_id, project.budget, charge_period.id])
-#
-#        # see if new charge set need to be created
-#        if(charge_set == nil)
-#          charge_set = ChargeSet.new(:charge_period_id => charge_period.id,
-#                                      :name => project.name,
-#                                      :lab_group_id => project.lab_group_id,
-#                                      :budget => project.budget
-#                                      )
-#          charge_set.save
-#        end
-#        
-#        @charge_set_id = charge_set.id
-#      end
-#
-#      current_hyb_number += 1
-#      @hybridizations << Hybridization.new(:hybridization_date => date,
-#            :chip_number => current_hyb_number,
-#            :charge_set_id => @charge_set_id,
-#            :charge_template_id => charge_template_id,
-#            :sample_id => sample.id)
-#    end
-#
-#    return @hybridizations
-#  end
-#
-#  def number
-#    @hybridizations.size
-#  end
 
   private
 
@@ -272,19 +223,35 @@ class HybridizationSet
     "#{options['date(1i)']}-#{options['date(2i)']}-#{options['date(3i)']}"
   end
 
+  def array_entries_complete?
+    return false unless sample_ids
+
+    case multi_arrays
+    when true
+      sample_ids.each do |chip_index, chip_samples|
+        chip_samples.each do |array_index, array_samples|
+          array_samples.each do |channel_index, sample_id|
+            return false if sample_id == 0
+          end
+        end
+      end
+    when false
+      sample_ids.each do |chip_index, chip_samples|
+        chip_samples.each do |channel_index, sample_id|
+          return false if sample_id == 0
+        end
+      end
+    end
+  end
+
   def duplicate_samples_specified
     case multi_arrays
     when false
-      ids = sample_ids.values.collect do |chip|
-        chip.values
-      end
+      ids = sample_ids.values.collect {|chip| chip.values}.flatten
       ids.flatten!
     when true
-      ids = sample_ids.values.collect do |chip|
-        chip.values.each do |array|
-          array.values
-        end
-      end
+      chip_ids = sample_ids.values.collect {|chip| chip.values}.flatten
+      ids = chip_ids.collect {|array| array.values}.flatten
       ids.flatten!
     end
 

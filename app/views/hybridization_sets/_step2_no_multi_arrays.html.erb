@@ -13,8 +13,8 @@
     <%= f.collection_select :charge_template_id, @charge_templates, :id, :name, {:prompt => true} %>
   </p>
   <p>
-    <%= f.label :number_of_arrays, "Number of Arrays" %><br />
-    <%= f.text_field :number_of_arrays %>
+    <%= f.label :number_of_chips, "Number of Chips/Slides" %><br />
+    <%= f.text_field :number_of_chips %>
   </p>
   <% if @hybridization_set.multiple_labels %>
     <p>

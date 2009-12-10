@@ -8,9 +8,13 @@ class Hybridization < ActiveRecord::Base
   validates_numericality_of :chip_number
 
   def validate_on_create
-    # make sure date/chip number combo is unique
-    if Hybridization.find_by_hybridization_date_and_chip_number(hybridization_date, chip_number)
-      errors.add("Duplicate hybridization hybridization date/chip number")
+    # make sure date / chip number / array number combo is unique
+    other_hybridizations = 
+      Hybridization.find_all_by_hybridization_date_and_chip_number(hybridization_date, chip_number)
+    other_hybridizations.each do |other_hybridization|
+      if(microarray.array_number == other_hybridization.microarray.array_number)
+        errors.add("Duplicate hybridization hybridization date / chip number / array number")
+      end
     end
   end
   

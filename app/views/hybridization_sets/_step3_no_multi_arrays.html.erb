@@ -9,7 +9,7 @@
   <%= f.hidden_field :date %>
   <%= f.hidden_field :platform_id %>
   <%= f.hidden_field :charge_template_id %>
-  <%= f.hidden_field :number_of_arrays %>
+  <%= f.hidden_field :number_of_chips %>
   <%= f.hidden_field :number_of_channels %>
 
   <table class="nonsortable">
@@ -33,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-      <% (0..@hybridization_set.number_of_arrays-1).each do |chip_index| %>
+      <% (0..@hybridization_set.number_of_chips-1).each do |chip_index| %>
         <tr>
           <td><%=h @hybridization_set.date %></td>
           <td>

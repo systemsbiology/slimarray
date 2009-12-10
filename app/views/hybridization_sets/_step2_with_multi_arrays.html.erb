@@ -17,8 +17,8 @@
     <%= f.collection_select :chip_type_id, @hybridization_set.chip_types, :id, :name, {:prompt => true} %>
   </p>
   <p>
-    <%= f.label :number_of_arrays, "Number of Arrays" %><br />
-    <%= f.text_field :number_of_arrays %>
+    <%= f.label :number_of_chips, "Number of Chips/Slides" %><br />
+    <%= f.text_field :number_of_chips %>
   </p>
   <% if @hybridization_set.multiple_labels %>
     <p>
