@@ -31,7 +31,7 @@ class Hybridization < ActiveRecord::Base
   end
 
   def sample_names
-    samples.collect {|s| s.sample_name}.join("\t")
+    samples.collect {|s| s.sample_name}.join("_v_")
   end
 
   def sbeams_user
@@ -52,7 +52,7 @@ class Hybridization < ActiveRecord::Base
     raw_data_root_path = SiteConfig.raw_data_root_path
  
     for hybridization in hybridizations
-      sample = hybridization.sample
+      sample = hybridization.samples.first
       # only do this for affy samples
       if( sample.chip_type.platform && sample.chip_type.platform.name == "Affymetrix")
         hybridization_year_month = hybridization.hybridization_date.year.to_s + 
@@ -215,13 +215,10 @@ class Hybridization < ActiveRecord::Base
 
   def self.record_charges(hybridizations)  
     for hybridization in hybridizations
-      samples = hybridization.samples
-      charge_name = samples.collect{|s| s.sample_name}.join("_v_")
-
       template = ChargeTemplate.find(hybridization.charge_template_id)
       charge = Charge.create(:charge_set_id => hybridization.charge_set_id,
                              :date => hybridization.hybridization_date,
-                             :description => charge_name,
+                             :description => hybridization.sample_names,
                              :chips_used => template.chips_used,
                              :chip_cost => template.chip_cost,
                              :labeling_cost => template.labeling_cost,
