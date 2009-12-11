@@ -99,4 +99,101 @@ describe Hybridization do
 
   end
 
+  describe "recording charges for a set of hybridizations" do
+    before(:each) do
+      @charge_template = create_charge_template(
+        :chips_used => 1,
+        :chip_cost => 100,
+        :labeling_cost => 200,
+        :hybridization_cost => 25,
+        :qc_cost => 0,
+        :other_cost => 0
+      )
+      @charge_set = create_charge_set
+      @sample_1 = create_sample(:sample_name => "wt-0")
+      @sample_2 = create_sample(:sample_name => "mut-0")
+      @sample_3 = create_sample(:sample_name => "wt-5")
+      @sample_4 = create_sample(:sample_name => "mut-5")
+    end
+
+    it "should handle one channel array hybridizations" do
+      hybridization_1 = create_hybridization(
+        :hybridization_date => "2009-12-11",
+        :chip_number => 1,
+        :charge_template => @charge_template,
+        :charge_set => @charge_set,
+        :samples => [@sample_1]
+      )
+      hybridization_2 = create_hybridization(
+        :hybridization_date => "2009-12-11",
+        :chip_number => 2,
+        :charge_template => @charge_template,
+        :charge_set => @charge_set,
+        :samples => [@sample_2]
+      )
+      Charge.should_receive(:create).with(
+        :charge_set_id => @charge_set.id,
+        :date => Date.parse("2009-12-11"),
+        :description => "wt-0",
+        :chips_used => 1,
+        :chip_cost => 100.0,
+        :labeling_cost => 200.0,
+        :hybridization_cost => 25.0,
+        :qc_cost => 0.0,
+        :other_cost => 0.0
+      )
+      Charge.should_receive(:create).with(
+        :charge_set_id => @charge_set.id,
+        :date => Date.parse("2009-12-11"),
+        :description => "mut-0",
+        :chips_used => 1,
+        :chip_cost => 100.0,
+        :labeling_cost => 200.0,
+        :hybridization_cost => 25.0,
+        :qc_cost => 0.0,
+        :other_cost => 0.0
+      )
+      Hybridization.record_charges([hybridization_1, hybridization_2]) 
+    end
+
+    it "should handle two channel array hybridizations" do
+      hybridization_1 = create_hybridization(
+        :hybridization_date => "2009-12-11",
+        :chip_number => 1,
+        :charge_template => @charge_template,
+        :charge_set => @charge_set,
+        :samples => [@sample_1,@sample_2]
+      )
+      hybridization_2 = create_hybridization(
+        :hybridization_date => "2009-12-11",
+        :chip_number => 2,
+        :charge_template => @charge_template,
+        :charge_set => @charge_set,
+        :samples => [@sample_3,@sample_4]
+      )
+      Charge.should_receive(:create).with(
+        :charge_set_id => @charge_set.id,
+        :date => Date.parse("2009-12-11"),
+        :description => "wt-0_v_mut-0",
+        :chips_used => 1,
+        :chip_cost => 100.0,
+        :labeling_cost => 200.0,
+        :hybridization_cost => 25.0,
+        :qc_cost => 0.0,
+        :other_cost => 0.0
+      )
+      Charge.should_receive(:create).with(
+        :charge_set_id => @charge_set.id,
+        :date => Date.parse("2009-12-11"),
+        :description => "wt-5_v_mut-5",
+        :chips_used => 1,
+        :chip_cost => 100.0,
+        :labeling_cost => 200.0,
+        :hybridization_cost => 25.0,
+        :qc_cost => 0.0,
+        :other_cost => 0.0
+      )
+      Hybridization.record_charges([hybridization_1, hybridization_2]) 
+    end
+  end
 end

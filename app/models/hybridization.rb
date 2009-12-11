@@ -215,19 +215,19 @@ class Hybridization < ActiveRecord::Base
 
   def self.record_charges(hybridizations)  
     for hybridization in hybridizations
-      sample = hybridization.sample
-      
+      samples = hybridization.samples
+      charge_name = samples.collect{|s| s.sample_name}.join("_v_")
+
       template = ChargeTemplate.find(hybridization.charge_template_id)
-      charge = Charge.new(:charge_set_id => hybridization.charge_set_id,
-                          :date => hybridization.hybridization_date,
-                          :description => sample.sample_name,
-                          :chips_used => template.chips_used,
-                          :chip_cost => template.chip_cost,
-                          :labeling_cost => template.labeling_cost,
-                          :hybridization_cost => template.hybridization_cost,
-                          :qc_cost => template.qc_cost,
-                          :other_cost => template.other_cost)
-      charge.save
+      charge = Charge.create(:charge_set_id => hybridization.charge_set_id,
+                             :date => hybridization.hybridization_date,
+                             :description => charge_name,
+                             :chips_used => template.chips_used,
+                             :chip_cost => template.chip_cost,
+                             :labeling_cost => template.labeling_cost,
+                             :hybridization_cost => template.hybridization_cost,
+                             :qc_cost => template.qc_cost,
+                             :other_cost => template.other_cost)
     end
   end
 
