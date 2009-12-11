@@ -432,4 +432,117 @@ describe HybridizationSet do
     end
   end
 
+  describe "saving with multi arrays and a two channels" do
+    
+    before(:each) do
+      @chip_1 = create_chip(:name => "20091108_01")
+      @microarray_1 = create_microarray(:chip => @chip_1, :array_number => 1)
+      @microarray_2 = create_microarray(:chip => @chip_1, :array_number => 2)
+      @sample_1 = create_sample(:chip_type => @multi_array_chip_type, :microarray => @microarray_1)
+      @sample_2 = create_sample(:chip_type => @multi_array_chip_type, :microarray => @microarray_1)
+      @sample_3 = create_sample(:chip_type => @multi_array_chip_type, :microarray => @microarray_2)
+      @sample_4 = create_sample(:chip_type => @multi_array_chip_type, :microarray => @microarray_2)
+      @hybridization_1 = create_hybridization(:chip_number => 1, :microarray_id => @microarray_1.id)
+      @hybridization_2 = create_hybridization(:chip_number => 1, :microarray_id => @microarray_2.id)
+      @charge_set = create_charge_set
+      @hybridization_set = HybridizationSet.new(
+        :date => "2009-11-18",
+        :platform_id => @multi_array_platform.id,
+        :chip_type_id => @multi_array_chip_type.id,
+        :number_of_chips => 2,
+        :number_of_channels => 1,
+        :charge_set_id => @charge_set.id,
+        :charge_template_id => @charge_template.id,
+        :sample_ids => { "0" => {
+          "0" => {"0" => @sample_1.id,"1" => @sample_2.id},
+          "1" => {"0" => @sample_3.id,"1" => @sample_4.id}
+        } }
+      )
+      Chip.stub!(:create!).with(:name => "20091118_01").
+        and_return(@chip_1)
+      Microarray.stub!(:create!).once.
+        with(:chip_id => @chip_1.id, :array_number => 1).
+        and_return(@microarray_1)
+      Microarray.stub!(:create!).once.
+        with(:chip_id => @chip_1.id, :array_number => 2).
+        and_return(@microarray_2)
+      Hybridization.stub!(:create!).once.with(
+        :hybridization_date => "2009-11-18",
+        :chip_number => 1,
+        :microarray_id => @microarray_1.id,
+        :charge_template_id => @charge_template.id
+      ).and_return(@hybridization_1)
+      Hybridization.stub!(:create!).once.with(
+        :hybridization_date => "2009-11-18",
+        :chip_number => 1,
+        :microarray_id => @microarray_2.id,
+        :charge_template_id => @charge_template.id
+      ).and_return(@hybridization_2)
+      Hybridization.stub!(:record_charges)
+      Hybridization.stub!(:record_as_chip_transactions)
+    end
+
+    it "should create a new chip" do
+      Chip.should_receive(:create!).with(:name => "20091118_01").
+        once.and_return(@chip_1)
+      @hybridization_set.save
+    end
+
+    it "should create two hybridizations" do
+      Hybridization.should_receive(:create!).with(
+        :hybridization_date => "2009-11-18",
+        :chip_number => 1,
+        :microarray_id => @microarray_1.id,
+        :charge_template_id => @charge_template.id
+      ).once.and_return(@hybridization_1)
+      Hybridization.should_receive(:create!).with(
+        :hybridization_date => "2009-11-18",
+        :chip_number => 1,
+        :microarray_id => @microarray_2.id,
+        :charge_template_id => @charge_template.id
+      ).once.and_return(@hybridization_2)
+      @hybridization_set.save
+    end
+
+    it "should update the samples to point at their hybridizations" do
+      Sample.should_receive(:find).with(@sample_1.id).and_return(@sample_1)
+      Sample.should_receive(:find).with(@sample_2.id).and_return(@sample_2)
+      Sample.should_receive(:find).with(@sample_3.id).and_return(@sample_3)
+      Sample.should_receive(:find).with(@sample_4.id).and_return(@sample_4)
+      @sample_1.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
+      @sample_2.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
+      @sample_3.should_receive(:update_attributes).with(:hybridization_id => @hybridization_2.id)
+      @sample_4.should_receive(:update_attributes).with(:hybridization_id => @hybridization_2.id)
+      @hybridization_set.save
+    end
+
+    it "should record charges if that option is enabled in the site configuration" do
+      SiteConfig.should_receive(:track_charges?).and_return(true)
+      Hybridization.should_receive(:record_charges).
+        with([@hybridization_1, @hybridization_2])
+      @hybridization_set.save
+    end
+
+    it "should record chip transactions if that option is enabled in the site configuration" do
+      SiteConfig.should_receive(:track_inventory?).and_return(true)
+      Hybridization.should_receive(:record_as_chip_transactions).
+        with([@hybridization_1, @hybridization_2])
+      @hybridization_set.save
+    end
+
+    it "should return false and store an appropriate message if a duplication error occurs" do
+      mock_record = mock( :errors => mock(:full_messages => ["Duplicate stuff"]) )
+      Chip.should_receive(:create!).and_raise( ActiveRecord::RecordInvalid.new(mock_record) )
+      @hybridization_set.save.should be_false
+      @hybridization_set.array_entry_errors.should == "One or more of these chip numbers have already been used for this date: 2009-11-18"
+    end
+
+    it "should return false and store a general message if an unexpected error occurs" do
+      mock_record = mock( :errors => mock(:full_messages => ["unexpected error"]) )
+      Chip.should_receive(:create!).and_raise( ActiveRecord::RecordInvalid.new(mock_record) )
+      @hybridization_set.save.should be_false
+      @hybridization_set.array_entry_errors.should == "Something went horribly wrong. Check " +
+        "with your SLIMarray administrator on this one."
+    end
+  end
 end
