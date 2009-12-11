@@ -21,7 +21,8 @@ class SampleSetsController < ApplicationController
             :organism_id => @sample_set.chip_type.organism_id,
             :chip_type_id => @sample_set.chip_type_id,
             :sbeams_user => @sample_set.sbeams_user,
-            :sample_set => @sample_set
+            :sample_set => @sample_set,
+            :label_id => @sample_set.label_id
           )
 
           @samples << sample
@@ -73,5 +74,6 @@ private
     @naming_schemes = NamingScheme.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
     @organisms = Organism.find(:all, :order => "name ASC")
+    @labels = Label.find(:all, :order => "name ASC")
   end
 end

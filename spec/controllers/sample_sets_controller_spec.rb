@@ -102,6 +102,7 @@ describe SampleSetsController do
           @sample_set.stub!(:chip_type).and_return(@chip_type)
           @sample_set.stub!(:project).and_return(@project)
           @sample_set.stub!(:sbeams_user).and_return("jsmith")
+          @sample_set.stub!(:label_id).and_return(2)
           @sample = mock_model(Sample)
           @sample.stub!(:populate_default_visibilities_and_texts)
           Sample.stub!(:new).and_return( @sample )

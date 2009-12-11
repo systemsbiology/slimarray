@@ -21,6 +21,9 @@
           <th><%=h element.name %></th>
         <% end %>
       <% end %>
+      <% if @sample_set.platform.multiple_labels %>
+        <th>Label</th>
+      <% end %>
       <th>Organism</th>
       <th>Chip Type</th>
     </tr>
@@ -41,6 +44,11 @@
             <%= render :partial => 'samples/schemed_sample_description' %>
           <% end %>
           
+          <% if @sample_set.platform.multiple_labels %>
+            <td><%= collection_select :sample, :label_id, @labels, :id,
+              :name, {}, { :index => @n } %></td>
+          <% end %>
+
           <td><%= collection_select :sample, :organism_id, @organisms, :id,
             :name, {}, { :index => @n } %></td>
           
