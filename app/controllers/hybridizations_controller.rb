@@ -36,9 +36,7 @@ class HybridizationsController < ApplicationController
 
   def destroy
     hybridization = Hybridization.find(params[:id])
-    sample = Sample.find(hybridization.sample_id)
     hybridization.destroy
-    sample.update_attribute('status', 'submitted')
     redirect_to hybridizations_url
   end
 
