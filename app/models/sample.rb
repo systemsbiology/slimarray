@@ -747,6 +747,10 @@ class Sample < ActiveRecord::Base
     "#{short_sample_name} (#{sample_name})"
   end
   
+  def short_and_long_name_with_label
+    "#{short_sample_name}:#{sample_name} (#{label && label.name})"
+  end
+
   def terms_for(schemed_params)
     terms = Array.new
     

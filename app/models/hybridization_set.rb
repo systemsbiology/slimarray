@@ -115,13 +115,15 @@ class HybridizationSet
 
     return false if duplicate_samples_specified
 
+    chip_name_list = chip_names.values if chip_names
+
     current_chip_number = 1
     begin
       Hybridization.transaction do
         sample_ids.each do |chip_index, chip_samples|
           # use the chip names the user provided, or if there are none use the chip number
-          if(chip_names)
-            chip_name = chip_names.shift
+          if(chip_name_list)
+            chip_name = chip_name_list.shift
           else
             chip_name = name_for_date_and_chip_number(date, current_chip_number)
           end
@@ -136,13 +138,9 @@ class HybridizationSet
                 :hybridization_date => date,
                 :chip_number => current_chip_number,
                 :microarray_id => microarray.id,
-                :charge_template_id => charge_template_id
+                :charge_template_id => charge_template_id,
+                :samples => array_samples.values.collect{|s| Sample.find(s)}
               )
-
-              array_samples.each do |channel_index, sample_id|
-                sample = Sample.find(sample_id)
-                sample.update_attributes(:hybridization_id => hybridization.id)
-              end
 
               self.hybridizations << hybridization
             end
@@ -155,13 +153,9 @@ class HybridizationSet
               :hybridization_date => date,
               :chip_number => current_chip_number,
               :microarray_id => microarray.id,
-              :charge_template_id => charge_template_id
+              :charge_template_id => charge_template_id,
+              :samples => chip_samples.values.collect{|s| Sample.find(s)}
             )
-
-            chip_samples.each do |channel_index, sample_id|
-              sample = Sample.find(sample_id)
-              sample.update_attributes(:hybridization_id => hybridization.id)
-            end
 
             self.hybridizations << hybridization
           end
@@ -169,6 +163,9 @@ class HybridizationSet
           current_chip_number += 1
         end
       end
+
+      Hybridization.record_charges(hybridizations) if SiteConfig.track_charges?
+      Hybridization.record_as_chip_transactions(hybridizations) if SiteConfig.track_inventory?
     rescue ActiveRecord::RecordInvalid => e
       case e.to_s
       when /duplicate/i
@@ -180,9 +177,6 @@ class HybridizationSet
       end
       return false
     end
-
-    Hybridization.record_charges(hybridizations) if SiteConfig.track_charges?
-    Hybridization.record_as_chip_transactions(hybridizations) if SiteConfig.track_inventory?
 
     return true
   end

@@ -1,4 +1,4 @@
-<h3>Step 3</h3>
+<h3>Hybridizations Recorded</h3>
 
 <table class="nonsortable">
   <thead>
@@ -16,7 +16,6 @@
   </thead>
   <tbody>
     <% @hybridization_set.hybridizations.each do |hybridization| %>
-      <% sample = hybridization.sample %>
       <tr>
         <td><%=h hybridization.hybridization_date %></td>
         <td>
@@ -27,7 +26,7 @@
           <% end %>
         </td>
         <td>
-          <%=h "#{sample.short_sample_name}(#{sample.sample_name})" %>
+          <%=h "#{hybridization.sample_names}" %>
         </td>
       </tr>
     <% end %>

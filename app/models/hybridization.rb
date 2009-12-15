@@ -12,7 +12,8 @@ class Hybridization < ActiveRecord::Base
     other_hybridizations = 
       Hybridization.find_all_by_hybridization_date_and_chip_number(hybridization_date, chip_number)
     other_hybridizations.each do |other_hybridization|
-      if(microarray.array_number == other_hybridization.microarray.array_number)
+      if(microarray.array_number == other_hybridization.microarray.array_number &&
+         microarray.chip.name == other_hybridization.microarray.chip.name)
         errors.add("Duplicate hybridization hybridization date / chip number / array number")
       end
     end

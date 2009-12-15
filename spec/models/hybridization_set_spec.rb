@@ -139,7 +139,7 @@ describe HybridizationSet do
       @microarray_1 = create_microarray(:chip => @chip_1)
       @microarray_2 = create_microarray(:chip => @chip_2)
       @sample_1 = create_sample(:chip_type => @no_multi_array_chip_type, :microarray => @microarray_1)
-      @sample_2 = create_sample(:chip_type => @no_multi_array_chip_type, :microarray => @microarray_1)
+      @sample_2 = create_sample(:chip_type => @no_multi_array_chip_type, :microarray => @microarray_2)
       @hybridization_1 = create_hybridization(:chip_number => 1)
       @hybridization_2 = create_hybridization(:chip_number => 2)
       @charge_set = create_charge_set
@@ -166,13 +166,15 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:create!).with(
         :hybridization_date => "2009-11-18",
         :chip_number => 2,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_2]
       ).and_return(@hybridization_2)
       Hybridization.stub!(:record_charges)
       Hybridization.stub!(:record_as_chip_transactions)
@@ -191,22 +193,16 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1]
       ).once.and_return(@hybridization_1)
       Hybridization.should_receive(:create!).with(
         :hybridization_date => "2009-11-18",
         :chip_number => 2,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_2]
       ).once.and_return(@hybridization_2)
-      @hybridization_set.save
-    end
-
-    it "should update the samples to point at their hybridizations" do
-      Sample.should_receive(:find).with(@sample_1.id).and_return(@sample_1)
-      Sample.should_receive(:find).with(@sample_2.id).and_return(@sample_2)
-      @sample_1.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
-      @sample_2.should_receive(:update_attributes).with(:hybridization_id => @hybridization_2.id)
       @hybridization_set.save
     end
 
@@ -273,13 +269,15 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:create!).once.with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_2]
       ).and_return(@hybridization_2)
       Hybridization.stub!(:record_charges)
       Hybridization.stub!(:record_as_chip_transactions)
@@ -296,22 +294,16 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1]
       ).once.and_return(@hybridization_1)
       Hybridization.should_receive(:create!).with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_2]
       ).once.and_return(@hybridization_2)
-      @hybridization_set.save
-    end
-
-    it "should update the samples to point at their hybridizations" do
-      Sample.should_receive(:find).with(@sample_1.id).and_return(@sample_1)
-      Sample.should_receive(:find).with(@sample_2.id).and_return(@sample_2)
-      @sample_1.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
-      @sample_2.should_receive(:update_attributes).with(:hybridization_id => @hybridization_2.id)
       @hybridization_set.save
     end
 
@@ -372,7 +364,8 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1,@sample_2]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:record_charges)
       Hybridization.stub!(:record_as_chip_transactions)
@@ -389,16 +382,9 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1,@sample_2]
       ).once.and_return(@hybridization_1)
-      @hybridization_set.save
-    end
-
-    it "should update the samples to point at the hybridization" do
-      Sample.should_receive(:find).with(@sample_1.id).and_return(@sample_1)
-      Sample.should_receive(:find).with(@sample_2.id).and_return(@sample_2)
-      @sample_1.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
-      @sample_2.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
       @hybridization_set.save
     end
 
@@ -470,13 +456,15 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1, @sample_2]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:create!).once.with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_3, @sample_4]
       ).and_return(@hybridization_2)
       Hybridization.stub!(:record_charges)
       Hybridization.stub!(:record_as_chip_transactions)
@@ -493,26 +481,16 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_1, @sample_2]
       ).once.and_return(@hybridization_1)
       Hybridization.should_receive(:create!).with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id
+        :charge_template_id => @charge_template.id,
+        :samples => [@sample_3, @sample_4]
       ).once.and_return(@hybridization_2)
-      @hybridization_set.save
-    end
-
-    it "should update the samples to point at their hybridizations" do
-      Sample.should_receive(:find).with(@sample_1.id).and_return(@sample_1)
-      Sample.should_receive(:find).with(@sample_2.id).and_return(@sample_2)
-      Sample.should_receive(:find).with(@sample_3.id).and_return(@sample_3)
-      Sample.should_receive(:find).with(@sample_4.id).and_return(@sample_4)
-      @sample_1.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
-      @sample_2.should_receive(:update_attributes).with(:hybridization_id => @hybridization_1.id)
-      @sample_3.should_receive(:update_attributes).with(:hybridization_id => @hybridization_2.id)
-      @sample_4.should_receive(:update_attributes).with(:hybridization_id => @hybridization_2.id)
       @hybridization_set.save
     end
 
