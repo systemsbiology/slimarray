@@ -1,6 +1,7 @@
 class ChargeTemplatesController < ApplicationController
   before_filter :login_required
   before_filter :staff_or_admin_required
+  before_filter :load_dropdown_selections, :except => [:index, :destroy]
 
   def index
     @charge_templates = ChargeTemplate.find(:all, :order => "name ASC")
@@ -86,9 +87,9 @@ class ChargeTemplatesController < ApplicationController
   end
 
   def grid
-    charge_templates = ChargeTemplate.find(:all) do
+    charge_templates = ChargeTemplate.find(:all, :include => :platform) do
       if params[:_search] == "true"
-        name               =~ "%#{params[:name]}%" if params[:name].present?
+        name               =~ "%#{params["charge_templates.name"]}%" if params["charge_templates.name"].present?
         description        =~ "%#{params[:description]}%" if params[:description].present?
         chips_used         =~ "%#{params[:chips_used]}%" if params[:chips_used].present?
         chip_cost          =~ "%#{params[:chip_cost]}%" if params[:chip_cost].present?
@@ -96,16 +97,22 @@ class ChargeTemplatesController < ApplicationController
         hybridization_cost =~ "%#{params[:hybridization_cost]}%" if params[:hybridization_cost].present?
         qc_cost            =~ "%#{params[:qc_cost]}%" if params[:qc_cost].present?
         other_cost         =~ "%#{params[:other_cost]}%" if params[:other_cost].present?
+        platform.name   =~ "%#{params[:platform]}%" if params[:platform].present?
       end
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
     end
 
     render :json => charge_templates.to_jqgrid_json(
-      [:name, :description, :chips_used, :chip_cost, :labeling_cost, :hybridization_cost,
+      ["name", :description, "platform.name", :chips_used, :chip_cost, :labeling_cost, :hybridization_cost,
        :qc_cost, :other_cost], 
       params[:page], params[:rows], charge_templates.total_entries
     )
   end
 
+  private
+
+  def load_dropdown_selections
+    @platforms = Platform.find(:all, :order => "name ASC")
+  end
 end

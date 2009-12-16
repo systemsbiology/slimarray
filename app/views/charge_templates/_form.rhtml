@@ -4,6 +4,10 @@
 <p><label for="charge_template_name">Name</label><br/>
 <%= @f.text_field 'name'  %></p>
 
+<p><label for="charge_template_platform_id">Platform</label><br/>
+<%= collection_select 'charge_template', 'platform_id',
+  @platforms, 'id', 'name', {:prompt => "None"} %><br/>
+
 <p><label for="charge_template_chips_used">Chips Used</label><br/>
 <%= @f.text_field 'chips_used'  %></p>
 
