@@ -183,11 +183,18 @@ class HybridizationSet
 
   # samples that are available to hybridize for the current platform
   def available_samples
-    @available_samples ||= Sample.find(
-      :all,
-      :include => :chip_type,
-      :conditions => "status = 'submitted' AND chip_types.platform_id = #{platform.id}"
-    )
+    if(chip_type_id)
+      @available_samples ||= Sample.find(
+        :all,
+        :conditions => "status = 'submitted' AND chip_type_id = #{chip_type_id}"
+      )
+    else
+      @available_samples ||= Sample.find(
+        :all,
+        :include => :chip_type,
+        :conditions => "status = 'submitted' AND chip_types.platform_id = #{platform.id}"
+      )
+    end
   end
 
   # chip types for the current platform
