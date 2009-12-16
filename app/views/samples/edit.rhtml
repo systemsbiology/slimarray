@@ -48,6 +48,10 @@
   <%= collection_select 'sample', 'organism_id',
     @organisms, 'id', 'name', {:prompt => true}, {:index => 0} %><br/>
 
+  <p><label for="sample_0_label_id">Label</label><br/>
+  <%= collection_select 'sample', 'label_id',
+    @labels, 'id', 'name', {:prompt => true}, {:index => 0} %><br/>
+
   <% if @naming_schemes.size > 0 %>
     <p><label for="sample_0_naming_scheme_id">Naming Scheme</label><br/>
     <select id='sample_0_naming_scheme_id' name='sample[0][naming_scheme_id]'>

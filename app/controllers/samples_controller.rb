@@ -229,6 +229,7 @@ private
     @naming_schemes = NamingScheme.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
     @organisms = Organism.find(:all, :order => "name ASC")
+    @labels = Label.find(:all, :order => "name ASC")
   end
 
   def sorted_categories(params)
