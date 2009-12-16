@@ -13,7 +13,7 @@ class HybridizationsController < ApplicationController
   def edit
     @hybridization = Hybridization.find(params[:id])
 
-    @samples = Sample.find(:all, :order => "sample_name ASC")
+    @samples = Sample.find(:all, :include => :label, :order => "sample_name ASC")
   end
 
   def update
@@ -24,12 +24,12 @@ class HybridizationsController < ApplicationController
         flash[:notice] = 'Hybridization was successfully updated.'
         redirect_to hybridizations_url
       else
-        @samples = Sample.find(:all, :order => "sample_name ASC")
+        @samples = Sample.find(:all, :include => :label, :order => "sample_name ASC")
         render :action => 'edit'
       end
     rescue ActiveRecord::StaleObjectError
       flash[:warning] = "Unable to update information. Another user has modified this hybridization."
-      @samples = Sample.find(:all, :order => "sample_name ASC")
+      @samples = Sample.find(:all, :include => :label, :order => "sample_name ASC")
       render :action => 'edit'
     end
   end

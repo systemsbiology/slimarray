@@ -41,6 +41,10 @@ class Sample < ActiveRecord::Base
     status == "submitted"
   end
 
+  def name_with_label
+    label ? "#{sample_name} (#{label.name})" : sample_name
+  end
+
   # override new method to handle naming scheme stuff
   def self.new(attributes=nil)
     sample = super(attributes)

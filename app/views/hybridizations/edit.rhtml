@@ -4,7 +4,7 @@
 
 	<p><label for="hybridization_sample_ids">Sample</label><br/>
 	    <select id="hybridization_sample_ids" name="hybridization[sample_ids][]" multiple="multiple">
-        <%= options_from_collection_for_select @samples, "id", "sample_name",
+        <%= options_from_collection_for_select @samples, "id", "name_with_label",
           @hybridization.sample_ids %></select></p>
 
 	<p><label for="hybridization_hybridization_date">Date</label><br/>
