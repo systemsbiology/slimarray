@@ -1,25 +1,60 @@
 <h2>Hybridizations Recorded:</h2>
 
-<table class="table">
-  <th>Date</th>
-  <th>Chip Number</th>
-  <th>Short Name</th>
-  <th>Full Sample Name</th>
-  <th>Project</th>
-  <th>Chip Type</th>
-  <% for n in 0..@hybridizations.size-1 %>
-  <tr>
-    <% hybridization = @hybridizations[n]
-    #breakpoint
-       sample = Sample.find(hybridization.sample_id) %>
-    <td><%= hybridization.hybridization_date %></td>
-    <td><%= hybridization.chip_number %></td>    
-    <td><%= sample.short_sample_name %></td>
-    <td><%= sample.sample_name %></td>
-    <td><%= sample.project.name %></td>
-    <td><%= sample.chip_type.name %></td>
-  </tr>
+<p>Date: <%= @hybridization_set.date %></p>
+
+<% if @hybridization_set.multi_arrays %>
+  <% @hybridization_set.chips.each do |chip| %>
+    <p>
+      Slide: <%=h chip.name %><br>
+      <table class="nonsortable table">
+        <tr>
+          <th>Array Number</th>
+          <% (1..@hybridization_set.number_of_channels).each do |channel_number| %>
+            <th>Channel <%= channel_number %></th>
+          <% end %>
+        </tr>
+        <% chip.microarrays.each do |microarray| %>
+          <tr>
+            <td><%= microarray.array_number %></td>
+            <% microarray.hybridization.samples.each do |sample| %>
+              <td><%= sample.sample_name %> (<%= sample.label.name %>)</td>
+            <% end %>
+          </tr>
+        <% end %>
+      </table>
+    </p>
   <% end %>
-</table>
+<% else %>
+  <table class="nonsortable table">
+    <th>Date</th>
+    <th>
+      <% if @hybridization_set.platform.uses_chip_numbers %>
+        Chip Number
+      <% else %>
+        Chip Name
+      <% end %>
+    </th>
+    <th>Short Name</th>
+    <th>Full Sample Name</th>
+    <th>Project</th>
+    <th>Chip Type</th>
+    <% @hybridization_set.hybridizations.each do |hybridization| %>
+    <tr>
+      <td><%= hybridization.hybridization_date %></td>
+      <td>
+        <% if @hybridization_set.platform.uses_chip_numbers %>
+          <%=h hybridization.chip_number %>
+        <% else %>
+          <%=h hybridization.microarray.chip.name %>
+        <% end %>
+      </td>
+      <td><%= hybridization.short_sample_names %></td>
+      <td><%= hybridization.sample_names %></td>
+      <td><%= hybridization.samples.first.project.name %></td>
+      <td><%= hybridization.samples.first.chip_type.name %></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>
 
 <%= link_to 'Hybridization List', hybridizations_path %>

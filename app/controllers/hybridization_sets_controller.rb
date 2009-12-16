@@ -17,7 +17,7 @@ class HybridizationSetsController < ApplicationController
     respond_to do |format|
       if @hybridization_set.save
         flash[:notice] = 'Hybridizations were successfully created.'
-        format.html { render :action => "create" }
+        format.html { render :action => "show" }
         format.xml  { render :xml => @hybridization_set, :status => :created, :location => @hybridization_set }
       else
         format.html { render :action => "new" }
@@ -30,7 +30,6 @@ class HybridizationSetsController < ApplicationController
 
   def load_dropdown_selections
     @platforms = Platform.find(:all, :order => "name ASC")
-    @charge_templates = ChargeTemplate.find(:all, :order => "name ASC")
   end
 
 end

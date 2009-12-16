@@ -10,7 +10,7 @@
 
   <p>
     <%= f.label :charge_template_id, "Charge Template" %><br />
-    <%= f.collection_select :charge_template_id, @charge_templates, :id, :name, {:prompt => true} %>
+    <%= f.collection_select :charge_template_id, @hybridization_set.charge_templates, :id, :name, {:prompt => true} %>
   </p>
   <p>
     <%= f.label :number_of_chips, "Number of Chips/Slides" %><br />

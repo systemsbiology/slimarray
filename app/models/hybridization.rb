@@ -35,6 +35,10 @@ class Hybridization < ActiveRecord::Base
     samples.collect {|s| s.sample_name}.join("_v_")
   end
 
+  def short_sample_names
+    samples.collect {|s| s.short_sample_name}.join(", ")
+  end
+
   def sbeams_user
     samples.first && samples.first.sbeams_user
   end

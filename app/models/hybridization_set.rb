@@ -12,6 +12,7 @@ class HybridizationSet
   attr_accessor :sample_ids
   attr_accessor :chip_names
   attr_accessor :hybridizations
+  attr_accessor :chips
   attr_accessor :array_entry_errors
 
   # step 1 validations
@@ -112,6 +113,7 @@ class HybridizationSet
       (valid_for_step1? && valid_for_step2_no_multi_arrays? && array_entries_complete?)
 
     self.hybridizations = Array.new
+    self.chips = Array.new
 
     return false if duplicate_samples_specified
 
@@ -145,9 +147,11 @@ class HybridizationSet
               self.hybridizations << hybridization
             end
             
+            self.chips << chip.reload
           # no multi arrays
           else
             chip = Chip.create!(:name => chip_name)
+
             microarray = Microarray.create!(:chip_id => chip.id, :array_number => 1)
             hybridization = Hybridization.create!(
               :hybridization_date => date,
@@ -158,6 +162,7 @@ class HybridizationSet
             )
 
             self.hybridizations << hybridization
+            self.chips << chip.reload
           end
 
           current_chip_number += 1
@@ -200,6 +205,13 @@ class HybridizationSet
   # chip types for the current platform
   def chip_types
     @chip_types ||= ChipType.find(
+      :all,
+      :conditions => {:platform_id => platform.id}
+    )
+  end
+
+  def charge_templates
+    @charge_templates ||= ChargeTemplate.find(
       :all,
       :conditions => {:platform_id => platform.id}
     )

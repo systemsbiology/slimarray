@@ -46,6 +46,7 @@
           <% if @hybridization_set.number_of_channels == 1 %>
             <td>
               <select name="hybridization_set[sample_ids][<%= chip_index %>][0]">
+              <option value=0>- Please Select -</option>
               <%= options_from_collection_for_select @hybridization_set.available_samples,
                 :id, :short_and_long_name, @hybridization_set.sample_ids &&
                 @hybridization_set.sample_ids[chip_index.to_s]['0'].to_i %>
