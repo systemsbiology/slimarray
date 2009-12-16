@@ -206,6 +206,7 @@ Get detailed information about a single sample.
         submission_date   =~ "%#{params[:submission_date]}%" if params[:submission_date].present?                
         short_sample_name =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
         sample_name       =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
+        status            =~ "%#{params[:status]}%" if params[:status].present? 
         sbeams_user       =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
         project.name      =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
@@ -214,7 +215,7 @@ Get detailed information about a single sample.
     end
 
     render :json => samples.to_jqgrid_json(
-      [:submission_date, :short_sample_name, :sample_name, :sbeams_user, "project.name"], 
+      [:submission_date, :short_sample_name, :sample_name, :status, :sbeams_user, "project.name"], 
       params[:page], params[:rows], samples.total_entries
     )
   end
