@@ -1,3 +1,55 @@
+--- 
+labels: 
+  columns: 
+  - id
+  - name
+  - created_at
+  - updated_at
+  records: 
+  - - "1"
+    - Biotin
+    - 2009-12-17 11:37:36
+    - 2009-12-17 11:37:36
+  - - "2"
+    - Cyanine 3
+    - 2009-12-17 11:37:40
+    - 2009-12-17 11:37:40
+  - - "3"
+    - Cyanine 5
+    - 2009-12-17 11:37:42
+    - 2009-12-17 11:37:42
+
+--- 
+platforms: 
+  columns: 
+  - id
+  - name
+  - has_multi_array_chips
+  - uses_chip_numbers
+  - multiple_labels
+  - default_label_id
+  - raw_data_type
+  - created_at
+  - updated_at
+  records: 
+  - - "1"
+    - Affymetrix
+    - false
+    - true
+    - false
+    - "1"
+    - Affymetrix CEL
+    - 2009-12-17 11:05:27
+    - 2009-12-17 11:38:06
+  - - "2"
+    - Agilent
+    - true
+    - false
+    - true
+    - "2"
+    - Unknown
+    - 2009-12-17 11:38:22
+    - 2009-12-17 11:38:22
 
 --- 
 site_config: 
