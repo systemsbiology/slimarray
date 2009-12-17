@@ -33,6 +33,10 @@ class ChipType < ActiveRecord::Base
     organism && organism.name
   end
 
+  def platform_and_name
+    "#{name} (#{platform && platform.name})"
+  end
+
   def summary_hash
     return {
       :id => id,
