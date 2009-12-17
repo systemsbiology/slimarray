@@ -3,9 +3,10 @@ class AddPlatformIdToChipType < ActiveRecord::Migration
     add_column :chip_types, :platform_id, :integer
     add_index :chip_types, :platform_id
 
+    biotin_label = Label.find_or_create_by_name("Biotin")
     affy_platform = Platform.find_or_create_by_name(
       :name => "Affymetrix", :uses_chip_numbers => true, :raw_data_type => "Affymetrix CEL",
-      :multiple_labels => false
+      :multiple_labels => false, :default_label_id => biotin_label.id
     )
     ChipType.all.each do |t|
       t.update_attributes(:platform_id => affy_platform.id) if t.array_platform == "affy"
