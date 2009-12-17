@@ -6,10 +6,6 @@ class HybridizationsController < ApplicationController
   def index
   end
 
-  def show
-    @hybridization = Hybridization.find(params[:id])
-  end
-
   def edit
     @hybridization = Hybridization.find(params[:id])
 
