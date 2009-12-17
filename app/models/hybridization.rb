@@ -20,9 +20,13 @@ class Hybridization < ActiveRecord::Base
   end
   
   def after_create
+    # mark samples as hybridized
     samples.each do |s|
       s.update_attributes(:status => "hybridized")
     end
+
+    create_gcos_import_file if SiteConfig.create_gcos_files?
+    create_agcc_array_file if SiteConfig.create_agcc_files?
   end
 
   def after_destroy
@@ -223,6 +227,20 @@ class Hybridization < ActiveRecord::Base
 
   def self.record_charges(hybridizations)  
     for hybridization in hybridizations
+      # set up a charge set if needed
+      unless(hybridization.charge_set)
+        project_name = hybridization.samples.first.project.name
+
+        charge_period = ChargePeriod.find(:last)
+        charge_period = ChargePeriod.create(:name => "Default") unless charge_period
+
+        charge_set = ChargeSet.find_or_create_by_charge_period_id_and_name(
+          :charge_period_id => charge_period.id, :name => project_name
+        )
+
+        hybridization.update_attributes(:charge_set_id => charge_set.id)
+      end
+
       template = ChargeTemplate.find(hybridization.charge_template_id)
       charge = Charge.create(:charge_set_id => hybridization.charge_set_id,
                              :date => hybridization.hybridization_date,

@@ -114,6 +114,9 @@ describe Hybridization do
       @sample_2 = create_sample(:sample_name => "mut-0")
       @sample_3 = create_sample(:sample_name => "wt-5")
       @sample_4 = create_sample(:sample_name => "mut-5")
+      @charge_period = create_charge_period
+      ChargeSet.should_receive(:find_or_create_by_charge_period_id_and_name).
+        twice.and_return(@charge_set)
     end
 
     it "should handle one channel array hybridizations" do
@@ -121,14 +124,14 @@ describe Hybridization do
         :hybridization_date => "2009-12-11",
         :chip_number => 1,
         :charge_template => @charge_template,
-        :charge_set => @charge_set,
+        :charge_set => nil,
         :samples => [@sample_1]
       )
       hybridization_2 = create_hybridization(
         :hybridization_date => "2009-12-11",
         :chip_number => 2,
         :charge_template => @charge_template,
-        :charge_set => @charge_set,
+        :charge_set => nil,
         :samples => [@sample_2]
       )
       Charge.should_receive(:create).with(
@@ -161,14 +164,14 @@ describe Hybridization do
         :hybridization_date => "2009-12-11",
         :chip_number => 1,
         :charge_template => @charge_template,
-        :charge_set => @charge_set,
+        :charge_set => nil,
         :samples => [@sample_1,@sample_2]
       )
       hybridization_2 = create_hybridization(
         :hybridization_date => "2009-12-11",
         :chip_number => 2,
         :charge_template => @charge_template,
-        :charge_set => @charge_set,
+        :charge_set => nil,
         :samples => [@sample_3,@sample_4]
       )
       Charge.should_receive(:create).with(
