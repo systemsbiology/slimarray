@@ -233,7 +233,7 @@ class HybridizationSet
     return options[:date] if options[:date]
     return nil unless options['date(1i)'] && options['date(2i)'] && options['date(3i)']
 
-    "#{options['date(1i)']}-#{options['date(2i)']}-#{options['date(3i)']}"
+    return Date.parse("#{options['date(1i)']}-#{options['date(2i)']}-#{options['date(3i)']}")
   end
 
   def array_entries_complete?
