@@ -528,7 +528,8 @@ class Sample < ActiveRecord::Base
       :file_root => file_root,
       :organism => organism ? organism.name : "",
       :chip_type => chip_type.short_name,
-      :chip_type_uri => "#{SiteConfig.site_url}/chip_types/#{chip_type_id}"
+      :chip_type_uri => "#{SiteConfig.site_url}/chip_types/#{chip_type_id}",
+      :label => label ? label.name : ""
     }
   end
 
