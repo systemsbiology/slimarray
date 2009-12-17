@@ -16,7 +16,7 @@ class SampleSet < ActiveRecord::BaseWithoutTable
   
   def self.new(attributes=nil)
     sample_set = super(attributes)
-     if attributes && attributes[:chip_type_id]
+     if attributes && attributes[:chip_type_id] && attributes[:chip_type_id] != ""
       sample_set.label_id = ChipType.find(attributes[:chip_type_id]).platform.default_label_id
      end
 
