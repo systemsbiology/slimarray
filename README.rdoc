@@ -1,29 +1,53 @@
-= SLIMarray Documentation
+= SLIMarray
 
-This document gives an overview of SLIMarray, and links to installation, 
-usage and code documentation.
+== What is it?
 
-== Installation
+SLIMarray is a sample tracking system for microarrays. It is geared primarily towards a 
+"Core Facility" model, where end users submit samples to a core facility and then the core 
+takes care of actually running the samples on the microarray instruments. SLIMarray captures 
+meta data about samples as they are submitted, and then lets the core facility track the 
+samples through being run on a hybridized, and having raw data generated. Much of the sample 
+information is available through a REST-like API.
 
-There are several ways to install SLIMarray, depending upon your level of 
-expertise, available time to install the software and desired features. Here 
-are the options, listed from easiest to more involved:
+== How do I install it?
 
-===SLIMarray Lite (Easiest):
-Software is packaged into a single executable. This uses a SQLite database and an all-ruby web server (WEBrick). The downsides are that it is relatively slow and lacks LDAP support for user authentication. See SLIMarrayLiteInstallNotes[link:files/doc/SLIMarrayLiteInstallNotes.html]
+SLIMarray can be installed either as a standalone application, or using shared infrastructure that 
+allows single sign-on and shared users and lab groups with other applications such as SLIMseq. 
+The shared infrastructure install requires that you separately install SLIMcore 
+(http://github.com/bmarzolf/slimcore/tree/master) and RubyCAS-server 
+(http://github.com/gunark/rubycas-server/tree/master). See INSTALL.rdoc for details on 
+installing these.
 
-===SLIMarray Windows Quickstart:
-Quick guide to installing on Windows using MySQL database and WEBrick web server, without LDAP authentication support. See SLIMarrayWindowsQuickstart[link:files/doc/SLIMarrayWindowsQuickstart.html]
+The prerequisites for SLIMarray are:
 
-===SLIMarray Linux(Generic) Quickstart:
-Quick guide to installing on a generic Linux system using MySQL database and WEBrick web server, without LDAP authentication support. See SLIMarrayLinuxQuickstart[link:files/doc/SLIMarrayLinuxQuickstart.html]
+* Ruby version 1.8.6 or 1.8.7
+* RubyGems 1.3.x
+* Ruby client library for your database of choice, e.g. MySQL or SQLite3
+* SLIMcore (if using the SLIMcore Authorizer plugin)
+* RubyCAS-server (if using the SLIMcore Authorizer plugin)
 
-===SLIMarray Ubuntu Quickstart:
-Quick guide to installation specifically on Ubuntu using MySQL database and Mongrel web server, without LDAP authentication support. See SLIMarrayUbuntuQuickstart[link:files/doc/SLIMarrayUbuntuQuickstart.html]
+SLIMarray is a Ruby on Rails application. Those familiar with setting up Ruby on Rails applications
+may find the following sufficient to get it up and running (with sqlite3 and slimcore):
 
-===SLIMarray Fedora Core 5 Quickstart:
-Quick guide to installation specifically on Fedora Core 5 using MySQL database and WEBrick web server, without LDAP authentication support. See SLIMarrayFC5Quickstart[link:files/doc/SLIMarrayFC5Quickstart.html]
+    gem install rails -v=2.2.2
+    git clone git://github.com/bmarzolf/slimarray.git
+    cd slimarray
+    rake setup authorizer=slimcore
+    # edit config/application.yml and point it at SLIMcore and RubyCAS-server
+    script/server
 
-===SLIMarray full installation notes (Most involved):
-Full notes for installating the software and building the database from scratch. This will be most useful for those who want to understand what's going on during installation and customize their installation. It also describes how to provide LDAP authentication support (on Linux). See SLIMarrayFullInstallNotes[link:files/doc/SLIMarrayFullInstallNotes.html]
+For a detailed example of how to install SLIMarray on a fresh Ubuntu 8.04 machine, see the file
+named INSTALL.rdoc. Installation on other operating systems should be similar.
 
+== I've installed it, now how do I log in?
+
+With the slimsolo_authorizer, you should be able to log in as user 'admin' with the password 'test'.
+
+With the slimcore_authorizer plugin, log in in as a user that will authenticate with your 
+RubyCAS-server install. The first user to log in will automatically be made an administrator.
+
+== How do I use the API?
+
+The API documentation can be reached by adding /api to the base path to your app. So if you're
+hosting SLIMarray at http://my-server, go to http://my-server/api. This describes how to use the API
+in general as well as documenting what calls are available and what example outputs look like.
