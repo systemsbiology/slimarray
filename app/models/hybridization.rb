@@ -78,33 +78,40 @@ class Hybridization < ActiveRecord::Base
   end
 
   def self.record_as_chip_transactions(hybridizations)
-    hybs_per_group_chip = Hash.new(0)
+    hybs_per_date_group_chip = Hash.new
 
     for hybridization in hybridizations
+      date = hybridization.hybridization_date
+      hybs_per_date_group_chip[date] ||= Hash.new
+
       sample = hybridization.samples.first
-      hybridization_date_group_chip_key = hybridization.hybridization_date.to_s+
-        "_"+sample.project.lab_group_id.to_s+"_"+sample.chip_type_id.to_s
-      # if this hybridization_date/lab group/chip type combo hasn't been seen,
-      # create a new object to track number of chips of this combo
-      if hybs_per_group_chip[hybridization_date_group_chip_key] == 0
-        hybs_per_group_chip[hybridization_date_group_chip_key] =
-          ChipTransaction.new(
-            :lab_group_id => sample.project.lab_group_id,
-            :chip_type_id => sample.chip_type_id,
-            :date => hybridization.hybridization_date,
-            :description => 'Hybridized on ' + hybridization.hybridization_date.to_s,
-            :used => 1
+      lab_group_id = sample.project.lab_group_id
+      hybs_per_date_group_chip[date][lab_group_id] ||= Hash.new
+      
+      chip_type_id = sample.chip_type_id
+      hybs_per_date_group_chip[date][lab_group_id][chip_type_id] ||= 0
+      hybs_per_date_group_chip[date][lab_group_id][chip_type_id] += 1
+    end
+
+    transactions = Array.new
+    hybs_per_date_group_chip.each do |date, group_hash|
+      group_hash.each do |lab_group_id, chip_hash|
+        chip_hash.each do |chip_type_id, hybridization_count|
+          chip_type = ChipType.find(chip_type_id)
+          chips_used = hybridization_count / chip_type.arrays_per_chip
+
+          transactions << ChipTransaction.create(
+            :lab_group_id => lab_group_id,
+            :chip_type_id => chip_type_id,
+            :date => date,
+            :description => 'Hybridized on ' + date.to_s,
+            :used => chips_used
           )
-      else
-        hybs_per_group_chip[hybridization_date_group_chip_key][:used] += 1
+        end
       end
-    end
+    end      
 
-    for hybridization_date_group_chip_key in hybs_per_group_chip.keys
-      hybs_per_group_chip[hybridization_date_group_chip_key].save
-    end
-
-    return hybs_per_group_chip.values
+    return transactions
   end
 
   def create_gcos_import_file
@@ -229,13 +236,15 @@ class Hybridization < ActiveRecord::Base
     for hybridization in hybridizations
       # set up a charge set if needed
       unless(hybridization.charge_set)
-        project_name = hybridization.samples.first.project.name
+        project = hybridization.samples.first.project
 
         charge_period = ChargePeriod.find(:last)
         charge_period = ChargePeriod.create(:name => "Default") unless charge_period
 
-        charge_set = ChargeSet.find_or_create_by_charge_period_id_and_name(
-          :charge_period_id => charge_period.id, :name => project_name
+        charge_set = ChargeSet.find_or_create_by_charge_period_id_and_lab_group_id_and_name(
+          :charge_period_id => charge_period.id,
+          :lab_group_id => project.lab_group_id,
+          :name => project.name
         )
 
         hybridization.update_attributes(:charge_set_id => charge_set.id)

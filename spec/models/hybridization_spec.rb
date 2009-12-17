@@ -115,7 +115,7 @@ describe Hybridization do
       @sample_3 = create_sample(:sample_name => "wt-5")
       @sample_4 = create_sample(:sample_name => "mut-5")
       @charge_period = create_charge_period
-      ChargeSet.should_receive(:find_or_create_by_charge_period_id_and_name).
+      ChargeSet.should_receive(:find_or_create_by_charge_period_id_and_lab_group_id_and_name).
         twice.and_return(@charge_set)
     end
 
