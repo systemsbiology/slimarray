@@ -48,6 +48,31 @@ describe Hybridization do
 
       @chip_transactions.size.should == 2
     end
+
+    it "should create a transaction showing 1 chip used when a 2-array chip is hybridized " do
+      project = create_project
+      chip_type = create_chip_type(:arrays_per_chip => 2)
+      chip = create_chip
+      @hybridizations = [
+        create_hybridization(
+          :samples => [create_sample(:project => project, :chip_type => chip_type)],
+          :chip_number => 1,
+          :microarray => create_microarray(:chip => chip, :array_number => 1)
+        ),
+        create_hybridization(
+          :samples => [create_sample(:project => project, :chip_type => chip_type)],
+          :chip_number => 1,
+          :microarray => create_microarray(:chip => chip, :array_number => 2)
+        ),
+      ]
+
+      do_record
+
+      @chip_transactions.size.should == 1
+      @chip_transactions[0].lab_group.should == project.lab_group
+      @chip_transactions[0].chip_type.should == chip_type
+      @chip_transactions[0].used.should == 1
+    end
   end
 
   it "should create GCOS import files" do
