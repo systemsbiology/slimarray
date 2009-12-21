@@ -122,7 +122,10 @@ class HybridizationSet
     current_chip_number = 1
     begin
       Hybridization.transaction do
-        sample_ids.each do |chip_index, chip_samples|
+        chip_indexes = sample_ids.keys.collect {|i| i.to_i}
+        chip_indexes.sort.each do |chip_index|
+          chip_samples = sample_ids[chip_index.to_s]
+
           # use the chip names the user provided, or if there are none use the chip number
           if(chip_name_list)
             chip_name = chip_name_list.shift
@@ -134,7 +137,10 @@ class HybridizationSet
           if multi_arrays
             chip = Chip.create!(:name => chip_name)
 
-            chip_samples.each do |array_index, array_samples|
+            array_indexes = chip_samples.keys.collect {|i| i.to_i}
+            array_indexes.sort.each do |array_index|
+              array_samples = chip_samples[array_index.to_s]
+
               microarray = Microarray.create!(:chip_id => chip.id, :array_number => array_index.to_i+1)
               hybridization = Hybridization.create!(
                 :hybridization_date => date,
