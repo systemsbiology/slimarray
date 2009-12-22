@@ -525,6 +525,7 @@ class Sample < ActiveRecord::Base
       :sample_terms => sample_term_array,
       :sample_texts => sample_text_array,
       :raw_data_path => raw_data_path,
+      :raw_data_type => chip_type.platform.raw_data_type || "",
       :file_root => file_root,
       :organism => organism ? organism.name : "",
       :chip_type => chip_type.short_name,
