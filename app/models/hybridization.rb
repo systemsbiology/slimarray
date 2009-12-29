@@ -19,6 +19,10 @@ class Hybridization < ActiveRecord::Base
     end
   end
   
+  def before_create
+    populate_raw_data_path
+  end
+
   def after_create
     # mark samples as hybridized
     samples.each do |s|
@@ -51,29 +55,32 @@ class Hybridization < ActiveRecord::Base
     samples.first && samples.first.project.name
   end
 
+  def populate_raw_data_path
+    raw_data_root_path = SiteConfig.raw_data_root_path
+
+    sample = samples.first
+    # only do this for affy samples
+    if( sample.chip_type.platform && sample.chip_type.platform.name == "Affymetrix")
+      hybridization_year_month = hybridization_date.year.to_s + 
+                                 ("%02d" % hybridization_date.month)
+      hybridization_date_number_string = hybridization_year_month +
+                           ("%02d" % hybridization_date.day) + "_" + 
+                           ("%02d" % chip_number)
+      self.raw_data_path = raw_data_root_path + "/" + hybridization_year_month + "/" +
+                                    hybridization_date_number_string + "_" + 
+                                    sample.sample_name + ".CEL"
+    end
+  end
+
   def self.populate_all_raw_data_paths
-    hybridizations = Hybridization.find(:all)
-    
-    populate_raw_data_paths(hybridizations)
+    Hybridization.all.each do |hybridization|
+      hybridization.populate_raw_data_path
+    end
   end
 
   def self.populate_raw_data_paths(hybridizations)
-    raw_data_root_path = SiteConfig.raw_data_root_path
- 
     for hybridization in hybridizations
-      sample = hybridization.samples.first
-      # only do this for affy samples
-      if( sample.chip_type.platform && sample.chip_type.platform.name == "Affymetrix")
-        hybridization_year_month = hybridization.hybridization_date.year.to_s + 
-                                   ("%02d" % hybridization.hybridization_date.month)
-        hybridization_date_number_string = hybridization_year_month +
-                             ("%02d" % hybridization.hybridization_date.day) + "_" + 
-                             ("%02d" % hybridization.chip_number)
-        hybridization.raw_data_path = raw_data_root_path + "/" + hybridization_year_month + "/" +
-                                      hybridization_date_number_string + "_" + 
-                                      sample.sample_name + ".CEL"
-        hybridization.save
-      end
+      hybridization.populate_raw_data_path
     end
   end
 
