@@ -59,17 +59,19 @@ class Hybridization < ActiveRecord::Base
     raw_data_root_path = SiteConfig.raw_data_root_path
 
     sample = samples.first
-    # only do this for affy samples
-    if( sample.chip_type.platform && sample.chip_type.platform.name == "Affymetrix")
-      hybridization_year_month = hybridization_date.year.to_s + 
-                                 ("%02d" % hybridization_date.month)
-      hybridization_date_number_string = hybridization_year_month +
-                           ("%02d" % hybridization_date.day) + "_" + 
-                           ("%02d" % chip_number)
-      self.raw_data_path = raw_data_root_path + "/" + hybridization_year_month + "/" +
-                                    hybridization_date_number_string + "_" + 
-                                    sample.sample_name + ".CEL"
-    end
+
+    return if sample.chip_type.platform ||
+      sample.chip_type.platform.name == "Affymetrix" ||
+      raw_data_root_path.nil?
+
+    hybridization_year_month = hybridization_date.year.to_s + 
+                               ("%02d" % hybridization_date.month)
+    hybridization_date_number_string = hybridization_year_month +
+                         ("%02d" % hybridization_date.day) + "_" + 
+                         ("%02d" % chip_number)
+    self.raw_data_path = raw_data_root_path + "/" + hybridization_year_month + "/" +
+                                  hybridization_date_number_string + "_" + 
+                                  sample.sample_name + ".CEL"
   end
 
   def self.populate_all_raw_data_paths
