@@ -52,6 +52,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :hybridization_sets, :collection => {:clear => :get}
   map.resources :labels, :collection => {:grid => :get}
   map.resources :platforms, :collection => {:grid => :get}
+  map.resources :raw_data_paths, :only => :create
 
   # The priority is based upon order of creation: first created -> highest priority.
 
