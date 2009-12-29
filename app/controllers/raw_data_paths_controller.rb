@@ -15,8 +15,8 @@ class RawDataPathsController < ApplicationController
         format.xml  { render :xml => @hybridization, :status => :created, :location => @hybridization }
         format.json  { render :json => @hybridization, :status => :created, :location => @hybridization }
       else
-        format.xml  { render :xml => "No matching hybridization found", :status => :unprocessable_entity }
-        format.json  { render :json => "No matching hybridization found", :status => :unprocessable_entity }
+        format.xml  { render :xml => "No matching hybridization found", :status => 404 }
+        format.json  { render :json => "No matching hybridization found", :status => 404 }
       end
     end
   end
