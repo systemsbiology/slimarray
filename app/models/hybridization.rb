@@ -60,9 +60,9 @@ class Hybridization < ActiveRecord::Base
 
     sample = samples.first
 
-    return if sample.chip_type.platform ||
-      sample.chip_type.platform.name == "Affymetrix" ||
-      raw_data_root_path.nil?
+    return unless sample.chip_type.platform &&
+      sample.chip_type.platform.name == "Affymetrix" &&
+      raw_data_root_path
 
     hybridization_year_month = hybridization_date.year.to_s + 
                                ("%02d" % hybridization_date.month)
@@ -77,12 +77,14 @@ class Hybridization < ActiveRecord::Base
   def self.populate_all_raw_data_paths
     Hybridization.all.each do |hybridization|
       hybridization.populate_raw_data_path
+      hybridization.save
     end
   end
 
   def self.populate_raw_data_paths(hybridizations)
     for hybridization in hybridizations
       hybridization.populate_raw_data_path
+      hybridization.save
     end
   end
 
