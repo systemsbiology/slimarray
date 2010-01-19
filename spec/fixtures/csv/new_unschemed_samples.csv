@@ -1,0 +1,3 @@
+CEL File,Sample ID,Submission Date,Short Sample Name,Sample Name,Sample Group Name,Chip Type,Organism,SBEAMS User,Project,Naming Scheme
+/tmp/20100112_01_normal.CEL,,1/12/2010,N,normal,normal,Mouse 430 2.0,Mouse,bob,MouseGroup,None
+/tmp/20100112_02_diseased.CEL,,1/12/2010,D,diseased,diseased,Mouse 430 2.0,Mouse,bob,MouseGroup,None

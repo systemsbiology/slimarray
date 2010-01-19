@@ -4,7 +4,7 @@ require 'parseexcel'
 describe "Sample" do
   fixtures :all
 
-  it "should load a csv of sample info without a naming scheme" do
+  it "should write a csv of sample info without a naming scheme" do
     csv_file_name = Sample.to_csv
     
     csv = CSV.open(csv_file_name, 'r')
@@ -96,7 +96,7 @@ describe "Sample" do
     ], csv.shift)
   end
   
-  it "should load a csv of sample info with a naming scheme" do
+  it "should write a csv of sample info with a naming scheme" do
     csv_file_name = Sample.to_csv('Yeast Scheme')
     
     csv = CSV.open(csv_file_name, 'r')
@@ -297,6 +297,46 @@ describe "Sample" do
     end
   end
 
+  it "should load a csv of new unschemed samples with hybridizations" do
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/new_unschemed_samples.csv"
+  
+    errors = Sample.from_csv(csv_file)
+
+    errors.should == ""
+    
+    new_samples = Sample.find(:all, :limit => 2, :order => "id DESC")
+    sample_2 = new_samples[0]
+    sample_1 = new_samples[1]
+
+    sample_1.submission_date.should == Date.parse("2010-01-12")
+    sample_1.short_sample_name.should == "N"
+    sample_1.sample_name.should == "normal"
+    sample_1.sample_group_name.should == "normal"
+    sample_1.organism.name.should == "Mouse"
+    sample_1.chip_type.name.should == "Mouse 430 2.0"
+    sample_1.sbeams_user.should == "bob"
+    sample_1.project.name.should == "MouseGroup"
+    sample_1.hybridization.hybridization_date.should == Date.parse("2010-01-12")
+    sample_1.hybridization.chip_number.should == 1
+    sample_1.hybridization.raw_data_path.should == "/tmp/20100112_01_normal.CEL"
+    sample_1.hybridization.microarray.should_not be_nil
+    sample_1.hybridization.microarray.chip.should_not be_nil
+
+    sample_2.submission_date.should == Date.parse("2010-01-12")
+    sample_2.short_sample_name.should == "D"
+    sample_2.sample_name.should == "diseased"
+    sample_2.sample_group_name.should == "diseased"
+    sample_2.organism.name.should == "Mouse"
+    sample_2.chip_type.name.should == "Mouse 430 2.0"
+    sample_2.sbeams_user.should == "bob"
+    sample_2.project.name.should == "MouseGroup"
+    sample_2.hybridization.hybridization_date.should == Date.parse("2010-01-12")
+    sample_2.hybridization.chip_number.should == 2
+    sample_2.hybridization.raw_data_path.should == "/tmp/20100112_02_diseased.CEL"
+    sample_2.hybridization.microarray.should_not be_nil
+    sample_2.hybridization.microarray.chip.should_not be_nil
+  end
+  
   it "should take sample selections and provide the corresponding samples" do
     sample_1 = create_sample
     sample_2 = create_sample

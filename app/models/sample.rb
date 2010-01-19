@@ -391,7 +391,7 @@ class Sample < ActiveRecord::Base
                 end
                 if(naming_term.nil?)
                   if(scheme_generation_allowed)
-                    naming_term = NamingTerm.create(
+                    naming_term = NamingTerm.create!(
                       :naming_element_id => e.id,
                       :term => row[current_column_index],
                       :abbreviated_term => row[current_column_index],
@@ -462,8 +462,27 @@ class Sample < ActiveRecord::Base
           :sbeams_user => row[8],
           :project_id => project.id
         ))
-      puts errors.full_messages
+
       return "Problem updating values for sample id=#{id}: #{errors.full_messages}"
+    end
+
+    if(hybridization)
+      hybridization.update_attributes(:raw_data_path => row[0])
+    else
+      row[0] =~ /(\d{8}_(\d{2}))_/
+      chip_name = $1
+      chip_number = $2
+
+      chip = Chip.create!(:name => chip_name)
+      microarray = Microarray.create!(:chip_id => chip.id, :array_number => 1)
+
+      hybridization = Hybridization.create(
+        :hybridization_date => row[2],
+        :chip_number => chip_number,
+        :raw_data_path => row[0],
+        :microarray_id => microarray.id,
+        :samples => [self]
+      )
     end
     
     return ""

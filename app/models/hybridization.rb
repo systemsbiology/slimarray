@@ -56,6 +56,9 @@ class Hybridization < ActiveRecord::Base
   end
 
   def populate_raw_data_path
+    # don't overwrite an existing path
+    return if raw_data_path
+
     raw_data_root_path = SiteConfig.raw_data_root_path
 
     sample = samples.first
