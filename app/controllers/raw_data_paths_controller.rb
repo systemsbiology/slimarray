@@ -11,7 +11,7 @@ class RawDataPathsController < ApplicationController
 
     respond_to do |format|
       if @hybridization
-        @hybridization.update_attributes(:raw_data_path => params[:raw_data_path])
+        @hybridization.update_attributes(:raw_data_path => params[:path])
         format.xml  { render :xml => @hybridization, :status => :created, :location => @hybridization }
         format.json  { render :json => @hybridization, :status => :created, :location => @hybridization }
       else

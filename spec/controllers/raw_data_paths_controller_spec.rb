@@ -18,7 +18,7 @@ describe RawDataPathsController do
       ).and_return(@hybridization)
       @hybridization.should_receive(:update_attributes).with(:raw_data_path => "/path/to/data.txt")
 
-      post :create, :chip_name => "251485010001", :array_number => 2, :raw_data_path => "/path/to/data.txt"
+      post :create, :chip_name => "251485010001", :array_number => 2, :path => "/path/to/data.txt"
       response.should be_success
     end
 
@@ -30,7 +30,7 @@ describe RawDataPathsController do
                          "251485010001", "2" ]
       ).and_return(nil)
 
-      post :create, :chip_name => "251485010001", :array_number => 2, :raw_data_path => "/path/to/data.txt"
+      post :create, :chip_name => "251485010001", :array_number => 2, :path => "/path/to/data.txt"
       response.should_not be_success
     end
 
