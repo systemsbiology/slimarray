@@ -10,11 +10,6 @@
 	<p><label for="site_config_facility_name">Facility Name</label><br/>
 	<%= text_field 'site_config', 'facility_name'  %></p>
 	
-	<p><label for="site_config_array_platform">Array Platform</label><br/>
-	<%= radio_button 'site_config', 'array_platform', 'affy'  %>Affymetrix Only<br>
-    <%= radio_button 'site_config', 'array_platform', 'nonaffy'  %>Non-Affymetrix Only<br>
-    <%= radio_button 'site_config', 'array_platform', 'both'  %>Both Affymetrix and Non-Affymetrix</p>
-	
 	<p><%= check_box 'site_config', 'track_inventory'  %>
 	<label for="site_config_track_inventory">Track Array Inventory</label></p>
 
@@ -30,7 +25,7 @@
       <label for="site_config_create_gcos_files">Create files for GCOS (Affymetrix Only)</label></p>
 
       <p><%= check_box 'site_config', 'using_sbeams'  %>
-      <label for="site_config_using_sbeams">Using SBEAMS Downstream (Affymetrix Only, requires GCOS file creation)</label></p>
+      <label for="site_config_using_sbeams">Using SBEAMS Downstream (Affymetrix Only)</label></p>
 
       <p><label for="site_config_gcos_output_path">Output Path For GCOS Sample Files (Affymetrix Only)</label><br/>
       <%= text_field 'site_config', 'gcos_output_path', :size => 70 %></p>

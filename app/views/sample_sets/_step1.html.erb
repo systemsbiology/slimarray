@@ -25,17 +25,14 @@
     </select></p>
   <% end %>
 
-  <% if SiteConfig.using_affy_arrays? && SiteConfig.create_gcos_files? && SiteConfig.using_sbeams? %>
+  <% if SiteConfig.using_sbeams? %>
     <p><label for="sample_set_sbeams_user">SBEAMS User</label><br/>
       <input type="text" id="sample_set_sbeams_user" name="sample_set[sbeams_user]"
       size="20" value="<%=h current_user.login%>" /></p>
-  <% elsif SiteConfig.using_affy_arrays? && SiteConfig.create_gcos_files? %>
-    <p><label for="sample_set_sbeams_user">Array User Name</label><br/>
+  <% else %>
+    <p><label for="sample_set_sbeams_user">Submitter</label><br/>
       <input type="text" id="sample_set_sbeams_user" name="sample_set[sbeams_user]"
       size="20" value="<%=h current_user.login%>" /></p>
-  <% else %>
-    <input type="hidden" id="sample_set_sbeams_user" name="sample_set[sbeams_user]"
-    size="20"/>
   <% end %>
 
   <%= render :partial => 'projects' %>

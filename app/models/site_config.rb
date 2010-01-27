@@ -23,15 +23,4 @@ class SiteConfig < ActiveRecord::Base
     end
   end
   
-  def SiteConfig.using_affy_arrays?
-    if(SiteConfig.exists?(1))
-      if SiteConfig.find(1).array_platform == "affy" ||
-         SiteConfig.find(1).array_platform == "both"
-        return true
-      else
-        return false
-      end
-    end
-  end
-
 end
