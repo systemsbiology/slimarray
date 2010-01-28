@@ -320,6 +320,7 @@ describe "Sample" do
     sample_1.hybridization.chip_number.should == 1
     sample_1.hybridization.raw_data_path.should == "/tmp/20100112_01_normal.CEL"
     sample_1.hybridization.microarray.should_not be_nil
+    sample_1.hybridization.microarray.array_number.should == 1
     sample_1.hybridization.microarray.chip.should_not be_nil
 
     sample_2.submission_date.should == Date.parse("2010-01-12")
@@ -334,6 +335,7 @@ describe "Sample" do
     sample_2.hybridization.chip_number.should == 2
     sample_2.hybridization.raw_data_path.should == "/tmp/20100112_02_diseased.CEL"
     sample_2.hybridization.microarray.should_not be_nil
+    sample_2.hybridization.microarray.array_number.should == 2
     sample_2.hybridization.microarray.chip.should_not be_nil
   end
   

@@ -279,14 +279,14 @@ class Sample < ActiveRecord::Base
         end
       
         # check to see if this sample should have a naming scheme
-        if(row[10] == "None")
+        if(row[11] == "None")
           ###########################################
           # non-naming schemed sample
           ###########################################
         
-          # there should be 10 cells in each row
-          if(row.size != 11)
-            return "Wrong number of columns in row #{row_number}. Expected 11"
+          # there should be 11 cells in each row
+          if(row.size != 12)
+            return "Wrong number of columns in row #{row_number}. Expected 12"
           end
 
           if( !sample.new_record? )
@@ -303,20 +303,20 @@ class Sample < ActiveRecord::Base
           ###########################################
 
           naming_scheme = NamingScheme.find(:first, 
-            :conditions => {:name => row[10]})
+            :conditions => {:name => row[11]})
           # make sure this sample has a naming scheme
           if(naming_scheme.nil?)
             if(scheme_generation_allowed)
-              naming_scheme = NamingScheme.create(:name => row[10])
+              naming_scheme = NamingScheme.create(:name => row[11])
             else
-              return "Naming scheme #{row[10]} doesn't exist in row #{row_number}"
+              return "Naming scheme #{row[11]} doesn't exist in row #{row_number}"
             end
           end
 
           naming_elements =
             naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
 
-          expected_columns = 11 + naming_elements.size
+          expected_columns = 12 + naming_elements.size
           if(row.size > expected_columns)
             # create new naming elements if that's allowed
             # otherwise return an error message
@@ -326,7 +326,7 @@ class Sample < ActiveRecord::Base
               else
                 current_element_order = 1
               end
-              (11..header_row.size-1).each do |i|
+              (12..header_row.size-1).each do |i|
                 NamingElement.create(
                   :name => header_row[i],
                   :element_order => current_element_order,
@@ -359,7 +359,7 @@ class Sample < ActiveRecord::Base
           end
 
           # create the new naming scheme records
-          current_column_index = 11
+          current_column_index = 12
           naming_elements.each do |e|
             # do nothing if there's nothing in the cell
             if(row[current_column_index] != nil)
@@ -442,12 +442,12 @@ class Sample < ActiveRecord::Base
       return "Chip type doesn't exist"
     end
     
-    organism = Organism.find(:first, :conditions => { :name => row[7] })
+    organism = Organism.find(:first, :conditions => { :name => row[8] })
     if(organism.nil?)
-      organism = Organism.create(:name => row[7])
+      organism = Organism.create(:name => row[8])
     end
     
-    project = Project.find(:first, :conditions => { :name => row[9] })
+    project = Project.find(:first, :conditions => { :name => row[10] })
     if(project.nil?)
       return "Project doesn't exist"
     end
@@ -459,7 +459,7 @@ class Sample < ActiveRecord::Base
           :sample_group_name => row[5],
           :chip_type_id => chip_type.id,
           :organism_id => organism.id,
-          :sbeams_user => row[8],
+          :sbeams_user => row[9],
           :project_id => project.id
         ))
 
@@ -473,8 +473,8 @@ class Sample < ActiveRecord::Base
       chip_name = $1
       chip_number = $2
 
-      chip = Chip.create!(:name => chip_name)
-      microarray = Microarray.create!(:chip_id => chip.id, :array_number => 1)
+      chip = Chip.find_or_create_by_name(chip_name)
+      microarray = Microarray.create!(:chip_id => chip.id, :array_number => row[7])
 
       hybridization = Hybridization.create(
         :hybridization_date => row[2],
