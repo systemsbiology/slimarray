@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "ChargePeriod" do
-  fixtures :charge_periods, :charge_sets
+  fixtures :charge_periods, :charge_sets, :site_config
 
   describe "providing a destroy warning" do
 
