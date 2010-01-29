@@ -267,156 +267,158 @@ class Sample < ActiveRecord::Base
     row_number = 0
     header_row = nil
 
-    CSV.open(csv_file_name, 'r') do |row|
-      # grab the header row or process sample rows
-      if(row_number == 0)
-        header_row = row
-      else
-        begin
-          sample = Sample.find(row[1].to_i)
-        rescue
-          sample = Sample.new
-        end
-      
-        # check to see if this sample should have a naming scheme
-        if(row[11] == "None")
-          ###########################################
-          # non-naming schemed sample
-          ###########################################
-        
-          # there should be 11 cells in each row
-          if(row.size != 12)
-            return "Wrong number of columns in row #{row_number}. Expected 12"
-          end
-
-          if( !sample.new_record? )
-            sample.destroy_existing_naming_scheme_info
-          end
-        
-          errors = sample.update_unschemed_columns(row)
-          if(errors != "")
-            return errors + " in row #{row_number} of non-naming schemed samples"
-          end
+    transaction do
+      CSV.open(csv_file_name, 'r') do |row|
+        # grab the header row or process sample rows
+        if(row_number == 0)
+          header_row = row
         else
-          ###########################################
-          # naming schemed samples
-          ###########################################
-
-          naming_scheme = NamingScheme.find(:first, 
-            :conditions => {:name => row[11]})
-          # make sure this sample has a naming scheme
-          if(naming_scheme.nil?)
-            if(scheme_generation_allowed)
-              naming_scheme = NamingScheme.create(:name => row[11])
-            else
-              return "Naming scheme #{row[11]} doesn't exist in row #{row_number}"
-            end
-          end
-
-          naming_elements =
-            naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
-
-          expected_columns = 12 + naming_elements.size
-          if(row.size > expected_columns)
-            # create new naming elements if that's allowed
-            # otherwise return an error message
-            if(scheme_generation_allowed)
-              if(naming_elements.size > 0)
-                current_element_order = naming_elements[-1].element_order + 1
-              else
-                current_element_order = 1
-              end
-              (12..header_row.size-1).each do |i|
-                NamingElement.create(
-                  :name => header_row[i],
-                  :element_order => current_element_order,
-                  :group_element => true,
-                  :optional => true,
-                  :naming_scheme_id => naming_scheme.id,
-                  :free_text => false,
-                  :include_in_sample_description => true,
-                  :dependent_element_id => 0)
-                current_element_order += 1
-              end
-              
-              # re-populate naming elements array
-              naming_elements =
-                naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
-            else
-              return "Wrong number of columns in row #{row_number}. " +
-                "Expected #{expected_columns}"
-            end
-          end
-
-          if( !sample.new_record? )
-            sample.destroy_existing_naming_scheme_info
+          begin
+            sample = Sample.find(row[1].to_i)
+          rescue
+            sample = Sample.new
           end
         
-          # update the sample attributes
-          errors = sample.update_unschemed_columns(row)
-          if(errors != "")
-            return errors + " in row #{row_number}"
-          end
+          # check to see if this sample should have a naming scheme
+          if(row[13] == "None")
+            ###########################################
+            # non-naming schemed sample
+            ###########################################
+          
+            # there should be 13 cells in each row
+            if(row.size != 14)
+              return "Wrong number of columns in row #{row_number}. Expected 14"
+            end
 
-          # create the new naming scheme records
-          current_column_index = 12
-          naming_elements.each do |e|
-            # do nothing if there's nothing in the cell
-            if(row[current_column_index] != nil)
-              if(e.free_text == true)
-                sample_text = SampleText.new(
-                  :sample_id => sample.id,
-                  :naming_element_id => e.id,
-                  :text => row[current_column_index]
-                )
-                if(!sample_text.save)
-                  return "Unable to create #{e.name} for row #{row_number}"
-                end
+            if( !sample.new_record? )
+              sample.destroy_existing_naming_scheme_info
+            end
+          
+            errors = sample.update_unschemed_columns(row)
+            if(errors != "")
+              return errors + " in row #{row_number} of non-naming schemed samples"
+            end
+          else
+            ###########################################
+            # naming schemed samples
+            ###########################################
+
+            naming_scheme = NamingScheme.find(:first, 
+              :conditions => {:name => row[13]})
+            # make sure this sample has a naming scheme
+            if(naming_scheme.nil?)
+              if(scheme_generation_allowed)
+                naming_scheme = NamingScheme.create(:name => row[13])
               else
-                naming_term = NamingTerm.find(:first, 
-                  :conditions => ["naming_element_id = ? AND " +
-                    "(term = ? OR abbreviated_term = ?)",
-                    e.id,
-                    row[current_column_index],
-                    row[current_column_index] ])
-                # if naming term wasn't found,
-                # match leading 0's if there are any
-                if(naming_term.nil?)
+                return "Naming scheme #{row[13]} doesn't exist in row #{row_number}"
+              end
+            end
+
+            naming_elements =
+              naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
+
+            expected_columns = 14 + naming_elements.size
+            if(row.size > expected_columns)
+              # create new naming elements if that's allowed
+              # otherwise return an error message
+              if(scheme_generation_allowed)
+                if(naming_elements.size > 0)
+                  current_element_order = naming_elements[-1].element_order + 1
+                else
+                  current_element_order = 1
+                end
+                (14..header_row.size-1).each do |i|
+                  NamingElement.create(
+                    :name => header_row[i],
+                    :element_order => current_element_order,
+                    :group_element => true,
+                    :optional => true,
+                    :naming_scheme_id => naming_scheme.id,
+                    :free_text => false,
+                    :include_in_sample_description => true,
+                    :dependent_element_id => 0)
+                  current_element_order += 1
+                end
+                
+                # re-populate naming elements array
+                naming_elements =
+                  naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
+              else
+                return "Wrong number of columns in row #{row_number}. " +
+                  "Expected #{expected_columns}"
+              end
+            end
+
+            if( !sample.new_record? )
+              sample.destroy_existing_naming_scheme_info
+            end
+          
+            # update the sample attributes
+            errors = sample.update_unschemed_columns(row)
+            if(errors != "")
+              return errors + " in row #{row_number}"
+            end
+
+            # create the new naming scheme records
+            current_column_index = 14
+            naming_elements.each do |e|
+              # do nothing if there's nothing in the cell
+              if(row[current_column_index] != nil)
+                if(e.free_text == true)
+                  sample_text = SampleText.new(
+                    :sample_id => sample.id,
+                    :naming_element_id => e.id,
+                    :text => row[current_column_index]
+                  )
+                  if(!sample_text.save)
+                    return "Unable to create #{e.name} for row #{row_number}"
+                  end
+                else
                   naming_term = NamingTerm.find(:first, 
                     :conditions => ["naming_element_id = ? AND " +
-                      "(term REGEXP ? OR abbreviated_term REGEXP ?)",
+                      "(term = ? OR abbreviated_term = ?)",
                       e.id,
-                      "0*" + row[current_column_index],
-                      "0*" + row[current_column_index] ])
-                end
-                if(naming_term.nil?)
-                  if(scheme_generation_allowed)
-                    naming_term = NamingTerm.create!(
-                      :naming_element_id => e.id,
-                      :term => row[current_column_index],
-                      :abbreviated_term => row[current_column_index],
-                      :term_order => 0
-                    )
-                  else
-                    return "Naming term #{row[current_column_index]} doesn't " +
-                      "exist for #{e.name} for row #{row_number}"
+                      row[current_column_index],
+                      row[current_column_index] ])
+                  # if naming term wasn't found,
+                  # match leading 0's if there are any
+                  if(naming_term.nil?)
+                    naming_term = NamingTerm.find(:first, 
+                      :conditions => ["naming_element_id = ? AND " +
+                        "(term REGEXP ? OR abbreviated_term REGEXP ?)",
+                        e.id,
+                        "0*" + row[current_column_index],
+                        "0*" + row[current_column_index] ])
+                  end
+                  if(naming_term.nil?)
+                    if(scheme_generation_allowed)
+                      naming_term = NamingTerm.create!(
+                        :naming_element_id => e.id,
+                        :term => row[current_column_index],
+                        :abbreviated_term => row[current_column_index],
+                        :term_order => 0
+                      )
+                    else
+                      return "Naming term #{row[current_column_index]} doesn't " +
+                        "exist for #{e.name} for row #{row_number}"
+                    end
+                  end
+                  sample_term = SampleTerm.new(
+                    :sample_id => sample.id,
+                    :naming_term_id => naming_term.id
+                  )
+                  if(!sample_term.save)
+                    return "Unable to create #{e.name} for row #{row_number}"
                   end
                 end
-                sample_term = SampleTerm.new(
-                  :sample_id => sample.id,
-                  :naming_term_id => naming_term.id
-                )
-                if(!sample_term.save)
-                  return "Unable to create #{e.name} for row #{row_number}"
-                end
               end
+              current_column_index += 1
             end
-            current_column_index += 1
+            sample.update_attributes(:naming_scheme_id => naming_scheme.id)
           end
-          sample.update_attributes(:naming_scheme_id => naming_scheme.id)
-        end
-      end      
-      row_number += 1
+        end      
+        row_number += 1
+      end
     end
 
     return ""
@@ -442,24 +444,24 @@ class Sample < ActiveRecord::Base
       return "Chip type doesn't exist"
     end
     
-    organism = Organism.find(:first, :conditions => { :name => row[8] })
+    organism = Organism.find(:first, :conditions => { :name => row[10] })
     if(organism.nil?)
-      organism = Organism.create(:name => row[8])
+      organism = Organism.create(:name => row[10])
     end
     
-    project = Project.find(:first, :conditions => { :name => row[10] })
+    project = Project.find(:first, :conditions => { :name => row[12] })
     if(project.nil?)
       return "Project doesn't exist"
     end
 
-    if(!update_attributes(
+    unless(update_attributes(
           :submission_date => row[2],
           :short_sample_name => row[3],
           :sample_name => row[4],
           :sample_group_name => row[5],
           :chip_type_id => chip_type.id,
           :organism_id => organism.id,
-          :sbeams_user => row[9],
+          :sbeams_user => row[11],
           :project_id => project.id
         ))
 
@@ -468,15 +470,14 @@ class Sample < ActiveRecord::Base
 
     if(hybridization)
       hybridization.update_attributes(:raw_data_path => row[0])
-    else
-      row[0] =~ /(\d{8}_(\d{2}))_/
-      chip_name = $1
-      chip_number = $2
+    elsif(row[0] && row[7] && row[9])
+      chip_name = row[7]
+      chip_number = row[8]
 
       chip = Chip.find_or_create_by_name(chip_name)
-      microarray = Microarray.create!(:chip_id => chip.id, :array_number => row[7])
+      microarray = Microarray.create!(:chip_id => chip.id, :array_number => row[9])
 
-      hybridization = Hybridization.create(
+      hybridization = Hybridization.create!(
         :hybridization_date => row[2],
         :chip_number => chip_number,
         :raw_data_path => row[0],

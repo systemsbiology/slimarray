@@ -322,6 +322,7 @@ describe "Sample" do
     sample_1.hybridization.microarray.should_not be_nil
     sample_1.hybridization.microarray.array_number.should == 1
     sample_1.hybridization.microarray.chip.should_not be_nil
+    sample_1.hybridization.microarray.chip.name.should == "20100112_01"
 
     sample_2.submission_date.should == Date.parse("2010-01-12")
     sample_2.short_sample_name.should == "D"
@@ -337,6 +338,7 @@ describe "Sample" do
     sample_2.hybridization.microarray.should_not be_nil
     sample_2.hybridization.microarray.array_number.should == 2
     sample_2.hybridization.microarray.chip.should_not be_nil
+    sample_2.hybridization.microarray.chip.name.should == "20100112_02"
   end
   
   it "should take sample selections and provide the corresponding samples" do
