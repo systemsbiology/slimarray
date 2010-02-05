@@ -91,7 +91,7 @@ class ChargePeriod < ActiveRecord::Base
                   "Budget Manager: " + set.budget_manager + "\n\n" +
                   "Budget Manager Approval: _________________________________"
       else
-        _pdf.text "P.O. Number: " + set.budget
+        _pdf.text "P.O. Number: " + (set.budget || "")
       end
       _pdf.text "\n\n"
       
