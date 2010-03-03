@@ -117,8 +117,6 @@ class HybridizationSet
 
     return false if duplicate_samples_specified
 
-    chip_name_list = chip_names.values if chip_names
-
     current_chip_number = 1
     begin
       Hybridization.transaction do
@@ -127,8 +125,8 @@ class HybridizationSet
           chip_samples = sample_ids[chip_index.to_s]
 
           # use the chip names the user provided, or if there are none use the chip number
-          if(chip_name_list)
-            chip_name = chip_name_list.shift
+          if(chip_names)
+            chip_name = chip_names[chip_index.to_s]
           else
             chip_name = name_for_date_and_chip_number(date, current_chip_number)
           end
