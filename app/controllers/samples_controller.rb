@@ -25,7 +25,7 @@ available when retrieving single samples (see GET /samples/[sample id]).
   def index
     @lab_groups = current_user.accessible_lab_groups
 
-    @samples = Sample.accessible_to_user(current_user)
+    @samples = Sample.accessible_to_user(current_user, params[:age_limit])
 
     @browse_categories = Sample.browsing_categories
 

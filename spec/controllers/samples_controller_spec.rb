@@ -46,8 +46,14 @@ describe SamplesController do
     end
 
     it "should expose all samples accessible by the user as @samples" do
-      Sample.should_receive(:accessible_to_user).and_return(@accessible_samples)
+      Sample.should_receive(:accessible_to_user).with(@current_user, nil).and_return(@accessible_samples)
       get :index
+      assigns[:samples].should == @accessible_samples
+    end
+
+    it "should limit samples with by age" do
+      Sample.should_receive(:accessible_to_user).with(@current_user, "2").and_return(@accessible_samples)
+      get :index, :age_limit => 2
       assigns[:samples].should == @accessible_samples
     end
 

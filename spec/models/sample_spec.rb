@@ -364,6 +364,22 @@ describe "Sample" do
     Sample.accessible_to_user(user).should == [sample_1]
   end
 
+  it "should provide the samples accessible to a user limited by age" do
+    lab_group_1 = mock_model(LabGroup)
+    lab_group_2 = mock_model(LabGroup)
+    user = mock_model(User, :get_lab_group_ids => [lab_group_1.id])
+    sample_1 = create_sample( :project => create_project(:lab_group => lab_group_1) )
+    sample_2 = create_sample( :project => create_project(:lab_group => lab_group_2) )
+    sample_3 = create_sample( :project => create_project(:lab_group => lab_group_1) )
+
+    # manually set the updated_at field for sample_3 to be really old since trying to do
+    # this through the model class will automatically set updated_at to be now
+    sql = "UPDATE samples SET updated_at='2010-01-28 00:00:00' WHERE id=#{sample_3.id};"
+    ActiveRecord::Base.connection.execute(sql)
+    
+    Sample.accessible_to_user(user, "2").should == [sample_1]
+  end
+
   it "should generate a browsing tree Hash" do
     scheme = create_naming_scheme(:name => "Mouse")
     strain = create_naming_element(:naming_scheme => scheme, :name => "Strain")

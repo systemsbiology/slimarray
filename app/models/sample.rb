@@ -568,10 +568,13 @@ class Sample < ActiveRecord::Base
     return samples
   end
 
-  def self.accessible_to_user(user)
+  def self.accessible_to_user(user, age_limit = nil)
+    cutoff_date = age_limit ? Date.today - age_limit.to_i : 0
+
     samples = Sample.find(:all, 
       :include => 'project',
-      :conditions => [ "projects.lab_group_id IN (?)", user.get_lab_group_ids ],
+      :conditions => [ "projects.lab_group_id IN (?) AND samples.updated_at > ?",
+        user.get_lab_group_ids, cutoff_date ],
       :order => "submission_date DESC, samples.id ASC")
   end
 
