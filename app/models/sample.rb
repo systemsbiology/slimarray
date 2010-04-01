@@ -76,7 +76,7 @@ class Sample < ActiveRecord::Base
     # create the new records
     self.sample_terms = terms_for(attributes)
     self.sample_texts = texts_for(attributes)
-    self.sample_name = naming_scheme.generate_sample_description(attributes)   
+    self.sample_name = naming_scheme.generate_sample_description(attributes)[0..58]
     self.sample_group_name = naming_scheme.generate_sample_group_name(attributes)
   end
   
