@@ -74,12 +74,20 @@ describe "Project" do
   end
 
   it "should provide a hash of summary attributes" do
-    SiteConfig.should_receive(:site_url).and_return("http://example.com")
+    SiteConfig.should_receive(:site_url).twice.and_return("http://example.com")
+
+    lab_group = mock("LabGroup", :id => 3, :name => "Fungus Group")
+    LabGroup.stub!(:all_by_id).and_return({lab_group.id => lab_group})
+
     project = create_project(:name => "Fungus Project")
+    project.stub!(:lab_group_id).and_return(3)
+    project.stub!(:lab_group).and_return(lab_group)
 
     project.summary_hash.should == {
       :id => project.id,
       :name => "Fungus Project",
+      :lab_group => "Fungus Group",
+      :lab_group_uri => "http://example.com/lab_groups/#{lab_group.id}",
       :updated_at => project.updated_at,
       :uri => "http://example.com/projects/#{project.id}"
     }

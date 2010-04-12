@@ -28,11 +28,12 @@ describe "ChipType" do
   end
 
   it "should provide a detail hash for a chip type" do
-    organism => create_organism(:name => "Rat")
+    organism = create_organism(:name => "Rat")
     chip_type = create_chip_type(
       :name => "Mouse Exon",
       :short_name => "MoEx",
-      :platform => Platform.find_or_create_by_name("Affymetrix")
+      :platform => Platform.find_or_create_by_name("Affymetrix"),
+      :organism => organism
     )
     
     chip_type.detail_hash.should == {
