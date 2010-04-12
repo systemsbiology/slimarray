@@ -54,6 +54,7 @@ class ChipType < ActiveRecord::Base
       :name => name,
       :short_name => short_name,
       :array_platform => array_platform,
+      :organism => organism.name,
       :updated_at => updated_at,
     }
   end

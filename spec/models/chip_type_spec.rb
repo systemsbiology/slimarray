@@ -28,6 +28,7 @@ describe "ChipType" do
   end
 
   it "should provide a detail hash for a chip type" do
+    organism => create_organism(:name => "Rat")
     chip_type = create_chip_type(
       :name => "Mouse Exon",
       :short_name => "MoEx",
@@ -39,6 +40,7 @@ describe "ChipType" do
       :name => "Mouse Exon",
       :short_name => "MoEx",
       :array_platform => "Affymetrix",
+      :organism => "Rat",
       :updated_at => chip_type.updated_at,
     }
   end
