@@ -66,6 +66,7 @@ Rails::Initializer.run do |config|
   config.gem 'validatable'
   config.gem 'ar-extensions'
   config.gem 'json'
+  config.gem 'highline'
 end
 
 AUTHENTICATION_SALT = 'mmm_kosher_rocks' unless defined? AUTHENTICATION_SALT
