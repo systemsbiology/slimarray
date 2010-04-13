@@ -15,13 +15,20 @@ describe "ChipType" do
   end
 
   it "should provide a summary hash for a chip type" do
+    organism = create_organism(:name => "Rat")
     chip_type = create_chip_type(
-      :name => "Mouse Exon"
+      :name => "Mouse Exon",
+      :short_name => "MoEx",
+      :platform => Platform.find_or_create_by_name("Affymetrix"),
+      :organism => organism
     )
     
     chip_type.summary_hash.should == {
       :id => chip_type.id,
       :name => "Mouse Exon",
+      :short_name => "MoEx",
+      :array_platform => "Affymetrix",
+      :organism => "Rat",
       :updated_at => chip_type.updated_at,
       :uri => "#{SiteConfig.site_url}/chip_types/#{chip_type.id}"
     }

@@ -27,7 +27,7 @@ available when retrieving single chip types (see GET /chip_types/[chip type id])
     @chip_types = ChipType.find(
       :all,
       :order => "name ASC",
-      :include => :organism
+      :include => [:organism, :platform]
     )
 
     respond_to do |format|

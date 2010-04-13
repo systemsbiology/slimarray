@@ -38,9 +38,14 @@ class ChipType < ActiveRecord::Base
   end
 
   def summary_hash
+    array_platform = platform && platform.name
+
     return {
       :id => id,
       :name => name,
+      :short_name => short_name,
+      :array_platform => array_platform,
+      :organism => organism ? organism.name: "",
       :updated_at => updated_at,
       :uri => "#{SiteConfig.site_url}/chip_types/#{id}"
     }
