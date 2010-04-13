@@ -14,9 +14,9 @@ namespace :setup do
     # need to have an application.yml and database.yml to run a generator, so put a temporary 
     # ones in place if needed
     unless File.exists?("config/database.yml") || File.exists?("config/application.yml")
-      FileUtils.cp "lib/generators/slimarray_configuration/templates/database.yml.erb",
+      FileUtils.cp "lib/generators/slimarray_configuration/templates/database.yml.placeholder",
         "config/database.yml"
-      FileUtils.cp "lib/generators/slimarray_configuration/templates/application.yml.erb",
+      FileUtils.cp "lib/generators/slimarray_configuration/templates/application.yml.placeholder",
         "config/application.yml"
     end
 
