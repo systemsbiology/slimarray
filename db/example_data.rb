@@ -141,4 +141,27 @@ module FixtureReplacement
   attributes_for :microarray do |m|
     m.chip = default_chip
   end
+
+  attributes_for :qc_metric do |m|
+    m.name = String.random(10)
+  end
+
+  attributes_for :qc_set do |s|
+    s.hybridization = default_hybridization
+  end
+
+  attributes_for :qc_statistic do |s|
+    s.qc_set = default_qc_set
+    s.qc_metric = default_qc_metric
+  end
+
+  attributes_for :qc_threshold do |t|
+    s.platform = default_platform
+    s.qc_metric = default_qc_metric
+  end
+
+  attributes_for :qc_file do |f|
+    f.qc_set = default_qc_set
+    f.path = String(20)
+  end
 end
