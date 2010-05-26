@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091216174421) do
+ActiveRecord::Schema.define(:version => 20100526220618) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -275,6 +275,44 @@ ActiveRecord::Schema.define(:version => 20091216174421) do
   end
 
   add_index "projects", ["lab_group_id"], :name => "index_projects_on_lab_group_id"
+
+  create_table "qc_files", :force => true do |t|
+    t.integer  "qc_set_id"
+    t.string   "path"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_metrics", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_sets", :force => true do |t|
+    t.integer  "hybridization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_statistics", :force => true do |t|
+    t.integer  "qc_set_id"
+    t.integer  "qc_metric_id"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_thresholds", :force => true do |t|
+    t.integer  "platform_id"
+    t.integer  "qc_metric_id"
+    t.float    "lower_limit"
+    t.float    "upper_limit"
+    t.string   "should_contain"
+    t.string   "should_not_contain"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "quality_traces", :force => true do |t|
     t.string   "image_path",         :limit => 200
