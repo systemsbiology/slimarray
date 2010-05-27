@@ -19,6 +19,8 @@ class QcSet < ActiveRecord::Base
   end
 
   def statistics=(statistic_hash)
+    return unless statistic_hash
+
     statistic_hash.each do |name, value|
       metric = QcMetric.find_or_create_by_name(name)
       
@@ -27,6 +29,8 @@ class QcSet < ActiveRecord::Base
   end
 
   def file=(file_path)
+    return unless file_path
+
     self.qc_files.build(:path => file_path)
   end
 
@@ -35,7 +39,6 @@ class QcSet < ActiveRecord::Base
   def lookup_hybridization
     return unless @chip_name && @array_number
 
-    
     self.hybridization = Hybridization.find(
       :first,
       :include => {:microarray => :chip},
