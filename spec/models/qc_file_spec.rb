@@ -6,8 +6,8 @@ describe QcFile do
       QcFile.new(:qc_set => create_qc_set, :path => "/path/to/file").should be_valid
     end
 
-    it "should not be valid without a QC set" do
-      QcFile.new(:path => "/path/to/file").should_not be_valid
+    it "should be valid without a QC set" do
+      QcFile.new(:path => "/path/to/file").should be_valid
     end
 
     it "should not be valid without a path" do

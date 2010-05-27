@@ -2,13 +2,6 @@ class QcSetsController < ApplicationController
   before_filter :staff_or_admin_required
 
   def create
-    #hybridization = Hybridization.find(
-    #  :first,
-    #  :include => {:microarray => :chip},
-    #  :conditions => [ "chips.name = ? AND microarrays.array_number = ?",
-    #                   params[:chip_name], params[:array_number] ]
-    #)
-
     @qc_set = QcSet.new(
       :chip_name => params[:chip_name],
       :array_number => params[:array_number],

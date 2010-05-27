@@ -9,10 +9,10 @@ describe QcStatistic do
       QcStatistic.new(:qc_set => qc_set, :qc_metric => qc_metric).should be_valid
     end
 
-    it "should not be valid without a QC set" do
+    it "should be valid without a QC set" do
       qc_metric = create_qc_metric
 
-      QcStatistic.new(:qc_metric => qc_metric).should_not be_valid
+      QcStatistic.new(:qc_metric => qc_metric).should be_valid
     end
 
     it "should not be valid without a QC metric" do

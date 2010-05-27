@@ -53,6 +53,7 @@ module FixtureReplacement
     h.hybridization_date = Date.today
     h.chip_number = 1
     h.charge_set = default_charge_set
+    h.microarray = default_microarray
   end
 
   attributes_for :inventory_check do |ic|
