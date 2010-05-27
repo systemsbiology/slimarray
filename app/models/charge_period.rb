@@ -226,7 +226,7 @@ class ChargePeriod < ActiveRecord::Base
         detail[set.name].write row+=1, 1, "Budget Manager: " + set.budget_manager
         detail[set.name].write row+=1, 1, "Budget Manager Approval: _________________________________"
       else
-        detail[set.name].write row+=1, 1, "P.O. Number: " + set.budget
+        detail[set.name].write row+=1, 1, "P.O. Number: " + set.budget || ""
       end
       
       # charge headings
