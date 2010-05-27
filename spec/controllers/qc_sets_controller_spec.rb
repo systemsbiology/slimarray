@@ -9,6 +9,7 @@ describe QcSetsController do
 
   describe "GET 'show'" do
     it "assigns the requested qc_set as @qc_set" do
+      mock_qc_set = mock_model(QcSet)
       QcSet.stub!(:find).with("37").and_return(mock_qc_set)
       get :show, :id => "37"
       assigns[:qc_set].should equal(mock_qc_set)
