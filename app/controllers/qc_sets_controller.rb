@@ -1,6 +1,20 @@
 class QcSetsController < ApplicationController
+  before_filter :login_required
   before_filter :staff_or_admin_required
 
+  # GET /qc_sets/1.xml
+  # GET /qc_sets/1.json
+  def show
+    @qc_set = QcSet.find(params[:id])
+
+    respond_to do |format|
+      format.xml  { render :xml => @qc_set }
+      format.json  { render :json => @qc_set }
+    end
+  end
+
+  # POST /qc_sets.xml
+  # POST /qc_sets.json
   def create
     @qc_set = QcSet.new(
       :chip_name => params[:chip_name],
