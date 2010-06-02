@@ -112,7 +112,10 @@ class Sample < ActiveRecord::Base
       errors.add("Duplicate submission date/short_sample_name/sample_name")
     end
     
-    # look for all the things that infuriate GCOS or SBEAMS:
+    # remove problem characters
+    self.sample_name.gsub!(/(\ |\+|\&|\#|\(|\)|\/|\\)/, '')
+
+    # look for all the things that are problematic for making a filename:
     # * non-existent sample name
     # * spaces
     # * characters other than underscores and dashes
