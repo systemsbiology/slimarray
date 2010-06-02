@@ -20,6 +20,10 @@ class UserProfile < ActiveRecord::Base
     return {}
   end
   
+  def self.notify_of_qc_outliers
+    UserProfile.find(:all, :conditions => {:notify_of_qc_outliers => true})
+  end
+
   ###############################################################################################
   # Authorization:
   #

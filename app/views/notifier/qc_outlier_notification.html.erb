@@ -1,0 +1,9 @@
+The following array has one or more QC measures that are out of range:
+
+<%=h @qc_set.hybridization.sample_names %>
+
+QC measures(s) out of range:
+
+<% @qc_set.outlier_statistics.each do |qc_statistic| %>
+  <%=h qc_statistic.qc_metric.name %>: <%=h qc_statistic.value %>
+<% end %>

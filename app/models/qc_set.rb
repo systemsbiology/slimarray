@@ -5,6 +5,11 @@ class QcSet < ActiveRecord::Base
 
   validates_presence_of :hybridization_id
   validates_associated :hybridization
+  validates_uniqueness_of :hybridization_id
+
+  def after_create
+    Notifier.deliver_qc_outlier_notification(self) unless outlier_statistics.empty?
+  end
 
   def chip_name=(name)
     @chip_name = name
@@ -32,6 +37,27 @@ class QcSet < ActiveRecord::Base
     return unless file_path
 
     self.qc_files.build(:path => file_path)
+  end
+
+  def outlier_statistics
+    outliers = Array.new
+    
+    qc_statistics.each do |statistic|
+      statistic.qc_metric.qc_thresholds.each do |threshold|
+        if( threshold.lower_limit && statistic.value.to_f < threshold.lower_limit ||
+            threshold.upper_limit && statistic.value.to_f > threshold.upper_limit ||
+            threshold.should_contain && threshold.should_contain.length > 0 &&
+              !statistic.value.include?(threshold.should_contain) ||
+            threshold.should_not_contain && threshold.should_not_contain.length > 0 &&
+              statistic.value.include?(threshold.should_not_contain) )
+          outliers << statistic
+        end
+      end
+    end
+
+    outliers.uniq!
+
+    return outliers
   end
 
   private

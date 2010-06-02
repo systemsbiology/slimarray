@@ -90,4 +90,68 @@ describe QcSet do
       statistic_attributes.should include(expected_bad_attributes)
     end
   end
+
+  describe "providing outlier statistics" do
+    it "should provide statistics that don't meet upper limit thresholds" do
+      qc_metric_1 = create_qc_metric
+      qc_metric_2 = create_qc_metric
+      
+      qc_threshold_1 = create_qc_threshold(:qc_metric => qc_metric_1, :upper_limit => 0)
+      qc_threshold_2 = create_qc_threshold(:qc_metric => qc_metric_2, :upper_limit => 100)
+
+      qc_set = create_qc_set
+      
+      qc_statistic_1 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_1, :value => 5)
+      qc_statistic_2 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_2, :value => 63)
+      
+      qc_set.outlier_statistics.should == [qc_statistic_1]
+    end
+
+    it "should provide statistics that don't meet lower limit thresholds" do
+      qc_metric_1 = create_qc_metric
+      qc_metric_2 = create_qc_metric
+      
+      qc_threshold_1 = create_qc_threshold(:qc_metric => qc_metric_1, :lower_limit => 0)
+      qc_threshold_2 = create_qc_threshold(:qc_metric => qc_metric_2, :lower_limit => 100)
+
+      qc_set = create_qc_set
+      
+      qc_statistic_1 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_1, :value => 5)
+      qc_statistic_2 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_2, :value => 63)
+      
+      qc_set.outlier_statistics.should == [qc_statistic_2]
+    end
+
+    it "should provide statistics that don't contain a string that they should" do
+      qc_metric_1 = create_qc_metric
+      
+      qc_threshold_1 = create_qc_threshold(:qc_metric => qc_metric_1, :should_contain => "Bright")
+      qc_threshold_2 = create_qc_threshold(:qc_metric => qc_metric_1, :should_contain => "Even")
+
+      qc_set_1 = create_qc_set
+      qc_set_2 = create_qc_set
+      
+      qc_statistic_1 = create_qc_statistic(:qc_set => qc_set_1, :qc_metric => qc_metric_1, :value => "Bright but Uneven")
+      qc_statistic_2 = create_qc_statistic(:qc_set => qc_set_2, :qc_metric => qc_metric_1, :value => "Bright and Even")
+      
+      qc_set_1.outlier_statistics.should == [qc_statistic_1]
+      qc_set_2.outlier_statistics.should == []
+    end
+
+    it "should provide statistics that contain a string that they shouldn't have" do
+      qc_metric_1 = create_qc_metric
+      
+      qc_threshold_1 = create_qc_threshold(:qc_metric => qc_metric_1, :should_not_contain => "Dim")
+      qc_threshold_2 = create_qc_threshold(:qc_metric => qc_metric_1, :should_not_contain => "Uneven")
+
+      qc_set_1 = create_qc_set
+      qc_set_2 = create_qc_set
+      
+      qc_statistic_1 = create_qc_statistic(:qc_set => qc_set_1, :qc_metric => qc_metric_1, :value => "Bright but Uneven")
+      qc_statistic_2 = create_qc_statistic(:qc_set => qc_set_2, :qc_metric => qc_metric_1, :value => "Bright and Even")
+      
+      qc_set_1.outlier_statistics.should == [qc_statistic_1]
+      qc_set_2.outlier_statistics.should == []
+    end
+  end
 end

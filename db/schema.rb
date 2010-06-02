@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100526220618) do
+ActiveRecord::Schema.define(:version => 20100602174006) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -130,9 +130,9 @@ ActiveRecord::Schema.define(:version => 20100526220618) do
     t.date     "hybridization_date"
     t.integer  "chip_number"
     t.integer  "charge_template_id"
-    t.integer  "lock_version",       :default => 0
+    t.integer  "lock_version",                      :default => 0
     t.integer  "charge_set_id"
-    t.text     "raw_data_path"
+    t.string   "raw_data_path",      :limit => 400
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "microarray_id"
@@ -183,7 +183,7 @@ ActiveRecord::Schema.define(:version => 20100526220618) do
   add_index "lab_memberships", ["user_id"], :name => "lab_memberships_ibfk_2"
 
   create_table "labels", :force => true do |t|
-    t.string   "name",       :default => "", :null => false
+    t.string   "name",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -252,11 +252,11 @@ ActiveRecord::Schema.define(:version => 20100526220618) do
   end
 
   create_table "platforms", :force => true do |t|
-    t.string   "name",                  :default => "",        :null => false
+    t.string   "name",                                         :null => false
     t.boolean  "has_multi_array_chips", :default => false,     :null => false
     t.boolean  "uses_chip_numbers",     :default => false,     :null => false
     t.boolean  "multiple_labels",       :default => true,      :null => false
-    t.integer  "default_label_id",      :default => 0,         :null => false
+    t.integer  "default_label_id",                             :null => false
     t.string   "raw_data_type",         :default => "Unknown", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -436,6 +436,7 @@ ActiveRecord::Schema.define(:version => 20100526220618) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "current_naming_scheme_id"
+    t.boolean  "notify_of_qc_outliers",    :default => false,      :null => false
   end
 
   create_table "users", :force => true do |t|

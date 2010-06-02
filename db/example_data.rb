@@ -157,8 +157,8 @@ module FixtureReplacement
   end
 
   attributes_for :qc_threshold do |t|
-    s.platform = default_platform
-    s.qc_metric = default_qc_metric
+    t.platform = default_platform
+    t.qc_metric = default_qc_metric
   end
 
   attributes_for :qc_file do |f|
