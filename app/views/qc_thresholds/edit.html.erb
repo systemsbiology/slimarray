@@ -1,0 +1,41 @@
+<h1>Editing QC Threshold</h1>
+
+<% form_for(@qc_threshold) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :platform_id, "Platform" %>
+    <%= f.collection_select :platform_id, @platforms, :id, :name, {:prompt => true} %>
+  </p>
+
+  <p>
+    <%= f.label :qc_metric_id, "QC Metric" %>
+    <%= f.collection_select :qc_metric_id, @qc_metrics, :id, :name, {:prompt => true} %>
+  </p>
+
+  <p>
+    <%= f.label :lower_limit %><br />
+    <%= f.text_field :lower_limit %>
+  </p>
+
+  <p>
+    <%= f.label :upper_limit %><br />
+    <%= f.text_field :upper_limit %>
+  </p>
+
+  <p>
+    <%= f.label :should_contain %><br />
+    <%= f.text_field :should_contain %>
+  </p>
+
+  <p>
+    <%= f.label :should_not_contain %><br />
+    <%= f.text_field :should_not_contain %>
+  </p>
+  
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', qc_thresholds_path %>

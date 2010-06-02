@@ -1,0 +1,22 @@
+<h1>Listing QC Thresholds</h1>
+
+<p><%= link_to 'New QC Threshold', new_qc_threshold_path %></p>
+
+<%= jqgrid("Platforms", "data_grid", grid_qc_thresholds_path,
+	[
+    { :field => "platforms.name", :label => "Platform", :width => 140 },
+    { :field => "qc_metrics.name", :label => "QC Metric", :width => 140 },
+    { :field => "lower_limit", :label => "Lower Limit", :width => 140 },
+    { :field => "upper_limit", :label => "Upper Limit", :width => 140 },
+    { :field => "should_contain", :label => "Should Contain", :width => 140 },
+    { :field => "should_not_contain", :label => "Should Not Contain", :width => 170 },
+  ],
+  :height => 550,
+  :sort_column => "platforms.name",
+  :sort_order => "asc",
+  :rows_per_page => 25,
+  :multi_selection => true
+) %>
+
+<p><%= submit_tag "Edit Selected QC Threshold", :id => "bedata" %> 
+   <%= submit_tag "Destroy Selected QC Threshold", :id => "bddata" %></p>
