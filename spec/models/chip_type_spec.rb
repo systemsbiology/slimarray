@@ -19,7 +19,6 @@ describe "ChipType" do
     chip_type = create_chip_type(
       :name => "Mouse Exon",
       :short_name => "MoEx",
-      :platform => Platform.find_or_create_by_name("Affymetrix"),
       :organism => organism
     )
     
@@ -39,7 +38,6 @@ describe "ChipType" do
     chip_type = create_chip_type(
       :name => "Mouse Exon",
       :short_name => "MoEx",
-      :platform => Platform.find_or_create_by_name("Affymetrix"),
       :organism => organism
     )
     

@@ -16,8 +16,8 @@ describe "ChipIntergroupPurchase" do
         :from_lab_group_id => lab_group_2.id,
         :chip_type_id => chip_type.id,
         :number => 5
-      ).should be_true
-      intergroup_buy.save
+      )
+      intergroup_buy.save.should be_true
     }.should change(ChipTransaction, :count).by(2)
 
     ChipTransaction.find(:first, :conditions => {

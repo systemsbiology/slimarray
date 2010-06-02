@@ -133,6 +133,11 @@ module FixtureReplacement
 
   attributes_for :platform do |p|
     p.name = String.random(10)
+    p.default_label = create_label
+  end
+
+  attributes_for :label do |l|
+    l.name = String.random(10)
   end
 
   attributes_for :chip do |c|

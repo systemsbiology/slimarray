@@ -13,8 +13,8 @@ describe "ChipPurchase" do
         :chip_type_id => chip_type.id,
         :number => 5,
         :description => "Box of 5 arrays"
-      ).should be_true
-      purchase.save
+      )
+      purchase.save.should be_true
     }.should change(ChipTransaction, :count).by(1)
 
     ChipTransaction.find(:first, :conditions => {

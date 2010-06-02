@@ -104,7 +104,7 @@ describe QcSet do
       qc_statistic_1 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_1, :value => 5)
       qc_statistic_2 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_2, :value => 63)
       
-      qc_set.outlier_statistics.should == [qc_statistic_1]
+      qc_set.reload.outlier_statistics.should == [qc_statistic_1]
     end
 
     it "should provide statistics that don't meet lower limit thresholds" do
@@ -119,7 +119,7 @@ describe QcSet do
       qc_statistic_1 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_1, :value => 5)
       qc_statistic_2 = create_qc_statistic(:qc_set => qc_set, :qc_metric => qc_metric_2, :value => 63)
       
-      qc_set.outlier_statistics.should == [qc_statistic_2]
+      qc_set.reload.outlier_statistics.should == [qc_statistic_2]
     end
 
     it "should provide statistics that don't contain a string that they should" do
@@ -134,8 +134,8 @@ describe QcSet do
       qc_statistic_1 = create_qc_statistic(:qc_set => qc_set_1, :qc_metric => qc_metric_1, :value => "Bright but Uneven")
       qc_statistic_2 = create_qc_statistic(:qc_set => qc_set_2, :qc_metric => qc_metric_1, :value => "Bright and Even")
       
-      qc_set_1.outlier_statistics.should == [qc_statistic_1]
-      qc_set_2.outlier_statistics.should == []
+      qc_set_1.reload.outlier_statistics.should == [qc_statistic_1]
+      qc_set_2.reload.outlier_statistics.should == []
     end
 
     it "should provide statistics that contain a string that they shouldn't have" do
@@ -150,8 +150,8 @@ describe QcSet do
       qc_statistic_1 = create_qc_statistic(:qc_set => qc_set_1, :qc_metric => qc_metric_1, :value => "Bright but Uneven")
       qc_statistic_2 = create_qc_statistic(:qc_set => qc_set_2, :qc_metric => qc_metric_1, :value => "Bright and Even")
       
-      qc_set_1.outlier_statistics.should == [qc_statistic_1]
-      qc_set_2.outlier_statistics.should == []
+      qc_set_1.reload.outlier_statistics.should == [qc_statistic_1]
+      qc_set_2.reload.outlier_statistics.should == []
     end
   end
 end

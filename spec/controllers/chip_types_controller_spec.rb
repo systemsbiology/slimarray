@@ -30,7 +30,7 @@ describe ChipTypesController do
   
     it "should find all chip_types" do
       ChipType.should_receive(:find).
-        with(:all, :order => "name ASC", :include => :organism).
+        with(:all, :order => "name ASC", :include => [:organism, :platform]).
         and_return([@chip_type])
       do_get
     end
@@ -62,7 +62,7 @@ describe ChipTypesController do
 
     it "should find all chip_types" do
       ChipType.should_receive(:find).
-        with(:all, :order => "name ASC", :include => :organism).
+        with(:all, :order => "name ASC", :include => [:organism, :platform]).
         and_return(@chip_types)
       do_get
     end
