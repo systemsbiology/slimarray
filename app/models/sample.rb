@@ -144,13 +144,16 @@ class Sample < ActiveRecord::Base
     csv_file = File.open(csv_file_name, 'wb')
     CSV::Writer.generate(csv_file) do |csv|
       if(naming_scheme == "")
-        csv << [ "CEL File",
+        csv << [ "Raw Data Path",
           "Sample ID",
           "Submission Date",
           "Short Sample Name",
           "Sample Name",
           "Sample Group Name",
           "Chip Type",
+          "Chip Name",
+          "Chip Number",
+          "Array Numnber",
           "Organism",
           "SBEAMS User",
           "Project",
@@ -162,9 +165,13 @@ class Sample < ActiveRecord::Base
 
         for sample in samples
           if(sample.hybridization != nil)
-            cel_file = sample.hybridization.raw_data_path
+            hybridization = sample.hybridization
+            chip_name = hybridization.microarray.chip.name
+            chip_number = hybridization.chip_number
+            array_number = hybridization.microarray.array_number
+            cel_file = hybridization.raw_data_path
           else
-            cel_file = ""
+            chip_name = chip_number = array_number = cel_file = ""
           end
           csv << [ cel_file,
             sample.id,
@@ -173,6 +180,9 @@ class Sample < ActiveRecord::Base
             sample.sample_name,
             sample.sample_group_name,
             sample.chip_type.name,
+            chip_name,
+            chip_number,
+            array_number,
             sample.organism.name,
             sample.sbeams_user,
             sample.project.name,
@@ -187,13 +197,16 @@ class Sample < ActiveRecord::Base
         end
         
         # stock headings
-        headings = [ "CEL File",
+        headings = [ "Raw Data Path",
           "Sample ID",
           "Submission Date",
           "Short Sample Name",
           "Sample Name",
           "Sample Group Name",
           "Chip Type",
+          "Chip Name",
+          "Chip Number",
+          "Array Numnber",
           "Organism",
           "SBEAMS User",
           "Project",
@@ -217,9 +230,13 @@ class Sample < ActiveRecord::Base
         current_row = 0
         for sample in samples
           if(sample.hybridization != nil)
-            cel_file = sample.hybridization.raw_data_path
+            hybridization = sample.hybridization
+            chip_name = hybridization.microarray.chip.name
+            chip_number = hybridization.chip_number
+            array_number = hybridization.microarray.array_number
+            cel_file = hybridization.raw_data_path
           else
-            cel_file = ""
+            chip_name = chip_number = array_number = cel_file = ""
           end
           column_values = [ cel_file,
             sample.id,
@@ -228,6 +245,9 @@ class Sample < ActiveRecord::Base
             sample.sample_name,
             sample.sample_group_name,
             sample.chip_type.name,
+            chip_name,
+            chip_number,
+            array_number,
             sample.organism.name,
             sample.sbeams_user,
             sample.project.name,
