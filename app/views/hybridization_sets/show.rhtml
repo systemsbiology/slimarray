@@ -17,7 +17,7 @@
           <tr>
             <td><%= microarray.array_number %></td>
             <% microarray.hybridization.samples.each do |sample| %>
-              <td><%= sample.sample_name %> (<%= sample.label.name %>)</td>
+              <td><%= sample.short_sample_name %>: <%= sample.sample_name %> (<%= sample.label.name %>)</td>
             <% end %>
           </tr>
         <% end %>
