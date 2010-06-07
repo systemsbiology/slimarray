@@ -70,7 +70,14 @@ class ChipTransactionsController < ApplicationController
   def destroy
     @chip_transaction = ChipTransaction.find(params[:id])
     @chip_transaction.destroy
-    redirect_to lab_group_chip_type_chip_transactions_url(@chip_transaction.lab_group, @chip_transaction.chip_type)
+
+    respond_to do |format|
+      format.html do
+        redirect_to lab_group_chip_type_chip_transactions_url(@chip_transaction.lab_group, @chip_transaction.chip_type)
+      end
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
   end
   
   def grid

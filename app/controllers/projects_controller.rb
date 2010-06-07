@@ -116,7 +116,12 @@ Get detailed information about a single project.
 
   def destroy    
     Project.find(params[:id]).destroy
-    redirect_to projects_url
+
+    respond_to do |format|
+      format.html { redirect_to projects_url }
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
   end
 
   def grid

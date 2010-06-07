@@ -31,9 +31,13 @@ class HybridizationsController < ApplicationController
   end
 
   def destroy
-    hybridization = Hybridization.find(params[:id])
-    hybridization.destroy
-    redirect_to hybridizations_url
+    hybridization = Hybridization.find(params[:id]).destroy
+
+    respond_to do |format|
+      format.html { redirect_to hybridizations_url }
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
   end
 
   def bulk_handler

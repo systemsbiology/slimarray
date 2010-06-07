@@ -48,6 +48,12 @@ class QualityTracesController < ApplicationController
 
   def destroy
     QualityTrace.find(params[:id]).destroy
-    redirect_to :action => 'list'
+
+    respond_to do |format|
+      format.html { redirect_to(redirect_to quality_traces_url) }
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
+    
   end
 end

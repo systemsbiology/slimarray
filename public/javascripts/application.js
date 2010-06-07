@@ -9,15 +9,26 @@ $(document).ready(function(){
   $("#bddata").click(function(){
     var s; s = jQuery("#data_grid").getGridParam('selarrrow');
     if( s == null || s.length == 0 ) alert("Please select a row to destroy");
-    else if( s.length > 1 ) alert("Only one record can be destroyed at a time");
-    else {
-      if( confirm("Are you sure you want to delete this record?") )
-        $('<form method="post" action="' + location.href + "/" + s + '" />')
+    else if(s.length == 1) {
+      if( confirm("Are you sure you want to delete this record?") ) {
+        $('<form method="post" action="' + location.href + "/" + s + 'json" />')
             .append('<input type="hidden" name="_method" value="delete" />')
             .appendTo('body')
             .submit();
 
         return false;
+      }
+    } else {
+      if( confirm("Are you sure you want to delete these records?") ) {
+        s.forEach( function(id) {
+          $.post(location.href + "/" + id + ".json", {asynchronous: false, _method: 'delete'},
+            function() {
+              $("#data_grid").trigger("reloadGrid", [{current:true}]);
+            });
+        });
+
+        return false;
+      }
     } 
   }); 
 

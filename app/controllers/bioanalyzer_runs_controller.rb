@@ -25,7 +25,12 @@ class BioanalyzerRunsController < ApplicationController
 
   def destroy
     BioanalyzerRun.find(params[:id]).destroy
-    redirect_to bioanalyzer_runs_url
+
+    respond_to do |format|
+      format.html { redirect_to(bioanalyzer_runs_url) }
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
   end
   
   def grid

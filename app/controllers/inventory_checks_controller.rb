@@ -59,7 +59,12 @@ class InventoryChecksController < ApplicationController
 
   def destroy
     InventoryCheck.find(params[:id]).destroy
-    redirect_to inventory_checks_url 
+
+    respond_to do |format|
+      format.html { redirect_to inventory_checks_url }
+      format.xml  { head :ok }
+      format.json  { head :ok }
+    end
   end
   
   def grid

@@ -118,7 +118,12 @@ Get detailed information about a single chip type.
   def destroy
     begin
       ChipType.find(params[:id]).destroy
-      redirect_to chip_types_url
+
+      respond_to do |format|
+        format.html { redirect_to chip_types_url }
+        format.xml  { head :ok }
+        format.json  { head :ok }
+      end
     rescue
       flash[:warning] = "Cannot delete chip type due to association " +
                         "with chip transactions or hybridizations."
