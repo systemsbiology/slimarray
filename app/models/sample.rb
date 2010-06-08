@@ -29,8 +29,8 @@ class Sample < ActiveRecord::Base
   validates_associated :chip_type, :project
   validates_presence_of :sample_name, :short_sample_name, :submission_date,
                         :project_id
+  validates_length_of :sample_name, :maximum => 100
   validates_length_of :short_sample_name, :maximum => 50
-  validates_length_of :sample_name, :maximum => 59
   validates_length_of :sbeams_user, :maximum => 20
   validates_length_of :status, :maximum => 50
 

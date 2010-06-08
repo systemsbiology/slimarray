@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100602174006) do
+ActiveRecord::Schema.define(:version => 20100608204622) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -374,7 +374,7 @@ ActiveRecord::Schema.define(:version => 20100602174006) do
   create_table "samples", :force => true do |t|
     t.date     "submission_date"
     t.string   "short_sample_name",           :limit => 20
-    t.string   "sample_name",                 :limit => 48
+    t.string   "sample_name"
     t.string   "sample_group_name",           :limit => 50
     t.integer  "chip_type_id"
     t.integer  "organism_id"
