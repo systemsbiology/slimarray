@@ -1,7 +1,5 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+chip1:
+  name: chip 1
 
-one:
-  name: MyString
-
-two:
-  name: MyString
+chip2:
+  name: chip 2

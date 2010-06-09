@@ -11,13 +11,16 @@ describe "Sample" do
     
     # heading
     assert_row_equal([
-      "CEL File",
+      "Raw Data Path",
       "Sample ID",
       "Submission Date",
       "Short Sample Name",
       "Sample Name",
       "Sample Group Name",
       "Chip Type",
+      "Chip Name",
+      "Chip Number",
+      "Array Number",
       "Organism",
       "SBEAMS User",
       "Project",
@@ -33,6 +36,9 @@ describe "Sample" do
       "Young",
       "Young",
       "Alligator 670 2.0",
+      "",
+      "",
+      "",
       "Mouse",
       "bob",
       "MouseGroup",
@@ -47,6 +53,9 @@ describe "Sample" do
       "Old",
       "Old",
       "Alligator 670 2.0",
+      "chip 1",
+      "1",
+      "1",
       "Mouse",
       "bob",
       "MouseGroup",
@@ -61,6 +70,9 @@ describe "Sample" do
       "Very Old",
       "Old",
       "Alligator 670 2.0",
+      "",
+      "",
+      "",
       "Mouse",
       "bob",
       "MouseGroup",
@@ -75,6 +87,9 @@ describe "Sample" do
       "Very Very Old",
       "Old",
       "Alligator 670 2.0",
+      "chip 2",
+      "2",
+      "1",
       "Mouse",
       "bob",
       "MouseGroup",
@@ -89,6 +104,9 @@ describe "Sample" do
       "Bob B",
       "Bob",
       "Alligator 670 2.0",
+      "",
+      "",
+      "",
       "Mouse",
       "bob",
       "Bob's Stuff",
@@ -102,13 +120,16 @@ describe "Sample" do
     csv = CSV.open(csv_file_name, 'r')
     
     assert_row_equal([
-      "CEL File",
+      "Raw Data Path",
       "Sample ID",
       "Submission Date",
       "Short Sample Name",
       "Sample Name",
       "Sample Group Name",
       "Chip Type",
+      "Chip Name",
+      "Chip Number",
+      "Array Number",
       "Organism",
       "SBEAMS User",
       "Project",
@@ -128,6 +149,9 @@ describe "Sample" do
       "wt_HT_024_B_32234",
       "wt_HT_024",
       "Alligator 670 2.0",
+      "",
+      "",
+      "",
       "Mouse",
       "bob",
       "Bob's Stuff",
@@ -573,8 +597,8 @@ describe "Sample" do
 
       schemed_params = {
         "Strain" => naming_terms(:wild_type).id, "Perturbation" => naming_terms(:heat).id,
-        "Replicate" => naming_terms(:replicateA).id, "Perturbation Time" => naming_terms(:time024).id,
-        "Subject Number" => "3283"
+        "Replicate" => naming_terms(:replicateA).id, "PerturbationTime" => naming_terms(:time024).id,
+        "SubjectNumber" => "3283"
       }
       
       expected_terms = [
@@ -623,8 +647,8 @@ describe "Sample" do
       
       schemed_params = {
         "Strain" => naming_terms(:wild_type).id, "Perturbation" => naming_terms(:heat).id,
-        "Replicate" => naming_terms(:replicateA), "Perturbation Time" => naming_terms(:time024),
-        "Subject Number" => "3283"
+        "Replicate" => naming_terms(:replicateA), "PerturbationTime" => naming_terms(:time024),
+        "SubjectNumber" => "3283"
       }
       
       expected_texts = [
@@ -647,8 +671,8 @@ describe "Sample" do
       @sample = samples(:sample6)
       schemed_params = {
         "Strain" => naming_terms(:wild_type).id, "Perturbation" => naming_terms(:heat).id,
-        "Replicate" => naming_terms(:replicateA).id, "Perturbation Time" => naming_terms(:time024).id,
-        "Subject Number" => "3283"
+        "Replicate" => naming_terms(:replicateA).id, "PerturbationTime" => naming_terms(:time024).id,
+        "SubjectNumber" => "3283"
       }
       @sample.schemed_name = schemed_params
     end

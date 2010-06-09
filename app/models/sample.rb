@@ -153,7 +153,7 @@ class Sample < ActiveRecord::Base
           "Chip Type",
           "Chip Name",
           "Chip Number",
-          "Array Numnber",
+          "Array Number",
           "Organism",
           "SBEAMS User",
           "Project",
@@ -206,7 +206,7 @@ class Sample < ActiveRecord::Base
           "Chip Type",
           "Chip Name",
           "Chip Number",
-          "Array Numnber",
+          "Array Number",
           "Organism",
           "SBEAMS User",
           "Project",
@@ -810,7 +810,7 @@ class Sample < ActiveRecord::Base
     for element in naming_scheme.ordered_naming_elements
       depends_upon_element_with_no_selection = false
       depends_upon_element = element.depends_upon_element
-      if(depends_upon_element != nil && schemed_params[depends_upon_element.name].to_i <= 0)
+      if(depends_upon_element != nil && schemed_params[depends_upon_element.safe_name].to_i <= 0)
         depends_upon_element_with_no_selection = true
       end
       
@@ -819,10 +819,10 @@ class Sample < ActiveRecord::Base
       # 2) have a selection
       # 3) not be dependent on an element with no selection
       if( !element.free_text &&
-          schemed_params[element.name].to_i > 0 &&
+          schemed_params[element.safe_name].to_i > 0 &&
           !depends_upon_element_with_no_selection )
         terms << SampleTerm.new( :sample_id => id, :term_order => count,
-          :naming_term_id => NamingTerm.find(schemed_params[element.name]).id )
+          :naming_term_id => NamingTerm.find(schemed_params[element.safe_name]).id )
         count += 1
       end
     end
@@ -836,7 +836,7 @@ class Sample < ActiveRecord::Base
     for element in naming_scheme.ordered_naming_elements
       depends_upon_element_with_no_selection = false
       depends_upon_element = element.depends_upon_element
-      if(depends_upon_element != nil && schemed_params[depends_upon_element.name].to_i <= 0)
+      if(depends_upon_element != nil && schemed_params[depends_upon_element.safe_name].to_i <= 0)
         depends_upon_element_with_no_selection = true
       end
       
@@ -846,7 +846,7 @@ class Sample < ActiveRecord::Base
       if( element.free_text &&
           !depends_upon_element_with_no_selection )
         texts << SampleText.new( :sample_id => id, :naming_element_id => element.id,
-          :text => schemed_params[element.name] )
+          :text => schemed_params[element.safe_name] )
       end
     end
     
