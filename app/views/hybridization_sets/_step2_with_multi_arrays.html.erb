@@ -14,7 +14,8 @@
   </p>
   <p>
     <%= f.label :chip_type_id, "Chip Type" %><br />
-    <%= f.collection_select :chip_type_id, @hybridization_set.chip_types, :id, :name, {:prompt => true} %>
+    <%= f.collection_select :chip_type_id, @hybridization_set.chip_types, :id,
+      :name_and_short_name, {:prompt => true} %>
   </p>
   <p>
     <%= f.label :number_of_chips, "Number of Chips/Slides" %><br />

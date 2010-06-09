@@ -210,7 +210,8 @@ class HybridizationSet
   def chip_types
     @chip_types ||= ChipType.find(
       :all,
-      :conditions => {:platform_id => platform.id}
+      :conditions => {:platform_id => platform.id},
+      :order => "name ASC"
     )
   end
 

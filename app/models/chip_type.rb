@@ -37,6 +37,10 @@ class ChipType < ActiveRecord::Base
     "#{name} (#{platform && platform.name})"
   end
 
+  def name_and_short_name
+    "#{name} (#{short_name})"
+  end
+
   def summary_hash
     array_platform = platform && platform.name
 
