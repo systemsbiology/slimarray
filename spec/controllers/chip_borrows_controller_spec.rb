@@ -12,14 +12,15 @@ describe ChipBorrowsController do
     @lab_group = mock_model(LabGroup, :id => 42)
     @chip_type = mock_model(ChipType, :id => 23)
 
-    @mock_chip_borrow = mock("Chip purchase", :from_lab_group_id => 42, :chip_type_id => 23)
+    @mock_chip_borrow = mock("Chip purchase", :to_lab_group_id => 42, :from_lab_group_id => 12,
+                             :chip_type_id => 23)
   end
 
   describe "responding to GET new" do
 
     before(:each) do
       ChipBorrow.should_receive(:new).
-        with(:from_lab_group_id => "42",:chip_type_id => "23").
+        with(:to_lab_group_id => "42",:chip_type_id => "23").
         and_return(@mock_chip_borrow)
     end
 
@@ -55,7 +56,7 @@ describe ChipBorrowsController do
         @mock_chip_borrow.should_receive(:valid?).and_return(true)
         @mock_chip_borrow.should_receive(:save).and_return(true)
 
-        LabGroup.should_receive(:find).with(42).and_return(@lab_group)
+        LabGroup.should_receive(:find).with(12).and_return(@lab_group)
         ChipType.should_receive(:find).with(23).and_return(@chip_type)
       end
 

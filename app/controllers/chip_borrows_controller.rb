@@ -5,7 +5,7 @@ class ChipBorrowsController < ApplicationController
 
   def new
     @chip_borrow = ChipBorrow.new(
-      :from_lab_group_id => params[:lab_group_id],
+      :to_lab_group_id => params[:lab_group_id],
       :chip_type_id => params[:chip_type_id]
     )
 

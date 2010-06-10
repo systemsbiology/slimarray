@@ -20,8 +20,8 @@ class ChipPurchase
   # * <tt>number</tt> - The number of arrays bought
   def initialize(options = {})
     @date = parse_date(options["date(1i)"], options["date(2i)"], options["date(3i)"])
-    @lab_group_id = options[:lab_group_id]
-    @chip_type_id = options[:chip_type_id]
+    @lab_group_id = options[:lab_group_id].to_i
+    @chip_type_id = options[:chip_type_id].to_i
     @description = options[:description] || nil
     @number = options[:number] || 0
   end

@@ -5,8 +5,7 @@ class ChipIntergroupPurchasesController < ApplicationController
 
   def new
     @chip_intergroup_purchase = ChipIntergroupPurchase.new(
-      :to_lab_group_id => params[:to_lab_group_id],
-      :from_lab_group_id => params[:from_lab_group_id],      
+      :to_lab_group_id => params[:lab_group_id],
       :chip_type_id => params[:chip_type_id]
     )
 

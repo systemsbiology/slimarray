@@ -12,20 +12,19 @@ describe ChipIntergroupPurchasesController do
     @lab_group = mock_model(LabGroup, :id => 42)
     @chip_type = mock_model(ChipType, :id => 23)
 
-    @mock_chip_intergroup_purchase = mock("Chip purchase", :to_lab_group_id => 42, :from_lab_group_id => 12,
-                                          :chip_type_id => 23)
+    @mock_chip_intergroup_purchase = mock("Chip purchase", :to_lab_group_id => 42, :chip_type_id => 23)
   end
 
   describe "responding to GET new" do
 
     before(:each) do
       ChipIntergroupPurchase.should_receive(:new).
-        with(:to_lab_group_id => "42", :from_lab_group_id => "12", :chip_type_id => "23").
+        with(:to_lab_group_id => "42", :to_lab_group_id => "42", :chip_type_id => "23").
         and_return(@mock_chip_intergroup_purchase)
     end
 
     def do_get
-      get :new, :to_lab_group_id => 42, :from_lab_group_id => 12, :chip_type_id => 23
+      get :new, :lab_group_id => 42, :chip_type_id => 23
     end
 
     it "should be successful" do
@@ -47,7 +46,7 @@ describe ChipIntergroupPurchasesController do
     end
 
     def do_post
-      post :create, :to_lab_group_id => 42, :from_lab_group_id => 12, :chip_type_id => 23,
+      post :create, :lab_group_id => 42, :chip_type_id => 23,
            :chip_intergroup_purchase => "params"
     end
 

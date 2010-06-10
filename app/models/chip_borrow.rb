@@ -19,9 +19,9 @@ class ChipBorrow
   # * <tt>number</tt> - The number of arrays bought
   def initialize(options = {})
     @date = options[:date] || Date.today
-    @to_lab_group_id = options[:to_lab_group_id]
-    @from_lab_group_id = options[:from_lab_group_id]
-    @chip_type_id = options[:chip_type_id]
+    @to_lab_group_id = options[:to_lab_group_id].to_i
+    @from_lab_group_id = options[:from_lab_group_id].to_i
+    @chip_type_id = options[:chip_type_id].to_i
     @number = options[:number] || 0
   end
 
