@@ -44,6 +44,7 @@ class SampleSetsController < ApplicationController
     @sample_set.samples = @samples
 
     if @sample_set.valid?
+      @sample_set.save
       @samples.each do |s|
         s.save
       end

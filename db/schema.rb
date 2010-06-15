@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100608204622) do
+ActiveRecord::Schema.define(:version => 20100615175210) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -348,6 +348,11 @@ ActiveRecord::Schema.define(:version => 20100608204622) do
     t.datetime "updated_at"
   end
 
+  create_table "sample_sets", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sample_terms", :force => true do |t|
     t.integer  "term_order"
     t.integer  "sample_id"
@@ -390,6 +395,7 @@ ActiveRecord::Schema.define(:version => 20100608204622) do
     t.datetime "updated_at"
     t.integer  "label_id"
     t.integer  "hybridization_id"
+    t.integer  "sample_set_id"
   end
 
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"

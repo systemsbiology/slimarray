@@ -13,13 +13,13 @@
     <tr>
       <th>Date</th>
       <th>Name on the sample tube</th>
-      <% if @sample_set.naming_scheme_id == nil %>
-        <th>Sample Description</th>
-        <th>Sample Group</th>
-      <% else %>
+      <% if @sample_set.naming_scheme %>
         <% for element in @naming_elements %>
           <th><%=h element.name %></th>
         <% end %>
+      <% else %>
+        <th>Sample Description</th>
+        <th>Sample Group</th>
       <% end %>
       <% if @sample_set.platform.multiple_labels %>
         <th>Label</th>

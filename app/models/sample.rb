@@ -22,8 +22,6 @@ class Sample < ActiveRecord::Base
   has_many :sample_list_samples
   has_many :sample_lists, :through => :sample_list_samples
 
-  # temporarily associates with a sample set, which doesn't get stored in db
-  attr_accessor :sample_set_id
   belongs_to :sample_set
   
   validates_associated :chip_type, :project

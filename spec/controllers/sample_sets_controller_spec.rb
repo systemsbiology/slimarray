@@ -205,6 +205,7 @@ describe SampleSetsController do
     describe "with a valid sample set" do
       before(:each) do
         @sample_set.stub!(:valid?).and_return(true)
+        @sample_set.stub!(:save).and_return(true)
         @sample.stub!(:save).and_return(true)
       end
   
