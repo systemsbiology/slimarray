@@ -68,4 +68,20 @@ class ChipType < ActiveRecord::Base
     }
   end
 
+  def total_inventory
+    total = 0
+
+    chip_transactions.each do |t|
+      total = total +
+        (t.acquired || 0) -
+        (t.used || 0) -
+        (t.traded_sold || 0)  +
+        (t.borrowed_in || 0) -
+        (t.returned_out || 0) -
+        (t.borrowed_out || 0) +
+        (t.returned_in || 0)
+    end
+
+    return total
+  end
 end

@@ -50,4 +50,17 @@ describe "ChipType" do
       :updated_at => chip_type.updated_at,
     }
   end
+
+  it "should provide the total number of chips in inventory" do
+    mouse_chip_type = create_chip_type
+    create_chip_transaction(:chip_type => mouse_chip_type, :acquired => 30)
+    create_chip_transaction(:chip_type => mouse_chip_type, :used => 5)
+    create_chip_transaction(:chip_type => mouse_chip_type, :traded_sold => 6)
+    create_chip_transaction(:chip_type => mouse_chip_type, :borrowed_in => 4)
+    create_chip_transaction(:chip_type => mouse_chip_type, :returned_out => 4)
+    create_chip_transaction(:chip_type => mouse_chip_type, :borrowed_out => 10)
+    create_chip_transaction(:chip_type => mouse_chip_type, :returned_in => 6)
+
+    mouse_chip_type.total_inventory.should == 15
+  end
 end
