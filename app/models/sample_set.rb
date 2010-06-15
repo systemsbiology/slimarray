@@ -11,22 +11,16 @@ class SampleSet < ActiveRecord::Base
   
   has_many :samples
   
-  before_create :set_default_label
-
-  def set_default_label
-    if chip_type_id && chip_type_id != ""
-      self.label_id = chip_type.platform.default_label_id
-    end
-  end
-
   def self.new(attributes=nil)
     parse_multi_field_date(attributes)
+    convert_to_integers(attributes)
 
     sample_set = super
       
-    # if attributes && attributes[:chip_type_id] && attributes[:chip_type_id] != ""
-    #  sample_set.label_id = ChipType.find(attributes[:chip_type_id]).platform.default_label_id
-    # end
+    # set the default label
+    if attributes && attributes[:chip_type_id] && attributes[:chip_type_id] != ""
+      sample_set.label_id = ChipType.find(attributes[:chip_type_id]).platform.default_label_id
+    end
 
     return sample_set
   end
@@ -57,6 +51,12 @@ class SampleSet < ActiveRecord::Base
         attributes.delete("submission_date(2i)").to_i,
         attributes.delete("submission_date(3i)").to_i
       )
+    end
+  end
+
+  def self.convert_to_integers(attributes)
+    attributes.each do |key, value|
+      attributes[key] = Integer(value) rescue nil
     end
   end
 end
