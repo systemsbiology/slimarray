@@ -24,6 +24,10 @@ class UserProfile < ActiveRecord::Base
     UserProfile.find(:all, :conditions => {:notify_of_qc_outliers => true})
   end
 
+  def self.notify_of_low_inventory
+    UserProfile.find(:all, :conditions => {:notify_of_low_inventory => true})
+  end
+
   ###############################################################################################
   # Authorization:
   #

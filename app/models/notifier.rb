@@ -21,4 +21,11 @@ class Notifier < ActionMailer::Base
     subject    "[SLIMarray] QC Thresolds exceeded for #{qc_set.hybridization.sample_names}"
     body       :qc_set => qc_set
   end
+
+  def low_inventory_notification(name, needed, available)
+    recipients UserProfile.notify_of_low_inventory.collect{|x| x.user.email}.join(",")
+    from       %("SLIMarray" <slimarray@#{`hostname`.strip}>)
+    subject    "[SLIMarray] Low inventory for #{name}"
+    body       :name => name, :needed => needed, :available => available
+  end
 end

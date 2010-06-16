@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100615175210) do
+ActiveRecord::Schema.define(:version => 20100615224009) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -443,6 +443,7 @@ ActiveRecord::Schema.define(:version => 20100615175210) do
     t.datetime "updated_at"
     t.integer  "current_naming_scheme_id"
     t.boolean  "notify_of_qc_outliers",    :default => false,      :null => false
+    t.boolean  "notify_of_low_inventory",  :default => false,      :null => false
   end
 
   create_table "users", :force => true do |t|

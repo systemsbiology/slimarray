@@ -6,4 +6,5 @@
   <p>
     <b>Notifications</b><br />
     <%= check_box :user_profile, :notify_of_qc_outliers %> Notify when arrays don't meet QC requirements<br />
+    <%= check_box :user_profile, :notify_of_low_inventory %> Notify when samples are submitted and there aren't enough arrays for them<br />
   </p>

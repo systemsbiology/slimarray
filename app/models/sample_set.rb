@@ -11,6 +11,8 @@ class SampleSet < ActiveRecord::Base
   
   has_many :samples
   
+  after_create :check_chip_inventory
+
   def self.new(attributes=nil)
     parse_multi_field_date(attributes)
     convert_to_integers(attributes)
@@ -55,8 +57,19 @@ class SampleSet < ActiveRecord::Base
   end
 
   def self.convert_to_integers(attributes)
+    return unless attributes
+
     attributes.each do |key, value|
-      attributes[key] = Integer(value) rescue nil
+      attributes[key] = Integer(value) rescue value
+    end
+  end
+
+  def check_chip_inventory
+    chips_needed = (number_of_samples.to_f / chip_type.arrays_per_chip).ceil
+    available = chip_type.total_inventory
+
+    if available - chips_needed < 0
+      Notifier.deliver_low_inventory_notification(chip_type.name, chips_needed, available)
     end
   end
 end
