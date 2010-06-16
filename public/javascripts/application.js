@@ -44,16 +44,26 @@ $(document).ready(function(){
   $("#bdsample").click(function(){
     var s; s = jQuery("#sample_grid").getGridParam('selarrrow');
     if( s == null || s.length == 0 ) alert("Please select a row to destroy");
-    else if( s.length > 1 ) alert("Only one record can be destroyed at a time");
-    else {
-      if( confirm("Are you sure you want to delete this record?") )
+    else if( s.length == 1 ) {
+      if( confirm("Are you sure you want to delete this sample?") )
         $('<form method="post" action="' + samples_url + "/" + s + '" />')
             .append('<input type="hidden" name="_method" value="delete" />')
             .appendTo('body')
             .submit();
 
         return false;
-    } 
+    } else {
+      if( confirm("Are you sure you want to delete these samples?") ) {
+        s.forEach( function(id) {
+          $.post(samples_url + "/" + id + ".json", {asynchronous: false, _method: 'delete'},
+            function() {
+              $("#sample_grid").trigger("reloadGrid", [{current:true}]);
+            });
+        });
+
+        return false;
+      }
+    }
   }); 
 
   $(".bulk_handle_button").click(function(){
