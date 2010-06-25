@@ -224,4 +224,23 @@ describe Hybridization do
       Hybridization.record_charges([hybridization_1, hybridization_2]) 
     end
   end
+
+  describe "providing the sample names" do
+    it "should provide the sample name when there is just one sample" do
+      sample = create_sample(:sample_name => "Time_0")
+      hybridization = create_hybridization(:samples => [sample])
+
+      hybridization.sample_names.should == "Time_0"
+    end
+
+    it "should provide the sample names in alphanumeric order for 2 samples" do
+      label_b = create_label(:name => "b")
+      label_a = create_label(:name => "a")
+      sample_1 = create_sample(:sample_name => "Time_0", :label => label_a)
+      sample_2 = create_sample(:sample_name => "Time_60", :label => label_b)
+      hybridization = create_hybridization(:samples => [sample_2, sample_1])
+
+      hybridization.sample_names.should == "Time_0_v_Time_60"
+    end
+  end
 end
