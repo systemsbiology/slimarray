@@ -119,7 +119,6 @@ module FixtureReplacement
     s.sbeams_user = String.random(8)
     s.status = "submitted"
     s.project = default_project
-    s.microarray = default_microarray
   end
 
   attributes_for :site_config do |a|
