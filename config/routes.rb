@@ -1,4 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
+  # allow other apps to authenticate and then bounce back
+  map.connect 'bounce', :controller => "bounce", :action => "bounce"
+
   # backward compatibility with bookmarked login page
   map.connect 'session/new', :controller => "welcome", :action => "home"
 
