@@ -10,7 +10,7 @@ with any number of samples.
 
 class ProjectsController < ApplicationController
   before_filter :login_required
-  before_filter :staff_or_admin_required, :except => [:new_inline, :create_inline]
+  before_filter :staff_or_admin_required, :except => [:index, :new_inline, :create_inline]
   before_filter :load_dropdown_selections, :only => [:new, :new_inline, :create, :create_inline,
                                                      :edit, :update]
 
@@ -28,7 +28,7 @@ available when retrieving single projects (see GET /projects/[project id]).
 =end
   
   def index
-    @projects = Project.find(:all, :order => "name ASC")
+    @projects = Project.accessible_to_user(current_user)
     @lab_groups_by_id = LabGroup.all_by_id
     
     respond_to do |format|
