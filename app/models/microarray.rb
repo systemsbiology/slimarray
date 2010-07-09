@@ -56,7 +56,11 @@ class Microarray < ActiveRecord::Base
     conditions = "projects.lab_group_id IN (" + user.get_lab_group_ids.join(",") + ")"
     allowed_fields.each do |key, value|
       if params.include? key
-        conditions += " AND #{value} = #{params[key]}"
+        if params[key] == "nil"
+          conditions += " AND #{value} IS NULL"
+        else
+          conditions += " AND #{value} = #{params[key]}"
+        end
       end
     end
 
