@@ -25,6 +25,11 @@ class Microarray < ActiveRecord::Base
     hybridization.samples.first.project_id
   end
 
+  api_reader :project
+  def project
+    hybridization.samples.first.project_id
+  end
+
   api_reader :schemed_descriptors
   def schemed_descriptors
     descriptors = Hash.new
@@ -50,7 +55,8 @@ class Microarray < ActiveRecord::Base
   def self.custom_find(user, params)
     allowed_fields = {
       "project_id" => "samples.project_id",
-      "naming_scheme_id" => "samples.naming_scheme_id"
+      "naming_scheme_id" => "samples.naming_scheme_id",
+      "lab_group_id" => "projects.lab_group_id"
     }
 
     conditions = "projects.lab_group_id IN (" + user.get_lab_group_ids.join(",") + ")"

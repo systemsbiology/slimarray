@@ -87,8 +87,4 @@ class Project < ActiveRecord::Base
   def active_yes_or_no
     active ? "Yes" : "No"
   end
-
-  def self.accessible_to_user(user)
-    Project.find(:all, :conditions => ["lab_group_id IN (?)", user.get_lab_group_ids])
-  end
 end

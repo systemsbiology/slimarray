@@ -28,7 +28,7 @@ available when retrieving single projects (see GET /projects/[project id]).
 =end
   
   def index
-    @projects = Project.accessible_to_user(current_user)
+    @projects = Project.accessible_to_user(current_user, false)
     @lab_groups_by_id = LabGroup.all_by_id
     
     respond_to do |format|
