@@ -50,7 +50,7 @@ describe Microarray do
       :scheme => naming_scheme.id,
       :project => project.id,
       :chip_name => "251486827605",
-      :schemed_descriptors => [],
+      :schemed_descriptors => {},
       :raw_data_path => hybridization.raw_data_path,
       :array_number => 2,
       :id => microarray.id,
