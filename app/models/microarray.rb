@@ -20,9 +20,9 @@ class Microarray < ActiveRecord::Base
     hybridization.samples.first.naming_scheme_id
   end
 
-  api_reader :project
-  def project
-    hybridization.samples.first.project_id
+  api_reader :lab_group
+  def lab_group
+    hybridization.samples.first.project.lab_group_id
   end
 
   api_reader :project
@@ -70,15 +70,21 @@ class Microarray < ActiveRecord::Base
       end
     end
 
-    find(:all, :include => { :hybridization => {:samples => :project} }, :conditions => conditions)
+    find(:all, :include => {
+      :hybridization => {
+        :samples => :project,
+      }},
+      :conditions => conditions)
   end
 
   def summary_hash(with)
+    site_url = SiteConfig.site_url
+
     hash = {
       :id => id,
       :name => name,
       :updated_at => updated_at,
-      :uri => "#{SiteConfig.site_url}/microarrays/#{id}"
+      :uri => "#{site_url}/microarrays/#{id}"
     }
 
     with.split(",").each do |key|
