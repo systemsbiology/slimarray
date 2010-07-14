@@ -52,16 +52,21 @@ class Microarray < ActiveRecord::Base
     hybridization.raw_data_path
   end
 
+  def sample_number
+    hybridization.samples.size
+  end
+
   def self.custom_find(user, params)
-    allowed_fields = {
+    # Fields that can be included in the SQL query
+    query_fields = {
       "project_id" => "samples.project_id",
       "naming_scheme_id" => "samples.naming_scheme_id",
       "lab_group_id" => "projects.lab_group_id"
     }
 
     conditions = "projects.lab_group_id IN (" + user.get_lab_group_ids.join(",") + ")"
-    allowed_fields.each do |key, value|
-      if params.include? key
+    query_fields.each do |key, value|
+      if params.has_key? key
         if params[key] == "nil"
           conditions += " AND #{value} IS NULL"
         else
@@ -70,11 +75,24 @@ class Microarray < ActiveRecord::Base
       end
     end
 
-    find(:all, :include => {
+    microarrays = find(:all, :include => {
       :hybridization => {
         :samples => :project,
       }},
       :conditions => conditions)
+
+    # Fields that have to be filtered in a secondary step
+    filter_fields = ["sample_number"]
+
+    filter_fields.each do |field|
+      if params.has_key? field
+        # not sure why, but a reload is needed to see the proper sample_number for arrays,
+        # at least with the specs
+        microarrays = microarrays.select{|array| array.reload.send(field).to_s == params[field]}
+      end
+    end
+
+    return microarrays
   end
 
   def summary_hash(with)

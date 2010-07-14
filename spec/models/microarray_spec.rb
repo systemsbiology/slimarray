@@ -14,6 +14,7 @@ describe Microarray do
 
   describe "doing a custom find" do
     before(:each) do
+      Microarray.destroy_all
       @lab_group = mock_model(LabGroup)
       @user = mock_model(User)
       @project = create_project(:lab_group_id => @lab_group.id)
@@ -33,7 +34,18 @@ describe Microarray do
       # a microarray that shouldn't show up in the find
       create_microarray
 
-      Microarray.custom_find(@user, {:project_id => @project.id, :naming_scheme_id => @naming_scheme.id}).should == [@microarray]
+      Microarray.custom_find(@user, {"project_id" => @project.id, "naming_scheme_id" => @naming_scheme.id}).should == [@microarray]
+    end
+
+    it "should provide only samples with 1 sample" do
+      # a microarray that shouldn't show up in the find
+      sample_2 = create_sample(:project => @project, :naming_scheme => @naming_scheme)
+      sample_3 = create_sample(:project => @project, :naming_scheme => @naming_scheme)
+      microarray_2 = create_microarray
+      hybridization_2 = create_hybridization(:samples => [sample_2, sample_3], :microarray => microarray_2)
+
+      Microarray.custom_find(@user, {"project_id" => @project.id.to_s, "naming_scheme_id" => @naming_scheme.id.to_s,
+        "sample_number" => "1"}).should == [@microarray]
     end
   end
 
