@@ -40,7 +40,7 @@ class Hybridization < ActiveRecord::Base
   end
 
   def sample_names
-    ordered_samples = samples.find(:all, :include => :label, :order => "labels.name ASC")
+    ordered_samples = samples.sort{|a,b| a.label.name <=> b.label.name}
     ordered_samples.collect {|s| s.sample_name}.join("_v_")
   end
 

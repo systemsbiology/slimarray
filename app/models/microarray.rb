@@ -52,6 +52,16 @@ class Microarray < ActiveRecord::Base
     hybridization.raw_data_path
   end
 
+  api_reader :platform_name
+  def platform_name
+    hybridization.samples.first.chip_type.platform.name
+  end
+
+  api_reader :hybridization_date
+  def hybridization_date
+    hybridization.hybridization_date
+  end
+
   def sample_number
     hybridization.samples.size
   end
@@ -77,18 +87,21 @@ class Microarray < ActiveRecord::Base
 
     microarrays = find(:all, :include => {
       :hybridization => {
-        :samples => :project,
+        :samples => [:label, :project, {:chip_type => :platform}],
       }},
       :conditions => conditions)
+
+    # A reload is needed to see the proper sample_number for arrays. This only appears to
+    # be a problem when conditions are used on associations occurring after :samples.
+    # Not sure if this is an ActiveRecord or MySQL or SQL thing.
+    microarrays = microarrays.each {|m| m.reload}
 
     # Fields that have to be filtered in a secondary step
     filter_fields = ["sample_number"]
 
     filter_fields.each do |field|
       if params.has_key? field
-        # not sure why, but a reload is needed to see the proper sample_number for arrays,
-        # at least with the specs
-        microarrays = microarrays.select{|array| array.reload.send(field).to_s == params[field]}
+        microarrays = microarrays.select{|array| array.send(field).to_s == params[field]}
       end
     end
 
@@ -96,13 +109,13 @@ class Microarray < ActiveRecord::Base
   end
 
   def summary_hash(with)
-    site_url = SiteConfig.site_url
+    @site_url ||= SiteConfig.site_url
 
     hash = {
       :id => id,
       :name => name,
       :updated_at => updated_at,
-      :uri => "#{site_url}/microarrays/#{id}"
+      :uri => "#{@site_url}/microarrays/#{id}"
     }
 
     with.split(",").each do |key|
