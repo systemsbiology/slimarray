@@ -18,8 +18,8 @@ SLIMarray web site</a> for documentation and additional information.</p>
       { :field => "projects.name", :label => "Project", :width => 150 },
     ],
     :height => 550,
-    :sort_column => "submission_date",
-    :sort_order => "asc",
+    :sort_column => "submission_date DESC, samples.id ASC",
+    #:sort_order => "asc",
     :rows_per_page => 25,
     :multi_selection => true
   ) %>

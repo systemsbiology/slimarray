@@ -11,8 +11,8 @@
     { :field => "projects.name", :label => "Project", :width => 100 },
   ],
   :height => 550,
-  :sort_column => "hybridization_date",
-  :sort_order => "desc",
+  :sort_column => "hybridization_date DESC, hybridizations.id ASC",
+  #:sort_order => "desc",
   :rows_per_page => 25,
   :multi_selection => true
 ) %>

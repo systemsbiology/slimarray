@@ -8,8 +8,8 @@
     { :field => "projects.name", :label => "Project", :width => 150 },
   ],
   :height => 550,
-  :sort_column => "submission_date",
-  :sort_order => "desc",
+  :sort_column => "submission_date DESC, samples.id ASC",
+  #:sort_order => "desc",
   :rows_per_page => 25,
   :multi_selection => true
 ) %>
