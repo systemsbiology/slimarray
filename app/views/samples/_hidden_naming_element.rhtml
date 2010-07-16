@@ -1,9 +1,9 @@
 <% if @element.free_text %>
-  <input style="display:none" id="sample_<%=@n%>_schemed_name_<%=h @element.safe_name%>" 
-         name="sample[<%=@n%>][schemed_name][<%=h @element.safe_name%>]" size="10" type="text"
+  <input style="display:none" id="sample_<%=@n_padded%>_schemed_name_<%=h @element.safe_name%>" 
+         name="sample[<%=@n_padded%>][schemed_name][<%=h @element.safe_name%>]" size="10" type="text"
          value="<%= @sample.text_values[@element.name] %>" />
 <% else %>
-  <select style="display:none" id="sample_<%=@n%>_schemed_name_<%=@element.safe_name%>" name="sample[<%=@n%>][schemed_name][<%=@element.safe_name%>]">
+  <select style="display:none" id="sample_<%=@n_padded%>_schemed_name_<%=@element.safe_name%>" name="sample[<%=@n_padded%>][schemed_name][<%=@element.safe_name%>]">
   <% if @element.optional == true %>
       <option value="-1">- None -</option>
   <% end %>
