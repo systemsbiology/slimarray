@@ -203,7 +203,6 @@ class Hybridization < ActiveRecord::Base
   end
 
   def create_agcc_array_file
-    require 'guid'
 
     # assume 1 sample since AGCC files are Affy-specific
     sample = samples.first

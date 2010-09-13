@@ -202,7 +202,7 @@ describe Hybridization do
       Charge.should_receive(:create).with(
         :charge_set_id => @charge_set.id,
         :date => Date.parse("2009-12-11"),
-        :description => "wt-0_v_mut-0",
+        :description => "mut-0_v_wt-0",
         :chips_used => 1,
         :chip_cost => 100.0,
         :labeling_cost => 200.0,
@@ -213,7 +213,7 @@ describe Hybridization do
       Charge.should_receive(:create).with(
         :charge_set_id => @charge_set.id,
         :date => Date.parse("2009-12-11"),
-        :description => "wt-5_v_mut-5",
+        :description => "mut-5_v_wt-5",
         :chips_used => 1,
         :chip_cost => 100.0,
         :labeling_cost => 200.0,
