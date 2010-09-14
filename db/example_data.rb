@@ -119,6 +119,7 @@ module FixtureReplacement
     s.sbeams_user = String.random(8)
     s.status = "submitted"
     s.project = default_project
+    s.label = default_label
   end
 
   attributes_for :site_config do |a|

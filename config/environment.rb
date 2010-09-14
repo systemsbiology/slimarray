@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.9' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -67,6 +67,11 @@ Rails::Initializer.run do |config|
   config.gem 'ar-extensions'
   config.gem 'json'
   config.gem 'highline'
+  config.gem 'rubycas-client', :version => '2.1.0'
+  config.gem 'formtastic', :version => '1.1.0'
+  config.gem 'parseexcel', :version => '0.5.2'
+  config.gem 'rest-client', :lib => 'rest_client', :version => '0.8.2'
+  config.gem 'guid', :version => '0.1.1'
 end
 
 AUTHENTICATION_SALT = 'mmm_kosher_rocks' unless defined? AUTHENTICATION_SALT

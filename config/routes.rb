@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :service_option_sets
+
+  map.resources :service_options
+
   # allow other apps to authenticate and then bounce back
   map.connect 'bounce', :controller => "bounce", :action => "bounce"
 

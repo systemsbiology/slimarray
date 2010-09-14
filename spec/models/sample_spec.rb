@@ -46,6 +46,23 @@ describe "Sample" do
     ], csv.shift)
     
     assert_row_equal([
+      "",
+      samples(:sample5).id.to_s,
+      "2006-09-10",
+      "bb",
+      "Bob B",
+      "Bob",
+      "Alligator 670 2.0",
+      "",
+      "",
+      "",
+      "Mouse",
+      "bob",
+      "Bob's Stuff",
+      "None"
+    ], csv.shift)
+    
+    assert_row_equal([
       "/tmp/20060210_01_Old.CEL",
       samples(:sample2).id.to_s,
       "2006-02-10",
@@ -93,23 +110,6 @@ describe "Sample" do
       "Mouse",
       "bob",
       "MouseGroup",
-      "None"
-    ], csv.shift)
-    
-    assert_row_equal([
-      "",
-      samples(:sample5).id.to_s,
-      "2006-09-10",
-      "bb",
-      "Bob B",
-      "Bob",
-      "Alligator 670 2.0",
-      "",
-      "",
-      "",
-      "Mouse",
-      "bob",
-      "Bob's Stuff",
       "None"
     ], csv.shift)
   end
@@ -530,7 +530,7 @@ describe "Sample" do
 
   it "should provide sample browsing categories" do
     # make sure there are no other schemes to get in the way
-    NamingScheme.destroy_all
+    clear_naming_schemes
 
     scheme = create_naming_scheme(:name => "Mouse")
     strain = create_naming_element(:naming_scheme => scheme, :name => "Strain")
@@ -707,4 +707,9 @@ describe "Sample" do
     end
   end
 
+  def clear_naming_schemes
+    NamingTerm.destroy_all
+    NamingElement.destroy_all
+    NamingScheme.destroy_all
+  end
 end
