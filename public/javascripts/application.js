@@ -82,5 +82,24 @@ $(document).ready(function(){
     } 
   });
 
+  $('#sample_set_chip_type_id').change(function() {
+    var sel = $("#sample_set_chip_type_id option:selected")[0].value;
+
+    if(sel) {
+      $.get('../chip_types/' + sel + '/service_options', function(data) {
+        $('#sample_set_service_options').html(data);
+      });
+    }
+  });
+
+  $('#sample_set_service_options').change(function() {
+    var price, number, total;
+
+    price = $("#sample_set_service_option_id option:selected").attr('price');
+    number = $('#sample_set_number_of_samples').attr('value');
+    total = "$" + price * number;
+
+    $('#cost_estimate').html(total);
+  });
 });
  

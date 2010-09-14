@@ -1,0 +1,31 @@
+<h1>Listing Service Options</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Notes</th>
+    <th>Chip cost</th>
+    <th>Labeling cost</th>
+    <th>Hybridization cost</th>
+    <th>Qc cost</th>
+    <th>Other cost</th>
+  </tr>
+
+<% for service_option in @service_options %>
+  <tr>
+    <td><%=h service_option.name %></td>
+    <td><%=h service_option.notes %></td>
+    <td><%=h service_option.chip_cost %></td>
+    <td><%=h service_option.labeling_cost %></td>
+    <td><%=h service_option.hybridization_cost %></td>
+    <td><%=h service_option.qc_cost %></td>
+    <td><%=h service_option.other_cost %></td>
+    <td><%= link_to 'Edit', edit_service_option_path(service_option) %></td>
+    <td><%= link_to 'Destroy', service_option, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New service_option', new_service_option_path %>

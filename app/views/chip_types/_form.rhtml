@@ -14,6 +14,9 @@
 <p><label for="chip_type_platform_id">Array Platform</label><br/>
 <%= collection_select 'chip_type', 'platform_id', @platforms, :id, :name, {:prompt => true} %>
 
+<p><label for="chip_type_service_option_set_id">Service Option Set</label><br/>
+<%= collection_select 'chip_type', 'service_option_set_id', @service_option_sets, :id, :name, {:prompt => true} %>
+
 <p><label for="chip_type_arrays_per_chip">Arrays Per Chip/Slide</label><br/>
 <%= text_field 'chip_type', 'arrays_per_chip'  %></p>
 

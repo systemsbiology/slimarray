@@ -1,0 +1,19 @@
+<h1>Listing Service Option Sets</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% for service_option_set in @service_option_sets %>
+  <tr>
+    <td><%=h service_option_set.name %></td>
+    <td><%= link_to 'Edit', edit_service_option_set_path(service_option_set) %></td>
+    <td><%= link_to 'Destroy', service_option_set, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New service_option_set', new_service_option_set_path %>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100615224009) do
+ActiveRecord::Schema.define(:version => 20100913190501) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -100,15 +100,16 @@ ActiveRecord::Schema.define(:version => 20100615224009) do
   add_index "chip_transactions", ["lab_group_id"], :name => "lab_groups_id"
 
   create_table "chip_types", :force => true do |t|
-    t.string   "name",            :limit => 250, :default => ""
-    t.string   "short_name",      :limit => 100, :default => ""
+    t.string   "name",                  :limit => 250, :default => ""
+    t.string   "short_name",            :limit => 100, :default => ""
     t.integer  "organism_id"
-    t.integer  "lock_version",                   :default => 0
+    t.integer  "lock_version",                         :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "library_package"
     t.integer  "platform_id"
-    t.integer  "arrays_per_chip",                :default => 1,  :null => false
+    t.integer  "arrays_per_chip",                      :default => 1,  :null => false
+    t.integer  "service_option_set_id"
   end
 
   add_index "chip_types", ["organism_id"], :name => "default_organism_id"
@@ -408,6 +409,29 @@ ActiveRecord::Schema.define(:version => 20100615224009) do
   add_index "samples", ["project_id"], :name => "index_samples_on_project_id"
   add_index "samples", ["starting_quality_trace_id"], :name => "index_samples_on_starting_quality_trace_id"
   add_index "samples", ["submission_date"], :name => "index_samples_on_submission_date"
+
+  create_table "service_option_sets", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "service_option_sets_service_options", :id => false, :force => true do |t|
+    t.integer "service_option_id"
+    t.integer "service_option_set_id"
+  end
+
+  create_table "service_options", :force => true do |t|
+    t.string   "name"
+    t.string   "notes"
+    t.float    "chip_cost"
+    t.float    "labeling_cost"
+    t.float    "hybridization_cost"
+    t.float    "qc_cost"
+    t.float    "other_cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "site_config", :force => true do |t|
     t.string   "site_name",             :limit => 50

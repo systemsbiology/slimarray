@@ -49,7 +49,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :chip_intergroup_purchases, :only => [:new, :create]
   map.resources :chip_borrows, :only => [:new, :create]
   map.resources :chip_returns, :only => [:new, :create]
-  map.resources :chip_types, :collection => {:grid => :get}
+  map.resources :chip_types, :collection => {:grid => :get}, :member => {:service_options => :get}
   map.resources :inventory_checks, :collection => {:grid => :get}
   map.resources :organisms, :collection => {:grid => :get}
   map.resources :projects, :collection => {:grid => :get}

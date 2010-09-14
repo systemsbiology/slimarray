@@ -1,0 +1,39 @@
+<h1>New Service Option</h1>
+
+<% form_for(@service_option) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :notes %><br />
+    <%= f.text_field :notes %>
+  </p>
+  <p>
+    <%= f.label :chip_cost %><br />
+    <%= f.text_field :chip_cost %>
+  </p>
+  <p>
+    <%= f.label :labeling_cost %><br />
+    <%= f.text_field :labeling_cost %>
+  </p>
+  <p>
+    <%= f.label :hybridization_cost %><br />
+    <%= f.text_field :hybridization_cost %>
+  </p>
+  <p>
+    <%= f.label :qc_cost %><br />
+    <%= f.text_field :qc_cost %>
+  </p>
+  <p>
+    <%= f.label :other_cost %><br />
+    <%= f.text_field :other_cost %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', service_options_path %>

@@ -40,6 +40,8 @@
             <% if current_user.staff_or_admin? %>
               <li class="category">Charges</li>
               <li><%= link_to 'Charges', charge_sets_path %></li>
+              <li><%= link_to 'Service Options', service_options_path %></li>
+              <li><%= link_to 'Service Option Sets', service_option_sets_path %></li>
               <li><%= link_to 'Charge Templates', charge_templates_path %></li>
             <% end %>    
           <% end %>

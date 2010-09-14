@@ -1,0 +1,38 @@
+<p>
+  <b>Name:</b>
+  <%=h @service_option.name %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%=h @service_option.notes %>
+</p>
+
+<p>
+  <b>Chip cost:</b>
+  <%=h @service_option.chip_cost %>
+</p>
+
+<p>
+  <b>Labeling cost:</b>
+  <%=h @service_option.labeling_cost %>
+</p>
+
+<p>
+  <b>Hybridization cost:</b>
+  <%=h @service_option.hybridization_cost %>
+</p>
+
+<p>
+  <b>Qc cost:</b>
+  <%=h @service_option.qc_cost %>
+</p>
+
+<p>
+  <b>Other cost:</b>
+  <%=h @service_option.other_cost %>
+</p>
+
+
+<%= link_to 'Edit', edit_service_option_path(@service_option) %> |
+<%= link_to 'Back', service_options_path %>

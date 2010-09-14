@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  chip_cost: 1.5
+  labeling_cost: 1.5
+  hybridization_cost: 1.5
+  qc_cost: 1.5
+  other_cost: 1.5
+
+two:
+  name: MyString
+  chip_cost: 1.5
+  labeling_cost: 1.5
+  hybridization_cost: 1.5
+  qc_cost: 1.5
+  other_cost: 1.5

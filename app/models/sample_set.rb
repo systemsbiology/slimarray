@@ -4,10 +4,10 @@ class SampleSet < ActiveRecord::Base
   include Validatable
 
   attr_accessor :submission_date, :number_of_samples, :project_id, :naming_scheme_id, :integer,
-    :chip_type_id, :sbeams_user, :label_id
+    :chip_type_id, :sbeams_user, :label_id, :service_option_id
 
   validates_numericality_of :number_of_samples
-  validates_presence_of :chip_type_id, :project_id
+  validates_presence_of :chip_type_id, :project_id, :service_option_id
   
   has_many :samples
   

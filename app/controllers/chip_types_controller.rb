@@ -152,10 +152,17 @@ Get detailed information about a single chip type.
     )
   end
 
+  def service_options
+    @service_options = ChipType.find(params[:id]).service_options
+
+    render :partial => 'service_options'
+  end
+
   private
 
   def load_dropdown_selections
     @organisms = Organism.find(:all, :order => "name ASC")
     @platforms = Platform.find(:all, :order => "name ASC")
+    @service_option_sets = ServiceOptionSet.find(:all, :order => "name ASC")
   end
 end

@@ -1,0 +1,25 @@
+<h1>Editing Service Option Set: <%=h @service_option_set.name %></h1>
+
+<% form_for(@service_option_set) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label "service_option_ids" %><br />
+    <% for service_option in @service_options %>
+      <div>
+        <%= check_box_tag "service_option_set[service_option_ids][]", service_option.id, @service_option_set.service_options.include?(service_option) %>
+        <%=h service_option.name %> - <%= service_option.notes %>
+
+      </div>
+    <% end %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', service_option_sets_path %>

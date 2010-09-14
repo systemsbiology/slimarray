@@ -1,6 +1,7 @@
 class ChipType < ActiveRecord::Base
   belongs_to :organism
   belongs_to :platform
+  belongs_to :service_option_set
   has_many :chip_transactions, :dependent => :destroy
   has_many :samples, :dependent => :destroy
   has_many :inventory_checks, :dependent => :destroy
@@ -83,5 +84,9 @@ class ChipType < ActiveRecord::Base
     end
 
     return total
+  end
+
+  def service_options
+    (service_option_set && service_option_set.service_options) || Array.new
   end
 end
