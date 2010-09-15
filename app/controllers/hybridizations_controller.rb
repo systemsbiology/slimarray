@@ -1,6 +1,5 @@
 class HybridizationsController < ApplicationController
   before_filter :login_required
-  before_filter :staff_or_admin_required
   before_filter :load_dropdown_choices, :only => :edit
 
   def index
