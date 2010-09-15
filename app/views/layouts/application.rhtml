@@ -33,8 +33,7 @@
             <li class="category">Samples</li>
             <li><%= link_to 'Bioanalyzer Results', bioanalyzer_runs_path %></li>
             <li><%= link_to 'Samples', samples_path %></li>
-            <%= link_if_staff_or_admin 'Hybridizations', hybridizations_path, 
-            :wrap_in => 'li'%>
+            <li><%= link_to 'Hybridizations', hybridizations_path %></li>
           <% end %>
           <% if SiteConfig.track_charges? %>
             <% if current_user.staff_or_admin? %>
