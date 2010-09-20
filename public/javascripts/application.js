@@ -1,4 +1,26 @@
 $(document).ready(function(){
+  function updateCostEstimate() {
+    var price, number, total;
+
+    price = $("#sample_set_service_option_id option:selected").attr('price');
+    number = $('#sample_set_number_of_samples').attr('value');
+    total = price * number;
+
+    if( !isNaN(total) ) {
+      $('#cost_estimate').html("$" + total);
+    }
+  }
+
+  function showServiceOptions() {
+    var sel = $("#sample_set_chip_type_id option:selected")[0].value;
+
+    if(sel) {
+      $.get('../chip_types/' + sel + '/service_options', function(data) {
+        $('#sample_set_service_options').html(data);
+      });
+    }
+  }
+
   $("#bedata").click(function(){
     var s; s = jQuery("#data_grid").getGridParam('selarrrow');
     if( s == null || s.length == 0 ) alert("Please select a row to edit");
@@ -83,23 +105,13 @@ $(document).ready(function(){
   });
 
   $('#sample_set_chip_type_id').change(function() {
-    var sel = $("#sample_set_chip_type_id option:selected")[0].value;
-
-    if(sel) {
-      $.get('../chip_types/' + sel + '/service_options', function(data) {
-        $('#sample_set_service_options').html(data);
-      });
-    }
+    showServiceOptions();
   });
 
   $('#sample_set_service_options,#sample_set_number_of_samples').change(function() {
-    var price, number, total;
-
-    price = $("#sample_set_service_option_id option:selected").attr('price');
-    number = $('#sample_set_number_of_samples').attr('value');
-    total = "$" + price * number;
-
-    $('#cost_estimate').html(total);
+    updateCostEstimate();
   });
-});
- 
+
+  showServiceOptions();
+  updateCostEstimate();
+}); 
