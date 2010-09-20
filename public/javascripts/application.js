@@ -92,7 +92,7 @@ $(document).ready(function(){
     }
   });
 
-  $('#sample_set_service_options').change(function() {
+  $('#sample_set_service_options,#sample_set_number_of_samples').change(function() {
     var price, number, total;
 
     price = $("#sample_set_service_option_id option:selected").attr('price');
