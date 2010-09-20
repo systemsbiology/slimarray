@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100913190501) do
+ActiveRecord::Schema.define(:version => 20100920171713) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -164,6 +164,10 @@ ActiveRecord::Schema.define(:version => 20100913190501) do
     t.integer  "lab_group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "require_manager_approval"
+    t.float    "manager_approval_minimum"
+    t.boolean  "require_investigator_approval"
+    t.float    "investigator_approval_minimum"
   end
 
   create_table "lab_groups", :force => true do |t|

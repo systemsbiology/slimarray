@@ -1,0 +1,10 @@
+<p>
+  <%= check_box :lab_group_profile, :require_manager_approval %>
+  <b>Require manager approval for submissions over $</b>
+  <%= text_field :lab_group_profile, :manager_approval_minimum, :size => 6 %>
+</p>
+<p>
+  <%= check_box :lab_group_profile, :require_investigator_approval %>
+  <b>Require investigator approval for submissions over $</b>
+  <%= text_field :lab_group_profile, :investigator_approval_minimum, :size => 6 %>
+</p>
