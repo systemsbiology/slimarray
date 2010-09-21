@@ -5,4 +5,8 @@ class ServiceOption < ActiveRecord::Base
   def total_cost
     chip_cost + labeling_cost + hybridization_cost + qc_cost + other_cost
   end
+
+  def name_and_price
+    "#{name} ($#{total_cost}/sample)"
+  end
 end
