@@ -11,7 +11,6 @@ describe HybridizationSet do
     @sample_2 = create_sample(:chip_type => @no_multi_array_chip_type, :status => "submitted")
     @sample_3 = create_sample
     @charge_set = create_charge_set
-    @charge_template = create_charge_template
   end
 
   describe "determining the current step in producing a hybridization set" do
@@ -42,7 +41,6 @@ describe HybridizationSet do
           :previous_step => "step2_no_multi_arrays",
           :platform_id => @no_multi_array_platform.id,
           :date => Date.today,
-          :charge_template_id => @charge_template.id,
           :number_of_chips => 4,
           :number_of_channels => 1
         )
@@ -67,7 +65,6 @@ describe HybridizationSet do
           :previous_step => "step2_with_multi_arrays",
           :platform_id => @multi_array_platform.id,
           :date => Date.today,
-          :charge_template_id => @charge_template.id,
           :number_of_chips => 4,
           :chip_type_id => @no_multi_array_chip_type.id,
           :number_of_channels => 1
@@ -149,7 +146,6 @@ describe HybridizationSet do
           :number_of_chips => 2,
           :number_of_channels => 1,
           :charge_set_id => @charge_set.id,
-          :charge_template_id => @charge_template.id,
           :sample_ids => { "0" => {"0" => @sample_1.id}, "1" => {"0" => @sample_2.id} }
         )
         Chip.stub!(:create!).with(:name => "20091118_01").
@@ -166,14 +162,12 @@ describe HybridizationSet do
           :hybridization_date => "2009-11-18",
           :chip_number => 1,
           :microarray_id => @microarray_1.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_1]
         ).and_return(@hybridization_1)
         Hybridization.stub!(:create!).with(
           :hybridization_date => "2009-11-18",
           :chip_number => 2,
           :microarray_id => @microarray_2.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_2]
         ).and_return(@hybridization_2)
         Hybridization.stub!(:record_charges)
@@ -193,14 +187,12 @@ describe HybridizationSet do
           :hybridization_date => "2009-11-18",
           :chip_number => 1,
           :microarray_id => @microarray_1.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_1]
         ).once.and_return(@hybridization_1)
         Hybridization.should_receive(:create!).with(
           :hybridization_date => "2009-11-18",
           :chip_number => 2,
           :microarray_id => @microarray_2.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_2]
         ).once.and_return(@hybridization_2)
         @hybridization_set.save
@@ -253,7 +245,6 @@ describe HybridizationSet do
           :number_of_chips => 2,
           :number_of_channels => 1,
           :charge_set_id => @charge_set.id,
-          :charge_template_id => @charge_template.id,
           :sample_ids => { "0" => {"0" => @sample_1.id}, "1" => {"0" => @sample_2.id} },
           :chip_names => { "0" => "1002", "1" => "1001" }
         )
@@ -271,14 +262,12 @@ describe HybridizationSet do
           :hybridization_date => "2009-11-18",
           :chip_number => 1,
           :microarray_id => @microarray_1.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_1]
         ).and_return(@hybridization_1)
         Hybridization.stub!(:create!).with(
           :hybridization_date => "2009-11-18",
           :chip_number => 2,
           :microarray_id => @microarray_2.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_2]
         ).and_return(@hybridization_2)
         Hybridization.stub!(:record_charges)
@@ -298,14 +287,12 @@ describe HybridizationSet do
           :hybridization_date => "2009-11-18",
           :chip_number => 1,
           :microarray_id => @microarray_1.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_1]
         ).once.and_return(@hybridization_1)
         Hybridization.should_receive(:create!).with(
           :hybridization_date => "2009-11-18",
           :chip_number => 2,
           :microarray_id => @microarray_2.id,
-          :charge_template_id => @charge_template.id,
           :samples => [@sample_2]
         ).once.and_return(@hybridization_2)
         @hybridization_set.save
@@ -360,7 +347,6 @@ describe HybridizationSet do
         :number_of_chips => 2,
         :number_of_channels => 1,
         :charge_set_id => @charge_set.id,
-        :charge_template_id => @charge_template.id,
         :sample_ids => { "0" => {"0" => {"0" => @sample_1.id}, "1" => {"0" => @sample_2.id}} }
       )
       Chip.stub!(:create!).with(:name => "20091118_01").
@@ -375,14 +361,12 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_1]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:create!).once.with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_2]
       ).and_return(@hybridization_2)
       Hybridization.stub!(:record_charges)
@@ -400,14 +384,12 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_1]
       ).once.and_return(@hybridization_1)
       Hybridization.should_receive(:create!).with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_2]
       ).once.and_return(@hybridization_2)
       @hybridization_set.save
@@ -458,7 +440,6 @@ describe HybridizationSet do
         :number_of_chips => 1,
         :number_of_channels => 2,
         :charge_set_id => @charge_set.id,
-        :charge_template_id => @charge_template.id,
         :sample_ids => { "0" => {"0" => @sample_1.id, "1" => @sample_2.id} }
       )
       Chip.stub!(:create!).with(:name => "20091118_01").
@@ -470,7 +451,6 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_1,@sample_2]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:record_charges)
@@ -488,7 +468,6 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_1,@sample_2]
       ).once.and_return(@hybridization_1)
       @hybridization_set.save
@@ -544,7 +523,6 @@ describe HybridizationSet do
         :number_of_chips => 2,
         :number_of_channels => 1,
         :charge_set_id => @charge_set.id,
-        :charge_template_id => @charge_template.id,
         :sample_ids => { "0" => {
           "0" => {"0" => @sample_1.id,"1" => @sample_2.id},
           "1" => {"0" => @sample_3.id,"1" => @sample_4.id}
@@ -562,14 +540,12 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_1, @sample_2]
       ).and_return(@hybridization_1)
       Hybridization.stub!(:create!).once.with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_3, @sample_4]
       ).and_return(@hybridization_2)
       Hybridization.stub!(:record_charges)
@@ -587,14 +563,12 @@ describe HybridizationSet do
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_1.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_1, @sample_2]
       ).once.and_return(@hybridization_1)
       Hybridization.should_receive(:create!).with(
         :hybridization_date => "2009-11-18",
         :chip_number => 1,
         :microarray_id => @microarray_2.id,
-        :charge_template_id => @charge_template.id,
         :samples => [@sample_3, @sample_4]
       ).once.and_return(@hybridization_2)
       @hybridization_set.save

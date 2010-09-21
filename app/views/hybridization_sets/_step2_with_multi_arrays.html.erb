@@ -9,10 +9,6 @@
   <%= hidden_field_tag "hybridization_set[previous_step]", "step2_no_multi_arrays" %>
 
   <p>
-    <%= f.label :charge_template_id, "Charge Template" %><br />
-    <%= f.collection_select :charge_template_id, @hybridization_set.charge_templates, :id, :name, {:prompt => true} %>
-  </p>
-  <p>
     <%= f.label :chip_type_id, "Chip Type" %><br />
     <%= f.collection_select :chip_type_id, @hybridization_set.chip_types, :id,
       :name_and_short_name, {:prompt => true} %>

@@ -7,7 +7,6 @@ class HybridizationSet
   attr_accessor :platform_id
   attr_accessor :number_of_chips
   attr_accessor :number_of_channels
-  attr_accessor :charge_template_id
   attr_accessor :chip_type_id
   attr_accessor :sample_ids
   attr_accessor :chip_names
@@ -22,10 +21,6 @@ class HybridizationSet
     :step3_no_multi_arrays, :step3_with_multi_arrays]
 
   # step 2 validations
-  validates_numericality_of :charge_template_id,
-    :message => "must be selected",
-    :groups => [:step2_no_multi_arrays, :step2_with_multi_arrays,
-                :step3_no_multi_arrays, :step3_with_multi_arrays]
   validates_numericality_of :number_of_chips,
     :message => "must be entered",
     :groups => [:step2_no_multi_arrays, :step2_with_multi_arrays,
@@ -45,7 +40,6 @@ class HybridizationSet
   # * <tt>platform_id</tt> - The platform that's going to be used
   # * <tt>number_of_chips</tt> - Number of samples that will be hybridized
   # * <tt>number_of_channels</tt> - Number of channels per array
-  # * <tt>charge_template_id</tt> - The charge template to base the charges on
   # * <tt>chip_type_id</tt> - The chip type being used, only necessary for multi-arrays
   # * <tt>sample_ids</tt> - sample ids being used
   # * <tt>chip_names</tt> - user specified names for the chips, only used if chip numbering is off
@@ -56,7 +50,6 @@ class HybridizationSet
     @platform_id = integer_or_nil(options[:platform_id])
     @number_of_chips = integer_or_nil(options[:number_of_chips])
     @number_of_channels = integer_or_nil(options[:number_of_channels])
-    @charge_template_id = integer_or_nil(options[:charge_template_id])
     @chip_type_id = integer_or_nil(options[:chip_type_id])
     @sample_ids = options[:sample_ids]
     @chip_names = options[:chip_names]
@@ -144,7 +137,6 @@ class HybridizationSet
                 :hybridization_date => date,
                 :chip_number => current_chip_number,
                 :microarray_id => microarray.id,
-                :charge_template_id => charge_template_id,
                 :samples => array_samples.values.collect{|s| Sample.find(s)}
               )
 
@@ -161,7 +153,6 @@ class HybridizationSet
               :hybridization_date => date,
               :chip_number => current_chip_number,
               :microarray_id => microarray.id,
-              :charge_template_id => charge_template_id,
               :samples => chip_samples.values.collect{|s| Sample.find(s)}
             )
 
@@ -212,13 +203,6 @@ class HybridizationSet
       :all,
       :conditions => {:platform_id => platform.id},
       :order => "name ASC"
-    )
-  end
-
-  def charge_templates
-    @charge_templates ||= ChargeTemplate.find(
-      :all,
-      :conditions => {:platform_id => platform.id}
     )
   end
 

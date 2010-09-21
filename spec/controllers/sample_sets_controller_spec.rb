@@ -11,9 +11,11 @@ describe SampleSetsController do
     NamingScheme.stub!(:find).and_return(
       [mock_model(NamingScheme), mock_model(NamingScheme)]
     )
+    @chip_type = mock_model(ChipType)
     ChipType.stub!(:find).and_return(
-      [mock_model(ChipType), mock_model(ChipType)]
+      [mock_model(ChipType), @chip_type]
     )
+    @chip_type.stub!(:service_options).and_return( mock("Service Options") )
   end
     
   describe "handling GET /sample_sets/new" do
@@ -21,6 +23,7 @@ describe SampleSetsController do
       before(:each) do
         @sample_set = mock_model(SampleSet)
         SampleSet.stub!(:new).and_return(@sample_set)
+        SampleSet.stub!(:chip_type).and_return(@chip_type)
       end
 
       def do_get
@@ -57,6 +60,8 @@ describe SampleSetsController do
       before(:each) do
         @sample_set = mock_model(SampleSet)
         SampleSet.stub!(:new).and_return(@sample_set)
+        @sample_set.stub!(:chip_type).and_return(@chip_type)
+        @sample_set.stub!(:service_option_id).and_return(23)
       end
       
       def do_get
@@ -241,17 +246,12 @@ describe SampleSetsController do
         do_post
         response.should redirect_to("/")
       end
-      
-      it "should send email notifications" do
-        Notifier.should_receive(:deliver_sample_submission_notification).
-          with([@sample])
-        do_post
-      end
     end
     
     describe "with an invalid sample set" do
       before(:each) do
         @sample_set.stub!(:valid?).and_return(false)
+        @sample_set.stub!(:errors).and_return([])
         @naming_scheme = mock_model(NamingScheme)
         @sample_set.stub!(:naming_scheme).and_return(@naming_scheme)
         @naming_scheme.stub!(:ordered_naming_elements).and_return( [mock_model(NamingElement)] )

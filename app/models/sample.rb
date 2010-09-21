@@ -15,6 +15,7 @@ class Sample < ActiveRecord::Base
   belongs_to :naming_scheme
   belongs_to :microarray
   belongs_to :label
+  belongs_to :service_option
   
   has_many :sample_terms, :dependent => :destroy
   has_many :sample_texts, :dependent => :destroy

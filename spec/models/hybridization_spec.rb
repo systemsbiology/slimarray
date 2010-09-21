@@ -126,8 +126,7 @@ describe Hybridization do
 
   describe "recording charges for a set of hybridizations" do
     before(:each) do
-      @charge_template = create_charge_template(
-        :chips_used => 1,
+      @service_option = create_service_option(
         :chip_cost => 100,
         :labeling_cost => 200,
         :hybridization_cost => 25,
@@ -135,10 +134,10 @@ describe Hybridization do
         :other_cost => 0
       )
       @charge_set = create_charge_set
-      @sample_1 = create_sample(:sample_name => "wt-0")
-      @sample_2 = create_sample(:sample_name => "mut-0")
-      @sample_3 = create_sample(:sample_name => "wt-5")
-      @sample_4 = create_sample(:sample_name => "mut-5")
+      @sample_1 = create_sample(:sample_name => "wt-0", :service_option => @service_option)
+      @sample_2 = create_sample(:sample_name => "mut-0", :service_option => @service_option)
+      @sample_3 = create_sample(:sample_name => "wt-5", :service_option => @service_option)
+      @sample_4 = create_sample(:sample_name => "mut-5", :service_option => @service_option)
       @charge_period = create_charge_period
       ChargeSet.should_receive(:find_or_create_by_charge_period_id_and_lab_group_id_and_name).
         twice.and_return(@charge_set)

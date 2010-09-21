@@ -264,16 +264,17 @@ class Hybridization < ActiveRecord::Base
         hybridization.update_attributes(:charge_set_id => charge_set.id)
       end
 
-      template = ChargeTemplate.find(hybridization.charge_template_id)
+      service_option = hybridization.samples.first.service_option || ServiceOption.new
+
       charge = Charge.create(:charge_set_id => hybridization.charge_set_id,
                              :date => hybridization.hybridization_date,
                              :description => hybridization.sample_names,
-                             :chips_used => template.chips_used,
-                             :chip_cost => template.chip_cost,
-                             :labeling_cost => template.labeling_cost,
-                             :hybridization_cost => template.hybridization_cost,
-                             :qc_cost => template.qc_cost,
-                             :other_cost => template.other_cost)
+                             :chips_used => 1,
+                             :chip_cost => service_option.chip_cost,
+                             :labeling_cost => service_option.labeling_cost,
+                             :hybridization_cost => service_option.hybridization_cost,
+                             :qc_cost => service_option.qc_cost,
+                             :other_cost => service_option.other_cost)
     end
   end
 

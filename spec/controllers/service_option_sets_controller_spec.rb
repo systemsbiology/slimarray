@@ -50,7 +50,7 @@ describe ServiceOptionSetsController do
       it "redirects to the created service_option_set" do
         ServiceOptionSet.stub(:new).and_return(mock_service_option_set(:save => true))
         post :create, :service_option_set => {}
-        response.should redirect_to(service_option_set_url(mock_service_option_set))
+        response.should redirect_to(service_option_sets_url)
       end
     end
 
@@ -88,7 +88,7 @@ describe ServiceOptionSetsController do
       it "redirects to the service_option_set" do
         ServiceOptionSet.stub(:find).and_return(mock_service_option_set(:update_attributes => true))
         put :update, :id => "1"
-        response.should redirect_to(service_option_set_url(mock_service_option_set))
+        response.should redirect_to(service_option_sets_url)
       end
     end
 

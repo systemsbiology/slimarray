@@ -170,4 +170,14 @@ module FixtureReplacement
     f.qc_set = default_qc_set
     f.path = String(20)
   end
+
+  attributes_for :service_option do |t|
+    t.name = String.random
+    t.chip_cost = 100
+    t.labeling_cost = 50
+    t.hybridization_cost = 25
+    t.qc_cost = 5
+    t.other_cost = 10
+  end
+
 end
