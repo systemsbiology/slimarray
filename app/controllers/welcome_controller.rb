@@ -56,6 +56,7 @@ class WelcomeController < ApplicationController
         sample_name       =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
         sbeams_user       =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
         project.name      =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+        ready_for_processing =~ "%#{params["ready_for_processing"]}%" if params["ready_for_processing"].present?                
       end
       status == "submitted"
       "project_id IN (#{project_ids})"
@@ -64,7 +65,7 @@ class WelcomeController < ApplicationController
     end
 
     render :json => samples.to_jqgrid_json(
-      [:submission_date, :short_sample_name, :sample_name, :sbeams_user, "project.name"], 
+      [:submission_date, :short_sample_name, :sample_name, :sbeams_user, "project.name", :ready_yes_or_no], 
       params[:page], params[:rows], samples.total_entries
     )
   end

@@ -8,6 +8,7 @@ a particular sample.<br><br>
 class SamplesController < ApplicationController
   before_filter :login_required
   before_filter :load_dropdown_selections, :only => :edit
+  before_filter :manager_or_investigator_required, :only => :approve
   
 =begin rapidoc
 url:: /samples
@@ -222,6 +223,12 @@ Get detailed information about a single sample.
       [:submission_date, :short_sample_name, :sample_name, :status, :sbeams_user, "project.name"], 
       params[:page], params[:rows], samples.total_entries
     )
+  end
+
+  def approve
+    accessible_projects = Project.accessible_to_user(current_user)
+    @samples = Sample.find(:all, :conditions => ["project_id IN (?) and status = ?",
+                           accessible_projects.collect{|p| p.id}, 'submitted'], :order => "id ASC")
   end
 
 private

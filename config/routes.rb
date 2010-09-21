@@ -53,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :inventory_checks, :collection => {:grid => :get}
   map.resources :organisms, :collection => {:grid => :get}
   map.resources :projects, :collection => {:grid => :get}
-  map.resources :samples, :collection => {:browse => :get, :search => :get, :all => :get, :grid => :get}
+  map.resources :samples, :collection => {:browse => :get, :search => :get, :all => :get, :grid => :get, :approve => :get}
   map.resources :sample_sets, :only => [:new, :create, :cancel_new_project]
   map.resources :hybridizations, :collection => {:grid => :get}
   map.resources :hybridization_sets, :collection => {:clear => :get}

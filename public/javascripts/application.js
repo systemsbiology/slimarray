@@ -12,13 +12,47 @@ $(document).ready(function(){
   }
 
   function showServiceOptions() {
-    var sel = $("#sample_set_chip_type_id option:selected")[0].value;
+    var sel = $("#sample_set_chip_type_id option:selected")[0] &&
+              $("#sample_set_chip_type_id option:selected")[0].value;
 
     if(sel) {
       $.get('../chip_types/' + sel + '/service_options', function(data) {
         $('#sample_set_service_options').html(data);
       });
     }
+  }
+
+  function toggle_sample_approval(evt) {
+    target = evt.target;
+    html_id = target.id;
+    sample_id = html_id.match(/.*\-(\d+)/)[1];
+    checked = target.checked;
+    url = sample_id + ".json";
+    data = { _method: 'PUT', 'sample[0][ready_for_processing]':checked };
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: data,
+      success: function(target) {
+        $('.sample_approval').invoke('enable');
+        $('sample_approval-'+sample_id+'-loading').hide();
+      },
+      dataType: 'json'
+    });
+    //new Ajax.Request(
+    //  url, {
+    //    method: 'put',
+    //    parameters: params,
+    //    onLoading: function(req) {
+    //      Element.show('sample_approval-'+sample_id+'-loading');
+    //      $$('.sample_approval').invoke('disable');
+    //    },
+    //    onComplete: function(req) {
+    //      $$('.sample_approval').invoke('enable');
+    //      Element.hide('sample_approval-'+sample_id+'-loading');
+    //    }
+    //  }
+    //);
   }
 
   $("#bedata").click(function(){
@@ -102,6 +136,11 @@ $(document).ready(function(){
           .appendTo('body')
           .submit();
     } 
+  });
+
+
+  $('.sample_approval').click(function(evt) {
+    toggle_sample_approval(evt);
   });
 
   $('#sample_set_chip_type_id').change(function() {

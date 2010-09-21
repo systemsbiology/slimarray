@@ -1,0 +1,7 @@
+New samples have just been submitted in SLIMarray:
+
+<% @samples.each do |sample| %>
+ * <%=h sample.sample_name %>
+<% end %>
+
+Please visit SLIMarray to approve these samples for processing: <%= SiteConfig.site_url + '/samples/approve' %>
