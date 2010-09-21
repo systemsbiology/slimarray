@@ -39,20 +39,6 @@ $(document).ready(function(){
       },
       dataType: 'json'
     });
-    //new Ajax.Request(
-    //  url, {
-    //    method: 'put',
-    //    parameters: params,
-    //    onLoading: function(req) {
-    //      Element.show('sample_approval-'+sample_id+'-loading');
-    //      $$('.sample_approval').invoke('disable');
-    //    },
-    //    onComplete: function(req) {
-    //      $$('.sample_approval').invoke('enable');
-    //      Element.hide('sample_approval-'+sample_id+'-loading');
-    //    }
-    //  }
-    //);
   }
 
   $("#bedata").click(function(){
