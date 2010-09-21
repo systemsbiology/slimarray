@@ -47,6 +47,10 @@
     @chip_types, 'id', 'name', {:prompt => true}, {:index => 0} %><br/>
     * Contact the facility to add a new chip type</p>
 
+  <p><label for="sample_0_service_option_id">Service Requested</label><br/>
+  <%= collection_select 'sample', 'service_option_id',
+    @sample.chip_type.service_options.find(:all, :order => "name ASC"), 'id', 'name', {:prompt => true}, {:index => 0} %><br/>
+
   <p><label for="sample_0_organism_id">Organism</label><br/>
   <%= collection_select 'sample', 'organism_id',
     @organisms, 'id', 'name', {:prompt => true}, {:index => 0} %><br/>
