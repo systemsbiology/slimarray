@@ -11,7 +11,7 @@ class SampleSet < ActiveRecord::Base
   
   has_many :samples
   
-  after_create :check_chip_inventory
+  after_create :check_chip_inventory, :send_facility_notification, :send_approval_request
 
   def self.new(attributes=nil)
     parse_multi_field_date(attributes)
@@ -71,5 +71,30 @@ class SampleSet < ActiveRecord::Base
     if available - chips_needed < 0
       Notifier.deliver_low_inventory_notification(chip_type.name, chips_needed, available)
     end
+  end
+
+  def service_option
+    ServiceOption.find_by_id(service_option_id)
+  end
+
+  def cost_estimate
+    number_of_samples * service_option.total_cost
+  end
+
+  def send_facility_notification
+    Notifier.deliver_sample_submission_notification(samples)
+  end
+
+  def send_approval_request
+    lab_group = project.lab_group
+    lab_group_profile = lab_group.lab_group_profile
+
+    if lab_group_profile.require_investigator_approval && cost_estimate >= lab_group_profile.investigator_approval_minimum
+      investigator_emails = UserProfile.investigators(lab_group).collect{|i| i.user.email}
+      Notifier.deliver_approval_request(samples, investigator_emails)
+    elsif lab_group_profile.require_manager_approval && cost_estimate >= lab_group_profile.manager_approval_minimum
+      manager_emails = UserProfile.managers(lab_group).collect{|i| i.user.email}
+      Notifier.deliver_approval_request(samples, manager_emails)
+    end  
   end
 end

@@ -851,4 +851,7 @@ class Sample < ActiveRecord::Base
     return texts
   end
   
+  def ready_yes_or_no
+    ready_for_processing ? "Yes" : "No"
+  end
 end

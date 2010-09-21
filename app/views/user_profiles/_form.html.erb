@@ -1,10 +1,11 @@
   <p>
     <b>Role</b><br />
-    <%= select :user_profile, :role, ["customer", "staff", "admin"] %>
+    <%= select :user_profile, :role, ["customer", "manager", "investigator", "staff", "admin"] %>
   </p>
 
   <p>
     <b>Notifications</b><br />
+    <%= check_box :user_profile, :notify_of_new_samples %> Notify when new samples are submitted<br />
     <%= check_box :user_profile, :notify_of_qc_outliers %> Notify when arrays don't meet QC requirements<br />
     <%= check_box :user_profile, :notify_of_low_inventory %> Notify when samples are submitted and there aren't enough arrays for them<br />
   </p>

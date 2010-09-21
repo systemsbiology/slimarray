@@ -2,6 +2,11 @@ class UserProfile < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user_id
            
+  named_scope :notify_of_new_samples,
+    :conditions => {:notify_of_new_samples => true}
+  named_scope :managers, :conditions => {:role => "manager"}
+  named_scope :investigators, :conditions => {:role => "investigator"}
+  
   # Manually provide a list of column names that should be shown in the users/index view, since 
   # ActiveResource doesn't seem to provide an easy way to do this.
   #
@@ -41,5 +46,13 @@ class UserProfile < ActiveRecord::Base
  
   def admin?
     role == "admin"
+  end
+
+  def manager?
+    role == "manager"
+  end
+
+  def investigator?
+    role == "investigator"
   end
 end

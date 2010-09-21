@@ -22,7 +22,8 @@ class SampleSetsController < ApplicationController
             :chip_type_id => @sample_set.chip_type_id,
             :sbeams_user => @sample_set.sbeams_user,
             :sample_set => @sample_set,
-            :label_id => @sample_set.label_id
+            :label_id => @sample_set.label_id,
+            :service_option_id => @sample_set.service_option_id
           )
 
           @samples << sample
@@ -51,12 +52,10 @@ class SampleSetsController < ApplicationController
         s.save
       end
       
-      # send notification email
-      Notifier.deliver_sample_submission_notification(@samples)
-      
       flash[:notice] = 'Samples were successfully created.'
       redirect_to(root_url)
     else
+      flash[:warning] = @sample_set.errors.first
       @naming_scheme = @sample_set.naming_scheme
       if(@naming_scheme != nil)
         @naming_elements = @naming_scheme.ordered_naming_elements

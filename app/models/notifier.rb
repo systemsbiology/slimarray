@@ -1,9 +1,16 @@
 class Notifier < ActionMailer::Base
 
   def sample_submission_notification(samples)
-    recipients SiteConfig.administrator_email
+    recipients UserProfile.notify_of_new_samples.collect{|x| x.user.email}.join(",")
     from       %("SLIMarray" <slimarray@#{`hostname`.strip}>)
-    subject    "[SLIMarray] Samples recorded"
+    subject    "[SLIMarray] Microarray samples submitted"
+    body       :samples => samples
+  end
+
+  def approval_request(samples, emails)
+    recipients emails 
+    from       %("SLIMarray" <slimarray@#{`hostname`.strip}>)
+    subject    "[SLIMarray] Microarray samples need approval"
     body       :samples => samples
   end
 
