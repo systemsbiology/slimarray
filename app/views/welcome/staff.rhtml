@@ -17,11 +17,12 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 
 <%= jqgrid("Samples", "sample_grid", url_for(:action => "grid"),
   [
-    { :field => "submission_date", :label => "Date Submitted", :width => 140 },
+    { :field => "submission_date", :label => "Date", :width => 80 },
     { :field => "short_sample_name", :label => "Name On Tube", :width => 130 },
-    { :field => "sample_name", :label => "Sample Description", :width => 400 },
+    { :field => "sample_name", :label => "Sample Description", :width => 300 },
     { :field => "sbeams_user", :label => "User", :width => 80 },
     { :field => "projects.name", :label => "Project", :width => 150 },
+    { :field => "service_option.name", :label => "Service Requested", :width => 240 },
     { :field => "ready_for_processing", :label => "Ready", :width => 80 }
   ],
   :height => 550,
