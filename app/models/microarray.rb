@@ -2,6 +2,8 @@ class Microarray < ActiveRecord::Base
   extend ApiAccessible
 
   belongs_to :chip
+  accepts_nested_attributes_for :chip
+
   has_one :hybridization
 
   api_reader :array_number

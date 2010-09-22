@@ -1,6 +1,6 @@
 <h2>Editing hybridization</h2>
 
-<% form_for @hybridization do %>
+<% form_for @hybridization do |hybridization_form| %>
 
 	<p><label for="hybridization_sample_ids">Sample</label><br/>
 	    <select id="hybridization_sample_ids" name="hybridization[sample_ids][]" multiple="multiple">
@@ -23,6 +23,20 @@
 
     <%= hidden_field 'hybridization', 'lock_version' %>
 	
+    <% hybridization_form.fields_for :microarray_attributes, @hybridization.microarray do |microarray_form| %>
+      <p>
+        <%= microarray_form.label :array_number %><br/>
+        <%= microarray_form.text_field :array_number %>
+
+        <%= microarray_form.hidden_field :chip_id %>
+      </p>
+      <% microarray_form.fields_for :chip_attributes, @hybridization.microarray.chip do |chip_form| %>
+        <p>
+          <%= chip_form.label :name, "Chip Name" %><br/>
+          <%= chip_form.text_field :name %>
+        </p>
+      <% end %>
+    <% end %>
   <%= submit_tag 'Edit' %>
 <% end %>
 

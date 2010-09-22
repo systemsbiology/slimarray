@@ -2,7 +2,9 @@ class Hybridization < ActiveRecord::Base
   has_many :samples
   belongs_to :charge_set
   belongs_to :charge_template
+
   belongs_to :microarray
+  accepts_nested_attributes_for :microarray
 
   validates_presence_of :hybridization_date
   validates_numericality_of :chip_number
