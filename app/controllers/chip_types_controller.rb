@@ -7,7 +7,7 @@ a particular chip type.<br><br>
 
 class ChipTypesController < ApplicationController
   before_filter :login_required
-  before_filter :staff_or_admin_required
+  before_filter :staff_or_admin_required, :except => :service_options
   before_filter :load_dropdown_selections, :except => [:index, :destroy]
   
 =begin rapidoc
