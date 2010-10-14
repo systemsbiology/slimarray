@@ -31,7 +31,7 @@ class SampleSetsController < ApplicationController
       else
         # if the sample set info is invalid, kick back to step 1
         params[:step] = "1"
-        @service_options = @sample_set.chip_type.service_options
+        @service_options = @sample_set.chip_type && @sample_set.chip_type.service_options || []
       end
     else
       @sample_set = SampleSet.new

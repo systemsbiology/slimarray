@@ -153,7 +153,8 @@ Get detailed information about a single chip type.
   end
 
   def service_options
-    @service_options = ChipType.find(params[:id]).service_options.find(:all, :order => "name ASC")
+    unsorted_service_options = ChipType.find(params[:id]).service_options
+    @service_options = unsorted_service_options.empty? ? [] : unsorted_service_options.find(:all, :order => "name ASC")
 
     render :partial => 'service_options'
   end
