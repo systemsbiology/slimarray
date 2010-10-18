@@ -49,6 +49,9 @@ class Sample < ActiveRecord::Base
     sample = super(attributes)
 
     sample.status = "submitted"
+    if sample.sample_set
+      sample.ready_for_processing = !sample.sample_set.needs_approval?
+    end
 
     # see if there's a naming scheme
     begin

@@ -87,14 +87,31 @@ class SampleSet < ActiveRecord::Base
 
   def send_approval_request
     lab_group = project.lab_group
-    lab_group_profile = lab_group.lab_group_profile
 
-    if lab_group_profile.require_investigator_approval && cost_estimate >= lab_group_profile.investigator_approval_minimum
+    if needs_investigator_approval?
       investigator_emails = UserProfile.investigators(lab_group).collect{|i| i.user.email}
       Notifier.deliver_approval_request(samples, investigator_emails)
-    elsif lab_group_profile.require_manager_approval && cost_estimate >= lab_group_profile.manager_approval_minimum
+    elsif needs_manager_approval? 
       manager_emails = UserProfile.managers(lab_group).collect{|i| i.user.email}
       Notifier.deliver_approval_request(samples, manager_emails)
     end  
+  end
+
+  def needs_investigator_approval?
+    lab_group_profile = project.lab_group.lab_group_profile
+    lab_group_profile.require_investigator_approval && cost_estimate >= lab_group_profile.investigator_approval_minimum
+  end
+
+  def needs_manager_approval?
+    lab_group_profile = project.lab_group.lab_group_profile
+    lab_group_profile.require_manager_approval && cost_estimate >= lab_group_profile.manager_approval_minimum
+  end
+
+  def needs_approval?
+    if needs_investigator_approval? || needs_manager_approval?
+      true
+    else
+      false
+    end
   end
 end
