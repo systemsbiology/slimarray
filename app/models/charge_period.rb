@@ -150,6 +150,10 @@ class ChargePeriod < ActiveRecord::Base
       table.show_headings = false
       table.shade_rows = :none
       table.render_on(_pdf)
+
+      # instructions
+      _pdf.text "\n\n"
+      _pdf.text SiteConfig.charge_instructions
     end
     
     return _pdf

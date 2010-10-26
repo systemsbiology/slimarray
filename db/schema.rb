@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100920220857) do
+ActiveRecord::Schema.define(:version => 20101026183831) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -403,6 +403,7 @@ ActiveRecord::Schema.define(:version => 20100920220857) do
     t.integer  "sample_set_id"
     t.boolean  "ready_for_processing",                      :default => true, :null => false
     t.integer  "service_option_id"
+    t.string   "labeled_concentration_uri"
   end
 
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"
@@ -437,6 +438,7 @@ ActiveRecord::Schema.define(:version => 20100920220857) do
     t.float    "other_cost"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "concentration_requirement", :default => ""
   end
 
   create_table "site_config", :force => true do |t|
@@ -464,6 +466,7 @@ ActiveRecord::Schema.define(:version => 20100920220857) do
     t.datetime "updated_at"
     t.string   "agcc_output_path",                     :default => "/tmp"
     t.boolean  "create_agcc_files",                    :default => false
+    t.text     "charge_instructions"
   end
 
   create_table "user_profiles", :force => true do |t|
