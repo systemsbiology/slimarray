@@ -111,7 +111,7 @@ class ChargePeriod < ActiveRecord::Base
           line_total = charge.chip_cost + charge.labeling_cost + charge.hybridization_cost +
                        charge.qc_cost + charge.other_cost
           total = total + line_total
-          table.data << { "Date" => charge.date, "Description" => charge.description,
+          table.data << { "Date" => charge.date, "Description" => charge.description[0..49],
                        "Chip Charge" => fmt_dollars(charge.chip_cost),
                        "Labeling Charge" => fmt_dollars(charge.labeling_cost),
                        "Hyb/Wash/Stain/\nScan Charge" => fmt_dollars(charge.hybridization_cost),
