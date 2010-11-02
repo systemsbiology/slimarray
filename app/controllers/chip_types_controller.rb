@@ -133,7 +133,7 @@ Get detailed information about a single chip type.
   end
   
   def grid
-    chip_types = ChipType.find(:all, :include => :organism) do
+    chip_types = ChipType.find(:all, :include => [:organism, :platform]) do
       if params[:_search] == "true"
         name =~ "%#{params["chip_types.name"]}%" if params["chip_types.name"].present?
         short_name      =~ "%#{params[:short_name]}%" if params[:short_name].present?                
