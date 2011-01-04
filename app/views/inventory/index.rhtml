@@ -7,16 +7,30 @@ New Chip Transaction:
 <%= link_if_staff_or_admin 'Return', new_chip_return_path %> | 
 <%= link_if_staff_or_admin 'Custom', new_chip_transaction_path %>
 
-<% if(@lab_groups.size > 0) %>
-	<% for lab_group in @lab_groups %>
-		<p><%=h lab_group.name %>:
-		<% for chip_type in @chip_types %>
-			<% if ChipTransaction.has_transactions?(lab_group.id,chip_type.id) %>	           
-				<%= link_to chip_type.name, lab_group_chip_type_chip_transactions_path(lab_group, chip_type) %>
-			<% end %>
-		<% end %>
-		</p>
-	<% end %>
+<br/>
+<br/>
+
+<% if(@inventories.size > 0) %>
+  <% @inventories.sort.each do |lab_group, lab_group_counts| %>
+    <% lab_group_id = lab_group_counts.delete("lab_group_id") %>
+    <b><%=h lab_group %></b>
+    <table>
+      <tr>
+        <% lab_group_counts.each_with_index do |chip_type_counts, index| %>
+          <% if index % 6 == 0 %>
+            <tr/><tr>
+          <% end %>
+          
+          <td>
+            <% (chip_type, counts) = chip_type_counts %>
+            <%= link_to chip_type, lab_group_chip_type_chip_transactions_path(lab_group_id, counts["chip_type_id"]) %>:
+            <%= counts["chips"] %>
+          </td>
+        <% end %>
+      </tr>
+    </table>
+    <br/>
+  <% end %>
 <% else %>
     <% if current_user.staff_or_admin? %>
     <p>There are currently no chip inventories</p>

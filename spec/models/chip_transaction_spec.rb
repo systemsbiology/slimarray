@@ -123,4 +123,63 @@ describe "ChipTransaction" do
       :description => "Returned by Smith Lab"
     }).should_not be_nil
   end 
+
+  describe "finding all transactions accessible to a user" do
+    before(:each) do
+      @user = mock( "User" )
+      @transactions = mock("Transactions")
+    end
+
+    it "provides all transaction to a staff or admin user" do
+      @user.should_receive(:staff_or_admin?).any_number_of_times.and_return(true)
+      ChipTransaction.should_receive(:all).and_return(@transactions)
+      ChipTransaction.accessible_to_user(@user).should == @transactions
+    end
+
+    it "provides only transactions that are part of a customer's lab groups" do
+      @lab_groups = [mock_model(LabGroup)]
+      @user.should_receive(:staff_or_admin?).and_return(false)
+      @user.should_receive(:lab_groups).and_return(@lab_groups)
+      ChipTransaction.should_receive(:find).with(:all, :conditions => ["lab_group_id IN (?)", [@lab_groups.first.id]],
+        :include => [:lab_group, :chip_type]).and_return(@transactions)
+      ChipTransaction.accessible_to_user(@user).should == @transactions
+    end
+  end
+  
+  it "groups transactions by lab group and chip type" do
+    lab_group_1 = mock_model(LabGroup, :name => "Smith Lab")
+    lab_group_2 = mock_model(LabGroup, :name => "Johnson Lab")
+    chip_type_1 = create_chip_type(:name => "Mouse Chip")
+    chip_type_2 = create_chip_type(:name => "Yeast Chip")
+
+    transaction_1 = create_chip_transaction(:lab_group => lab_group_1, :chip_type => chip_type_1, :acquired => 20)
+    transaction_2 = create_chip_transaction(:lab_group => lab_group_1, :chip_type => chip_type_1, :used => 10)
+    transaction_3 = create_chip_transaction(:lab_group => lab_group_1, :chip_type => chip_type_2, :acquired => 30)
+    transaction_4 = create_chip_transaction(:lab_group => lab_group_2, :chip_type => chip_type_2, :acquired => 5)
+
+    transactions = [transaction_1, transaction_2, transaction_3, transaction_4]
+    ChipTransaction.counts_by_lab_group_and_chip_type(transactions).should == {
+      lab_group_1.name => {
+        "lab_group_id" => lab_group_1.id,
+        chip_type_1.name => {
+          "owed_out"=>0, "returned_in"=>0, "borrowed_in"=>0, "used"=>10, "acquired"=>20, "owed_in"=>0,
+          "borrowed_out"=>0, "chips"=>10, "returned_out"=>0, "traded_sold"=>0,
+          "chip_type_id" => chip_type_1.id
+        },
+        chip_type_2.name => {
+          "owed_out"=>0, "returned_in"=>0, "borrowed_in"=>0, "used"=>0, "acquired"=>30, "owed_in"=>0,
+          "borrowed_out"=>0, "chips"=>30, "returned_out"=>0, "traded_sold"=>0,
+          "chip_type_id" => chip_type_2.id
+        }
+      },
+      lab_group_2.name => {
+        "lab_group_id" => lab_group_2.id,
+        chip_type_2.name => {
+          "owed_out"=>0, "returned_in"=>0, "borrowed_in"=>0, "used"=>0, "acquired"=>5, "owed_in"=>0,
+          "borrowed_out"=>0, "chips"=>5, "returned_out"=>0, "traded_sold"=>0,
+          "chip_type_id" => chip_type_2.id
+        }
+      }
+    }
+  end
 end

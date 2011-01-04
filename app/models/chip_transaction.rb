@@ -124,4 +124,39 @@ class ChipTransaction < ActiveRecord::Base
 
     out_transaction.save && in_transaction.save
   end
+
+  def self.accessible_to_user(user)
+    if user.staff_or_admin?
+      return ChipTransaction.find(:all, :include => [:chip_type])
+    else
+      lab_groups = user.lab_groups
+
+      if lab_groups.empty?
+        return Array.new
+      else
+        return ChipTransaction.find(:all, :conditions => ["lab_group_id IN (?)", [lab_groups.first.id]],
+          :include => [:chip_type])
+      end
+    end
+  end
+
+  def self.counts_by_lab_group_and_chip_type(transactions)
+    lab_groups_by_id = LabGroup.all_by_id
+
+    by_lab_group = transactions.group_by{|t| lab_groups_by_id[t.lab_group_id].name}
+
+    ret = Hash.new
+    by_lab_group.each do |lab_group, lab_group_transactions|
+      by_chip_type = lab_group_transactions.group_by{|t| t.chip_type.platform_and_name}
+
+      ret[lab_group] = {"lab_group_id" => lab_group_transactions.first.lab_group_id}
+      by_chip_type.each do |chip_type, chip_type_transactions|
+        ret[lab_group][chip_type] = get_chip_totals(chip_type_transactions).merge(
+          "chip_type_id" => chip_type_transactions.first.chip_type_id
+        )
+      end
+    end
+
+    return ret
+  end
 end
