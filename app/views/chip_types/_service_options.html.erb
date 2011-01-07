@@ -1,5 +1,5 @@
 <p><label for="sample_set_service_option_id">Services Requested</label><br/>
-  <select id="sample_set_service_option_id" name="sample_set[service_option_id]">
+  <select id="sample_set_service_option_id" name="sample_set[service_option_id]" class="required">
     <option value="">Please select</option>
     <% for service_option in @service_options %>
       <option value="<%= service_option.id %>" price="<%= service_option.total_cost %>"><%=h service_option.name_and_price %></option>

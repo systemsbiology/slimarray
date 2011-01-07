@@ -208,3 +208,9 @@ table.simple td, table.simple th {
   border: 1pt inset;
   padding: 2px;
 }
+
+label.error {
+  margin-left: 1em;
+  color: #D00;
+}
+

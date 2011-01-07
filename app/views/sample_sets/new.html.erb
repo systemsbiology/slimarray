@@ -1,14 +1,72 @@
 <h2>Enter Samples</h2>
 
-<% if(current_user.lab_groups.size > 0 || current_user.staff_or_admin?) %>
-  <% if params[:step] == "2" %>
-    <%= render :partial => 'step2' %>
+<div id="js_enabled" style="display:none;">
+  <div id="ErrorExplanation" style="display:none;">
+    <h2>Errors</h2>
+    <p></p>
+  </div>
+
+  <% if(current_user.lab_groups.size > 0 || current_user.staff_or_admin?) %>
+    <% form_for :sample_set, :url => {:action => :create}, :html => {:class => "bbq"} do -%>
+      <div id="fieldWrapper">
+      <div class="step" id="platform">
+        <p><%= label :sample_set, :date, 'Date Submitted' %><br/>
+        <%= date_select :sample_set, :date %></p>
+
+        <p><%= label :sample_set, :number, 'Number of Samples' %><br/>
+        <%= text_field :sample_set, :number, :size => 4, :class => "required" %></p>
+
+        <p><%= label :sample_set, :chip_type_id, 'Chip Type' %><br/>
+        <%= collection_select :sample_set, :chip_type_id, @chip_types, :id, :name,
+          {:prompt => true}, :class => "required" %><br/>
+          * Contact the facility to add a new chip type</p>
+
+        <div id="sample_set_service_options">
+          <%= render :partial => 'chip_types/service_options' %>
+        </div>
+
+        <p>Cost estimate: <b><span id="cost_estimate"></span></b></p>
+
+        <% if @naming_schemes.size > 0 %>
+          <p><label for="sample_set_naming_scheme_id">Naming Scheme</label><br/>
+          <select id='sample_set_naming_scheme_id' name='sample_set[naming_scheme_id]'>
+            <option value="">- None -</option>
+            <%= options_from_collection_for_select @naming_schemes, "id", "name" %>
+          </select></p>
+        <% end %>
+
+        <%= render :partial => 'projects' %>
+
+        <%= hidden_field :sample_set, :next_step, :value => "samples", :class => "link" %>
+      </div>
+      <div id="samples" class="step submit_step">
+        <div id="sample_fields_loading">
+          <p>Loading sample fields <%= image_tag("/images/ajax-loader.gif") %></p>
+        </div>
+        <div id="sample_fields">
+        </div>
+      </div>
+      </div>
+      <div id="demoNavigation"> 							
+        <input class="navigation_button" id="back" value="Back" type="reset" />
+        <input class="navigation_button" id="next" value="Next" type="submit" />
+      </div>
+    <% end %>
+
+    <div id="success" style="display:none;">
+      <p>Samples were successfully recorded</p>
+
+      <%= link_to 'Return to home page', root_url %>
+    </div>
   <% else %>
-    <%= render :partial => 'step1' %>
+    <p>You need to belong to one or more lab groups before you can see or submit any samples.
+    Please contact your administrator at <a href="mailto:<%=h SiteConfig.administrator_email %>">
+                                            <%=h SiteConfig.administrator_email %></a>
+    if you need<br>to be added to any lab groups.</p>
   <% end %>
-<% else %>
-  <p>You need to belong to one or more lab groups before you can see or submit any samples.
-  Please contact your administrator at <a href="mailto:<%=h SiteConfig.administrator_email %>">
-                                          <%=h SiteConfig.administrator_email %></a>
-  if you need<br>to be added to any lab groups.</p>
-<% end %>
+</div>
+
+  <%= javascript_include_tag 'sample_submission' %>
+<div id="js_disabled">
+  <p>You must have JavaScript enabled in your web browser to use the sample submission form.</p>
+</div>

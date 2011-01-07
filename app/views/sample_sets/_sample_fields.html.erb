@@ -1,0 +1,60 @@
+<div id="sample_fields">
+  <table id="table" class="nonsortable" cellpadding="0" cellspacing="0" border="0">
+    <thead>
+    <tr>
+      <th>Name on the sample tube</th>
+      <% if @naming_scheme %>
+        <% for element in @naming_elements %>
+          <th><%=h element.name %></th>
+        <% end %>
+      <% else %>
+        <th>Sample Description</th>
+        <th>Sample Group</th>
+      <% end %>
+      <% if @chip_type.platform.multiple_labels %>
+        <th>Label</th>
+      <% end %>
+      <th>Organism</th>
+      <th>Chip Type</th>
+    </tr>
+    </thead>
+    <% for @n in 1..@number_of_samples %>
+      <% @n_padded = "%04d" % @n %>
+      <tr>
+        <%= error_messages_for 'sample' %>
+          <td><%= text_field :sample, :short_sample_name, :index =>@n_padded,
+                  :size => 10 %></td>
+          <% if @naming_scheme == nil %>
+            <td><%= text_field :sample, :sample_name, :index =>@n_padded, :size => 30 %></td>
+            <td><%= text_field :sample, :sample_group_name, :index =>@n_padded, :size => 30 %></td>
+          <% else %>
+            <% @sample = Sample.new(:naming_scheme_id => @naming_scheme.id) %>
+            <%= render :partial => 'samples/schemed_sample_description' %>
+          <% end %>
+          
+          <% if @chip_type.platform.multiple_labels %>
+            <td><%= collection_select :sample, :label_id, @labels, :id,
+              :name, {}, { :index => @n_padded } %></td>
+          <% end %>
+
+          <td><%= collection_select :sample, :organism_id, @organisms, :id,
+            :name, {}, { :index => @n_padded } %></td>
+          
+          <td><%=h @chip_type.name %>
+              <%= hidden_field :sample, :chip_type_id, :index =>@n_padded %></td>
+          <%= hidden_field :sample, :project_id, :index =>@n_padded %>
+          <%= hidden_field :sample, :naming_scheme_id, :index =>@n_padded %>
+          <%= hidden_field :sample, :sbeams_user, :index =>@n_padded %>
+          <%= hidden_field :sample, :status, :index =>@n_padded %>
+          <%= hidden_field :sample, :service_option_id, :index =>@n_padded %>
+          <%= hidden_field :sample, :ready_for_processing, :index => @n_padded %>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<script type="text/javascript">
+  $.validator.addClassRules('sample_description', {
+    noSpaces: true
+  });
+</script>
