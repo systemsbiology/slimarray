@@ -89,4 +89,88 @@ class ChipType < ActiveRecord::Base
   def service_options
     (service_option_set && service_option_set.service_options) || Array.new
   end
+
+  def sample_layout(samples, channels)
+    layout = Array.new
+
+    if arrays_per_chip == 1
+      # 1 array/slide, 1 channel
+      if channels == 1
+        layout = [{
+          :samples => (1..samples).collect do |s|
+            { :title => "Slide/Chip #{s}", :slide => s, :array => 1, :channel => 1 }
+          end
+        }]
+      # 1 array/slide, multiple (usually 2) channels
+      else
+        slide = 1
+
+        while samples > 0
+          # handle cases where there aren't enough samples to fill all channels on the slide
+          current_channels = [samples, channels].min
+
+          layout << {
+            :title => "Slide/Chip #{slide}",
+            :samples => (1..current_channels).collect do |channel|
+              { :title => "Channel #{channel}", :slide => slide, :array => 1, :channel => channel }
+            end
+          }
+
+          samples -= channels
+          slide += 1
+        end
+      end
+    else
+      # multiple arrays/slide, 1 channel
+      if channels == 1
+        slide = 1
+
+        while samples > 0
+          # handle cases where there aren't enough samples to fill all arrays on the slide
+          current_arrays = [samples, arrays_per_chip].min
+
+          layout << {
+            :title => "Slide/Chip #{slide}",
+            :samples => (1..current_arrays).collect do |array|
+              { :title => "Array #{array}", :slide => slide, :array => array, :channel => 1 }
+            end
+          }
+
+          samples -= arrays_per_chip
+          slide += 1
+        end
+      # multiple arrays/slide, multiple (usually 2) channels
+      else
+        slide = 1
+
+        while samples > 0
+          array = 1
+
+          # handle cases where there aren't enough arrays to fill a slide
+          current_arrays = [samples.to_f/channels.ceil, arrays_per_chip].min
+
+          while current_arrays > 0
+            # handle cases where there aren't enough samples to fill all channels on the array
+            current_channels = [samples, channels].min
+
+            layout << {
+              :title => "Slide/Chip #{slide}, Array #{array}",
+              :samples => (1..current_channels).collect do |channel|
+                { :title => "Channel #{channel}", :slide => slide, :array => array, :channel => channel }
+              end
+            }
+
+            samples -= channels
+            current_arrays -= 1
+            array += 1
+          end
+
+          slide += 1
+        end
+      end
+    end
+
+    return layout
+  end
+
 end

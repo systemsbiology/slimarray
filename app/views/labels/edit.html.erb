@@ -8,6 +8,10 @@
     <%= f.text_field :name %>
   </p>
   <p>
+    <%= f.label :match_label_id, "Matching label" %>
+    <%= f.collection_select :match_label_id, @labels, :id, :name, {:prompt => true} %>
+  </p>
+  <p>
     <%= f.submit "Update" %>
   </p>
 <% end %>

@@ -28,6 +28,11 @@ class SampleSetsController < ApplicationController
     @project = Project.find(params[:sample_set][:project_id])
     @service_option = ServiceOption.find(params[:sample_set][:service_option_id])
     @chip_type = ChipType.find(params[:sample_set][:chip_type_id])
+    
+    @layout = @chip_type.sample_layout(
+      @number_of_samples,
+      @service_option.channels
+    )
 
     render :partial => 'sample_fields'
   end
@@ -42,4 +47,5 @@ private
     @labels = Label.find(:all, :order => "name ASC")
     @service_options = []
   end
+
 end

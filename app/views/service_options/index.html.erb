@@ -9,6 +9,7 @@
     <th>Hybridization cost</th>
     <th>Qc cost</th>
     <th>Other cost</th>
+    <th>Channels</th>
   </tr>
 
 <% for service_option in @service_options %>
@@ -20,6 +21,7 @@
     <td><%=h service_option.hybridization_cost %></td>
     <td><%=h service_option.qc_cost %></td>
     <td><%=h service_option.other_cost %></td>
+    <td><%=h service_option.channels %></td>
     <td><%= link_to 'Edit', edit_service_option_path(service_option) %></td>
     <td><%= link_to 'Destroy', service_option, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>

@@ -38,6 +38,7 @@ class LabelsController < ApplicationController
   # GET /labels/1/edit
   def edit
     @label = Label.find(params[:id])
+    @labels = Label.all
   end
 
   # POST /labels
