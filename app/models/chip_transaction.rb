@@ -134,7 +134,7 @@ class ChipTransaction < ActiveRecord::Base
       if lab_groups.empty?
         return Array.new
       else
-        return ChipTransaction.find(:all, :conditions => ["lab_group_id IN (?)", [lab_groups.first.id]],
+        return ChipTransaction.find(:all, :conditions => ["lab_group_id IN (?)", lab_groups.collect{|g| g.id}],
           :include => [:chip_type])
       end
     end
