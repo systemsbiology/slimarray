@@ -17,7 +17,7 @@ New Chip Transaction:
     <b><%=h lab_group %></b>
     <table>
       <tr>
-        <% lab_group_counts.each_with_index do |chip_type_counts, index| %>
+        <% lab_group_counts.sort.each_with_index do |chip_type_counts, index| %>
           <% if index % 6 == 0 %>
             <tr/><tr>
           <% end %>
