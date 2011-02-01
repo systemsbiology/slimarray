@@ -1,14 +1,15 @@
 <h2>Chip Inventory</h2>
 
+<% if staff_or_admin? %>
 New Chip Transaction: 
-<%= link_if_staff_or_admin 'Vendor Purchase', new_chip_purchase_path %> | 
-<%= link_if_staff_or_admin 'Inter-group Purchase', new_chip_intergroup_purchase_path %> |
-<%= link_if_staff_or_admin 'Borrow', new_chip_borrow_path %> | 
-<%= link_if_staff_or_admin 'Return', new_chip_return_path %> | 
-<%= link_if_staff_or_admin 'Custom', new_chip_transaction_path %>
-
-<br/>
-<br/>
+  <%= link_to 'Vendor Purchase', new_chip_purchase_path %> | 
+  <%= link_to 'Inter-group Purchase', new_chip_intergroup_purchase_path %> |
+  <%= link_to 'Borrow', new_chip_borrow_path %> | 
+  <%= link_to 'Return', new_chip_return_path %> | 
+  <%= link_to 'Custom', new_chip_transaction_path %>
+  <br/>
+  <br/>
+<% end %>
 
 <% if(@inventories.size > 0) %>
   <% @inventories.sort.each do |lab_group, lab_group_counts| %>

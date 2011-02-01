@@ -1,11 +1,13 @@
 <h2>Listing Chip Transactions for <%= @lab_group.name%> and <%= @chip_type.name%></h2>
 
-<p>New Chip Transaction: 
-<%= link_if_staff_or_admin 'Vendor Purchase', new_lab_group_chip_type_chip_purchase_path(@lab_group, @chip_type) %> | 
-<%= link_if_staff_or_admin 'Inter-group Purchase', new_lab_group_chip_type_chip_intergroup_purchase_path(@lab_group, @chip_type) %> |
-<%= link_if_staff_or_admin 'Borrow', new_lab_group_chip_type_chip_borrow_path(@lab_group, @chip_type) %> | 
-<%= link_if_staff_or_admin 'Return', new_lab_group_chip_type_chip_return_path(@lab_group, @chip_type) %> | 
-<%= link_if_staff_or_admin 'Custom', new_lab_group_chip_type_chip_transaction_path(@lab_group, @chip_type) %><p>
+<% if staff_or_admin? %>
+  <p>New Chip Transaction: 
+  <%= link_to 'Vendor Purchase', new_lab_group_chip_type_chip_purchase_path(@lab_group, @chip_type) %> | 
+  <%= link_to 'Inter-group Purchase', new_lab_group_chip_type_chip_intergroup_purchase_path(@lab_group, @chip_type) %> |
+  <%= link_to 'Borrow', new_lab_group_chip_type_chip_borrow_path(@lab_group, @chip_type) %> | 
+  <%= link_to 'Return', new_lab_group_chip_type_chip_return_path(@lab_group, @chip_type) %> | 
+  <%= link_to 'Custom', new_lab_group_chip_type_chip_transaction_path(@lab_group, @chip_type) %><p>
+<% end %>
 
 <p><%= link_to 'Chip Inventory Home', :controller => 'inventory', :action=>'index'%></p>
 <p><%= link_if_staff_or_admin 'Enter an Inventory Check', :controller => 'inventory_checks',
