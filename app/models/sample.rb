@@ -4,18 +4,14 @@ class Sample < ActiveRecord::Base
   require 'csv'
   include Spreadsheet
   
-  belongs_to :hybridization, :dependent => :destroy
+  belongs_to :microarray
 
-  belongs_to :chip_type
-  belongs_to :project
   belongs_to :organism
   belongs_to :starting_quality_trace, :class_name => "QualityTrace", :foreign_key => "starting_quality_trace_id"
   belongs_to :amplified_quality_trace, :class_name => "QualityTrace", :foreign_key => "amplified_quality_trace_id"
   belongs_to :fragmented_quality_trace, :class_name => "QualityTrace", :foreign_key => "fragmented_quality_trace_id"
-  belongs_to :naming_scheme
   belongs_to :microarray
   belongs_to :label
-  belongs_to :service_option
   
   has_many :sample_terms, :dependent => :destroy
   has_many :sample_texts, :dependent => :destroy
@@ -23,23 +19,13 @@ class Sample < ActiveRecord::Base
   has_many :sample_list_samples
   has_many :sample_lists, :through => :sample_list_samples
 
-  belongs_to :sample_set
-  
-  validates_associated :chip_type, :project
-  validates_presence_of :sample_name, :short_sample_name, :submission_date,
-                        :project_id
+  validates_presence_of :sample_name, :short_sample_name
   validates_length_of :sample_name, :maximum => 100
   validates_length_of :short_sample_name, :maximum => 50
-  validates_length_of :sbeams_user, :maximum => 20
-  validates_length_of :status, :maximum => 50
 
   attr_accessor :naming_element_selections, :naming_element_visibility,
     :text_values, :schemed_name
   
-  def submitted?
-    status == "submitted"
-  end
-
   def name_with_label
     label ? "#{sample_name} (#{label.name})" : sample_name
   end
@@ -48,10 +34,9 @@ class Sample < ActiveRecord::Base
   def self.new(attributes=nil)
     sample = super(attributes)
 
-    sample.status = "submitted"
-    if sample.sample_set
-      sample.ready_for_processing = !sample.sample_set.needs_approval?
-    end
+#    if sample.sample_set
+#      sample.ready_for_processing = !sample.sample_set.needs_approval?
+#    end
 
     # see if there's a naming scheme
     begin
@@ -107,12 +92,18 @@ class Sample < ActiveRecord::Base
   end  
   
   def validate
-    # make sure date/short_sample_name/sample_name combo is unique
-    s = Sample.find_by_submission_date_and_short_sample_name_and_sample_name(
-        submission_date, short_sample_name, sample_name)
-    if( s != nil && s.id != id )
-      errors.add("Duplicate submission date/short_sample_name/sample_name")
-    end
+    #TODO: decide how to handle duplication
+    ## make sure date/short_sample_name/sample_name combo is unique
+    #submission_date = microarray.chip.sample_set.submission_date
+
+    #s = Sample.find(
+    #  :all, :include => {:microarray => {:chip => :sample_set}},
+    #  :conditions => ["sample_sets.submission_date = ? AND short_sample_name = ? AND sample_name = ?",
+    #    submission_date, short_sample_name, sample_name]
+    #)
+    #if( s != nil && s.id != id )
+    #  errors.add("Duplicate submission date/short_sample_name/sample_name")
+    #end
     
     # remove problem characters
     self.sample_name.gsub!(/(\ |\+|\&|\#|\(|\)|\/|\\)/, '')
@@ -853,9 +844,5 @@ class Sample < ActiveRecord::Base
     end
     
     return texts
-  end
-  
-  def ready_yes_or_no
-    ready_for_processing ? "Yes" : "No"
   end
 end

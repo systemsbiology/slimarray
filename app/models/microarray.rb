@@ -2,7 +2,9 @@ class Microarray < ActiveRecord::Base
   extend ApiAccessible
 
   belongs_to :chip
-  accepts_nested_attributes_for :chip
+
+  has_many :samples
+  accepts_nested_attributes_for :samples
 
   has_one :hybridization
 

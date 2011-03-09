@@ -1,5 +1,12 @@
 New samples have just been submitted in SLIMarray:
 
-<% @samples.each do |sample| %>
- * <%=h sample.sample_name %>
-<% end %>
+User: <%=h @sample_set.submitted_by %>
+Project: <%=h @sample_set.project.name %>
+
+<% @sample_set.chips.each do |chip| -%>
+<% chip.microarrays.each do |microarray| -%>
+<% microarray.samples.each do |sample| -%>
+<%=h "Slide/Chip #{chip.name}, array #{microarray.array_number}: #{sample.sample_name}" %>
+<% end -%>
+<% end -%>
+<% end -%>

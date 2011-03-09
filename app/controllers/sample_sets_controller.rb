@@ -7,7 +7,7 @@ class SampleSetsController < ApplicationController
 
   def create
     sample_set_params = params[:sample_set] || {}
-    @sample_set = SampleSet.parse_api( sample_set_params.merge("submitted_by_id" => current_user.id) )
+    @sample_set = SampleSet.parse_api( sample_set_params.merge("submitted_by" => current_user.login) )
 
     if @sample_set.save
       render :json => {:message => "Samples recorded"}

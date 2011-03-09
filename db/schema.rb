@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110113000225) do
+ActiveRecord::Schema.define(:version => 20110114231846) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(:version => 20110113000225) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sample_set_id"
   end
 
   create_table "engine_schema_info", :id => false, :force => true do |t|
@@ -357,6 +358,14 @@ ActiveRecord::Schema.define(:version => 20110113000225) do
   create_table "sample_sets", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "project_id"
+    t.integer  "chip_type_id"
+    t.integer  "naming_scheme_id"
+    t.integer  "service_option_id"
+    t.date     "submission_date"
+    t.string   "submitted_by"
+    t.string   "status",                                 :null => false
+    t.boolean  "ready_for_processing", :default => true, :null => false
   end
 
   create_table "sample_terms", :force => true do |t|
@@ -383,39 +392,25 @@ ActiveRecord::Schema.define(:version => 20110113000225) do
   add_index "sample_texts", ["sample_id"], :name => "index_sample_texts_on_sample_id"
 
   create_table "samples", :force => true do |t|
-    t.date     "submission_date"
     t.string   "short_sample_name",           :limit => 20
     t.string   "sample_name"
     t.string   "sample_group_name",           :limit => 50
-    t.integer  "chip_type_id"
     t.integer  "organism_id"
-    t.string   "sbeams_user",                 :limit => 20
-    t.string   "status",                      :limit => 50
     t.integer  "lock_version",                              :default => 0
-    t.integer  "project_id"
     t.integer  "starting_quality_trace_id"
     t.integer  "amplified_quality_trace_id"
     t.integer  "fragmented_quality_trace_id"
-    t.integer  "naming_scheme_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "label_id"
-    t.integer  "hybridization_id"
-    t.integer  "sample_set_id"
-    t.boolean  "ready_for_processing",                      :default => true, :null => false
-    t.integer  "service_option_id"
+    t.integer  "microarray_id"
   end
 
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"
-  add_index "samples", ["chip_type_id"], :name => "index_samples_on_chip_type_id"
   add_index "samples", ["fragmented_quality_trace_id"], :name => "index_samples_on_fragmented_quality_trace_id"
-  add_index "samples", ["hybridization_id"], :name => "index_samples_on_hybridization_id"
   add_index "samples", ["label_id"], :name => "index_samples_on_label_id"
-  add_index "samples", ["naming_scheme_id"], :name => "index_samples_on_naming_scheme_id"
   add_index "samples", ["organism_id"], :name => "index_samples_on_organism_id"
-  add_index "samples", ["project_id"], :name => "index_samples_on_project_id"
   add_index "samples", ["starting_quality_trace_id"], :name => "index_samples_on_starting_quality_trace_id"
-  add_index "samples", ["submission_date"], :name => "index_samples_on_submission_date"
 
   create_table "service_option_sets", :force => true do |t|
     t.string   "name"

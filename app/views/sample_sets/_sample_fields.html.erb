@@ -18,7 +18,7 @@
             <% end %>
           <% else %>
             <th>Sample Description</th>
-            <th>Sample Group</th>
+            <th>Sample Group (optional)</th>
           <% end %>
           <% if @chip_type.platform.multiple_labels %>
             <th>Label</th>
@@ -28,22 +28,25 @@
         </tr>
       </thead>
       <% section[:samples].each do |sample_info| %>
-        <% @n_padded = "%04d" % @n %>
+        <% field_prefix = "sample_set[chips_attributes][#{sample_info[:slide]}][microarrays_attributes][#{sample_info[:array]}][samples_attributes][#{sample_info[:channel]}]" %>
 
         <tr>
-          <td><%= sample_info[:title] %></td>
-          <td><%= text_field 'sample_set[samples]', :name_on_tube, :size => 10, :index => @n_padded, :class => "required" %></td>
+          <td>
+            <%= sample_info[:title] %>
+            <%= hidden_field_tag "sample_set[chips_attributes][#{sample_info[:slide]}][microarrays_attributes][#{sample_info[:array]}][array_number]", sample_info[:array] %>
+          </td>
+          <td><%= text_field field_prefix, :short_sample_name, :size => 10, :class => "required" %></td>
           <% if @naming_scheme == nil %>
-            <td><%= text_field "sample_set[samples][#{@n_padded}]", :sample_name, :size => 30, :class => "required sample_description" %></td>
-            <td><%= text_field "sample_set[samples][#{@n_padded}]", :sample_group_name, :size => 30 %></td>
+            <td><%= text_field field_prefix, :sample_name, :size => 30, :class => "required sample_description" %></td>
+            <td><%= text_field field_prefix, :sample_group_name, :size => 30 %></td>
           <% else %>
             <% @sample = Sample.new(:naming_scheme_id => @naming_scheme.id) %>
             <%= render :partial => 'samples/schemed_sample_description', :locals => { 
-              :field_prefix => "sample_set[samples][#{@n_padded}]" } %>
+              :field_prefix => field_prefix } %>
           <% end %>
           
           <% if @chip_type.platform.multiple_labels %>
-            <td><%= collection_select "sample_set[samples][#{@n_padded}]", :label_id, @labels,
+            <td><%= collection_select field_prefix, :label_id, @labels,
               :id, :name, {:prompt => true, :selected => current_label.id} %></td>
 
             <% if @service_option.channels > 1 %>
@@ -51,13 +54,10 @@
             <% end %>
           <% end %>
 
-          <td><%= collection_select "sample_set[samples][#{@n_padded}]", :organism_id, @organisms,
+          <td><%= collection_select field_prefix, :organism_id, @organisms,
             :id, :name, {:prompt => true, :selected => @chip_type.organism_id} %></td>
           
           <td><%=h @chip_type.name %></td>
-          <%= hidden_field "sample_set[samples][#{@n_padded}]", :slide, :value => sample_info[:slide] %></td>
-          <%= hidden_field "sample_set[samples][#{@n_padded}]", :array, :value => sample_info[:array] %></td>
-          <%= hidden_field "sample_set[samples][#{@n_padded}]", :channel, :value => sample_info[:channel] %></td>
         </tr>
         <% @n += 1 %>
       <% end %>

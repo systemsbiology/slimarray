@@ -10,8 +10,8 @@
     <% form_for :sample_set, :url => {:action => :create}, :html => {:class => "bbq"} do -%>
       <div id="fieldWrapper">
       <div class="step" id="platform">
-        <p><%= label :sample_set, :date, 'Date Submitted' %><br/>
-        <%= date_select :sample_set, :date %></p>
+        <p><%= label :sample_set, :submission_date, 'Date Submitted' %><br/>
+        <%= date_select :sample_set, :submission_date %></p>
 
         <p><%= label :sample_set, :number, 'Number of Samples' %><br/>
         <%= text_field :sample_set, :number, :size => 4, :class => "required" %></p>

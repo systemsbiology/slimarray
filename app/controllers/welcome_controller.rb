@@ -49,25 +49,25 @@ class WelcomeController < ApplicationController
     #samples = Sample.find(:all, :conditions => [ "project_id IN (?) AND status = ?", project_ids, 'submitted' ],
     #                          :order => "samples.id ASC")
 
-    samples = Sample.find(:all, :include => :project) do
+    samples = Sample.find(:all, :include => {:microarray => {:chip => {:sample_set => :project}}}) do
       if params[:_search] == "true"
-        submission_date   =~ "%#{params[:submission_date]}%" if params[:submission_date].present?                
+        microarray.chip.sample_set.submission_date   =~ "%#{params[:submission_date]}%" if params[:submission_date].present?                
         short_sample_name =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
         sample_name       =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
-        sbeams_user       =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
-        project.name      =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
-        service_option.name  =~ "%#{params["service_option.name"]}%" if params["service_option.name"].present?                
-        ready_for_processing =~ "%#{params["ready_for_processing"]}%" if params["ready_for_processing"].present?                
+        microarray.chip.sample_set.sbeams_user       =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
+        microarray.chip.sample_set.project.name      =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+        microarray.chip.sample_set.service_option.name  =~ "%#{params["service_option.name"]}%" if params["service_option.name"].present?                
+        microarray.chip.sample_set.ready_for_processing =~ "%#{params["ready_for_processing"]}%" if params["ready_for_processing"].present?                
       end
-      status == "submitted"
-      "project_id IN (#{project_ids})"
+      microarray.chip.sample_set.status == "submitted"
+      "sample_sets.project_id IN (#{project_ids})"
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
     end
 
     render :json => samples.to_jqgrid_json(
-      [:submission_date, :short_sample_name, :sample_name, :sbeams_user,
-       "project.name", "service_option.name", :ready_yes_or_no], 
+      ["microarray.chip.sample_set.submission_date", :short_sample_name, :sample_name, "microarray.chip.sample_set.submitted_by",
+       "microarray.chip.sample_set.project.name", "microarray.chip.sample_set.service_option.name", "microarray.chip.sample_set.ready_yes_or_no"], 
       params[:page], params[:rows], samples.total_entries
     )
   end
