@@ -12,11 +12,13 @@ class SampleSet < ActiveRecord::Base
 
   after_create :check_chip_inventory, :send_facility_notification, :send_approval_request
 
+  attr_accessor :number
+
   #validate :at_least_one_sample
 
   def self.parse_api(attributes)
     # remove attributes that aren't stored
-    ["next_step", "number"].each{|key| attributes.delete(key)}
+    ["next_step"].each{|key| attributes.delete(key)}
 
     sample_set = SampleSet.new(attributes)
     
@@ -49,6 +51,14 @@ class SampleSet < ActiveRecord::Base
 
   def samples
     Sample.find(:all, :include => {:microarray => :chip}, :conditions => ["chips.sample_set_id = ?", id])
+  end
+
+  def name
+    "#{user && user.full_name || submitted_by} - #{chip_type.name} (#{chips.size} Chips/Slides)"
+  end
+
+  def user
+    submitted_by_id && User.find(submitted_by_id)
   end
 
   private
@@ -161,9 +171,9 @@ class SampleSet < ActiveRecord::Base
 #    ServiceOption.find_by_id(service_option_id)
 #  end
 #
-#  def cost_estimate
-#    number_of_samples * service_option.total_cost
-#  end
+  def cost_estimate
+    number.to_i * service_option.total_cost
+  end
 
   def send_facility_notification
     return if chips.empty?

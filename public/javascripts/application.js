@@ -41,6 +41,16 @@ $(document).ready(function(){
     });
   }
 
+  function setHybridizationDateVisibility() {
+    checked = $('#chip_hybridized').attr('checked');
+
+    if(checked) {
+      $('#hybridization_date').show();
+    } else {
+      $('#hybridization_date').hide();
+    }
+  }
+
   $("#bedata").click(function(){
     var s; s = jQuery("#data_grid").getGridParam('selarrrow');
     if( s == null || s.length == 0 ) alert("Please select a row to edit");
@@ -114,7 +124,7 @@ $(document).ready(function(){
     else {
       var selection_fields = "";
       s.forEach( function(id) {
-        selection_fields += '<input type="hidden" name="selected_hybridizations[' + id + ']" value="1" />'
+        selection_fields += '<input type="hidden" name="selected_hybridizations[' + id + ']" value="1" />';
       });
       $('<form method="post" action="' + location.href + '/bulk_handler" />')
           .append(selection_fields)
@@ -137,6 +147,12 @@ $(document).ready(function(){
     updateCostEstimate();
   });
 
+  $('#chip_hybridized').click(function(evt) {
+    setHybridizationDateVisibility();
+  });
+
   showServiceOptions();
   updateCostEstimate();
+  setHybridizationDateVisibility();
+
 }); 

@@ -63,6 +63,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :qc_sets, :only => [:create, :show]
   map.resources :qc_thresholds, :collection => {:grid => :get}
   map.resources :microarrays, :only => [:index]
+  map.resources :chips, :only => [:edit, :update]
 
   # The priority is based upon order of creation: first created -> highest priority.
 

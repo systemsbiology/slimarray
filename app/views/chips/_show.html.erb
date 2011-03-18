@@ -1,0 +1,8 @@
+<%= check_box_tag "chip[#{chip.id}]" %> Hybridize <%= link_to 'Edit', edit_chip_url(chip) %>
+<table class="simple">
+  <tr>
+    <th>Array</th>
+    <th>Sample</th>
+  </tr>
+  <%= render :partial => "microarrays/show", :collection => chip.microarrays, :as => :microarray %>
+</table>

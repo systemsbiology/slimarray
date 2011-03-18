@@ -15,21 +15,4 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 
 <h3>Samples Submitted for Hybridization</h3>
 
-<%= jqgrid("Samples", "sample_grid", url_for(:action => "grid"),
-  [
-    { :field => "sample_sets.submission_date", :label => "Date", :width => 80 },
-    { :field => "short_sample_name", :label => "Name On Tube", :width => 130 },
-    { :field => "sample_name", :label => "Sample Description", :width => 300 },
-    { :field => "sample_sets.submitted_by", :label => "User", :width => 80 },
-    { :field => "projects.name", :label => "Project", :width => 150 },
-    { :field => "sample_sets.service_option.name", :label => "Service Requested", :width => 240 },
-    { :field => "sample_sets.ready_for_processing", :label => "Ready", :width => 80 }
-  ],
-  :height => 550,
-  :sort_column => "sample_sets.submission_date DESC, samples.id ASC",
-  :rows_per_page => 25,
-  :multi_selection => true
-) %>
-
-<p><%= submit_tag "Edit Selected Sample", :id => "besample" %> 
-  <%= submit_tag "Destroy Selected Sample", :id => "bdsample" %></p>
+<%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>

@@ -53,9 +53,11 @@ class RearrangeSampleSchema < ActiveRecord::Migration
     add_column :sample_sets, :service_option_id, :integer
     add_column :sample_sets, :submission_date, :date
     add_column :sample_sets, :submitted_by, :string
-    add_column :sample_sets, :status, :string, :null => false, :default => "submitted"
+    add_column :sample_sets, :submitted_by_id, :integer
+    add_column :chips, :status, :string, :null => false, :default => "submitted"
     add_column :sample_sets, :ready_for_processing, :boolean, :null => false, :default => true
     SampleSet.reset_column_information
+    Chip.reset_column_information
 
     # All chips without a sample set get one now
     puts "-- create a sample set for each chip lacking one"
@@ -68,7 +70,6 @@ class RearrangeSampleSchema < ActiveRecord::Migration
         :service_option_id => sample.service_option_id,
         :submission_date => sample.submission_date,
         :submitted_by => sample.sbeams_user,
-        :status => sample.status,
         :ready_for_processing => sample.ready_for_processing
       )
       chip.update_attribute('sample_set_id', sample_set.id)
@@ -78,7 +79,10 @@ class RearrangeSampleSchema < ActiveRecord::Migration
     puts "-- move attributes from sample to sample set"
     Sample.all.each do |sample|
       microarray = Microarray.find(sample.microarray_id)
+
       chip = Chip.find(microarray.chip_id)
+      chip.update_attributes(:status => sample.status)
+
       sample_set = SampleSet.find(chip.sample_set_id)
       sample_set.update_attributes(
         :project_id => sample.project_id,
@@ -87,7 +91,6 @@ class RearrangeSampleSchema < ActiveRecord::Migration
         :service_option_id => sample.service_option_id,
         :submission_date => sample.submission_date,
         :submitted_by => sample.sbeams_user,
-        :status => sample.status,
         :ready_for_processing => sample.ready_for_processing
       )
     end
@@ -99,6 +102,33 @@ class RearrangeSampleSchema < ActiveRecord::Migration
     remove_column :samples, :sbeams_user
     remove_column :samples, :status
     remove_column :samples, :ready_for_processing
+
+    # Find associated user where available
+    users_by_login = User.all_by_login
+    SampleSet.all.each do |set|
+      user = users_by_login[set.submitted_by]
+      set.update_attributes(:submitted_by_id => user.id) if user
+    end
+
+    add_column :chips, :hybridization_date, :date
+    add_column :chips, :chip_number, :integer
+    add_column :microarrays, :raw_data_path, :string
+    add_column :microarrays, :charge_set_id, :integer
+    Chip.reset_column_information
+    Microarray.reset_column_information
+    Hybridization.find(:all, :include => {:microarray => :chip}).each do |hybridization|
+      microarray = Microarray.find(hybridization.microarray_id)
+      chip = Chip.find(microarray.chip_id)
+      chip.update_attributes(
+        :hybridization_date => hybridization.hybridization_date,
+        :chip_number => hybridization.chip_number
+      )
+      microarray.update_attributes(
+        :raw_data_path => hybridization.raw_data_path,
+        :charge_set_id => hybridization.raw_data_path
+      )
+    end
+    drop_table :hybridizations
   end
 
   def self.down

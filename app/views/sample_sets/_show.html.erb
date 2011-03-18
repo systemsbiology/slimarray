@@ -1,0 +1,6 @@
+<div class="sample_set">
+  <%=h sample_set.name %>
+  <div class="sample_set_details">
+    <%= render :partial => "chips/show", :collection => sample_set.chips, :as => :chip %>
+  </div>
+</div>

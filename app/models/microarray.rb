@@ -11,7 +11,8 @@ class Microarray < ActiveRecord::Base
   api_reader :array_number
 
   def name
-    hybridization.sample_names
+    ordered_samples = samples.sort{|a,b| a.label.name <=> b.label.name}
+    ordered_samples.collect {|s| s.sample_name}.join("_v_")
   end
 
   api_reader :chip_name
@@ -131,5 +132,13 @@ class Microarray < ActiveRecord::Base
     end
 
     return hash
+  end
+
+  def sample_ids=(ids)
+    # clear out old samples
+    samples.clear
+
+    # add selected samples
+    ids.each_value{|id| samples << Sample.find(id) unless id == "0"}
   end
 end

@@ -28,15 +28,14 @@ class WelcomeController < ApplicationController
   end
 
   def staff
-    # get all possible naming schemes
-    @naming_schemes = NamingScheme.find(:all)
-
     # grab SBEAMS configuration parameter here, rather than
     # grabbing it in the list view for every element displayed
     @using_sbeams = SiteConfig.find(1).using_sbeams?
     
     @lab_groups = LabGroup.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
+
+    @sample_sets = SampleSet.find(:all, :include => :chips, :conditions => "chips.status = 'submitted'")
   end
 
   def grid
@@ -59,7 +58,7 @@ class WelcomeController < ApplicationController
         microarray.chip.sample_set.service_option.name  =~ "%#{params["service_option.name"]}%" if params["service_option.name"].present?                
         microarray.chip.sample_set.ready_for_processing =~ "%#{params["ready_for_processing"]}%" if params["ready_for_processing"].present?                
       end
-      microarray.chip.sample_set.status == "submitted"
+      microarray.chip.status == "submitted"
       "sample_sets.project_id IN (#{project_ids})"
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"

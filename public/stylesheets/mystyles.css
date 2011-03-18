@@ -205,7 +205,7 @@ table.simple th {
 }
 
 table.simple td, table.simple th {
-  border: 1pt inset;
+  border: 1pt inset #bbb;
   padding: 2px;
 }
 

@@ -121,29 +121,15 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sample_set_id"
+    t.string   "status",             :default => "submitted", :null => false
+    t.date     "hybridization_date"
+    t.integer  "chip_number"
   end
 
   create_table "engine_schema_info", :id => false, :force => true do |t|
     t.string  "engine_name"
     t.integer "version"
   end
-
-  create_table "hybridizations", :force => true do |t|
-    t.date     "hybridization_date"
-    t.integer  "chip_number"
-    t.integer  "charge_template_id"
-    t.integer  "lock_version",                      :default => 0
-    t.integer  "charge_set_id"
-    t.string   "raw_data_path",      :limit => 400
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "microarray_id"
-  end
-
-  add_index "hybridizations", ["charge_set_id"], :name => "index_hybridizations_on_charge_set_id"
-  add_index "hybridizations", ["charge_template_id"], :name => "charge_template_id"
-  add_index "hybridizations", ["charge_template_id"], :name => "index_hybridizations_on_charge_template_id"
-  add_index "hybridizations", ["microarray_id"], :name => "index_hybridizations_on_microarray_id"
 
   create_table "inventory_checks", :force => true do |t|
     t.date     "date",                           :null => false
@@ -197,9 +183,11 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
 
   create_table "microarrays", :force => true do |t|
     t.integer  "chip_id"
-    t.integer  "array_number", :default => 1, :null => false
+    t.integer  "array_number",  :default => 1, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "raw_data_path"
+    t.integer  "charge_set_id"
   end
 
   add_index "microarrays", ["chip_id"], :name => "index_microarrays_on_chip_id"
@@ -364,7 +352,7 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
     t.integer  "service_option_id"
     t.date     "submission_date"
     t.string   "submitted_by"
-    t.string   "status",                                 :null => false
+    t.integer  "submitted_by_id"
     t.boolean  "ready_for_processing", :default => true, :null => false
   end
 
