@@ -3,7 +3,7 @@ class ChipType < ActiveRecord::Base
   belongs_to :platform
   belongs_to :service_option_set
   has_many :chip_transactions, :dependent => :destroy
-  has_many :samples, :dependent => :destroy
+  has_many :sample_sets, :dependent => :destroy
   has_many :inventory_checks, :dependent => :destroy
   
   validates_uniqueness_of :name
@@ -12,7 +12,8 @@ class ChipType < ActiveRecord::Base
   validates_length_of :short_name, :within => 1..100
 
   def destroy_warning
-    samples = Sample.find(:all, :conditions => ["chip_type_id = ?", id])
+    samples = Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
+                          :conditions => ["sample_sets.chip_type_id = ?", id])
     inventory_checks = InventoryCheck.find(:all, :conditions => ["chip_type_id = ?", id])
     chip_transactions = ChipTransaction.find(:all, :conditions => ["chip_type_id = ?", id])
     

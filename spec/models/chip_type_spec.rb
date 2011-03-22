@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "ChipType" do
-  fixtures :chip_types, :samples, :hybridizations, :inventory_checks, :chip_transactions
+  fixtures :chip_types, :samples, :microarrays, :chips, :sample_sets, :inventory_checks, :chip_transactions
 
   it "destroy warning" do
     expected_warning = "Destroying this chip type will also destroy:\n" + 
