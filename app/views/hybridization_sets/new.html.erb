@@ -1,3 +1,13 @@
 <h1>Enter Hybridizations</h1>
 
-<%= render :partial => @hybridization_set.step %>
+<% form_tag :hybridization_sets do %>
+  <% @chips.each_with_index do |chip, index| %>
+    <%= hidden_field_tag "hybridization_set[chips][#{index}][id]", chip.id %>
+    Chip Name 
+    <%= text_field_tag "hybridization_set[chips][#{index}][name]", chip.name || chip.default_name %>
+
+    <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+  <% end %>
+
+  <%= submit_tag "Record Hybridizations" %>
+<% end %>
