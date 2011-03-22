@@ -132,7 +132,7 @@ describe "ChipTransaction" do
 
     it "provides all transaction to a staff or admin user" do
       @user.should_receive(:staff_or_admin?).any_number_of_times.and_return(true)
-      ChipTransaction.should_receive(:all).and_return(@transactions)
+      ChipTransaction.should_receive(:find).with(:all, :include => [:chip_type]).and_return(@transactions)
       ChipTransaction.accessible_to_user(@user).should == @transactions
     end
 
@@ -141,7 +141,7 @@ describe "ChipTransaction" do
       @user.should_receive(:staff_or_admin?).and_return(false)
       @user.should_receive(:lab_groups).and_return(@lab_groups)
       ChipTransaction.should_receive(:find).with(:all, :conditions => ["lab_group_id IN (?)", [@lab_groups.first.id]],
-        :include => [:lab_group, :chip_type]).and_return(@transactions)
+        :include => [:chip_type]).and_return(@transactions)
       ChipTransaction.accessible_to_user(@user).should == @transactions
     end
   end
@@ -152,6 +152,11 @@ describe "ChipTransaction" do
     chip_type_1 = create_chip_type(:name => "Mouse Chip")
     chip_type_2 = create_chip_type(:name => "Yeast Chip")
 
+    LabGroup.should_receive(:all_by_id).and_return({
+      lab_group_1.id => lab_group_1,
+      lab_group_2.id => lab_group_2
+    })
+
     transaction_1 = create_chip_transaction(:lab_group => lab_group_1, :chip_type => chip_type_1, :acquired => 20)
     transaction_2 = create_chip_transaction(:lab_group => lab_group_1, :chip_type => chip_type_1, :used => 10)
     transaction_3 = create_chip_transaction(:lab_group => lab_group_1, :chip_type => chip_type_2, :acquired => 30)
@@ -161,12 +166,12 @@ describe "ChipTransaction" do
     ChipTransaction.counts_by_lab_group_and_chip_type(transactions).should == {
       lab_group_1.name => {
         "lab_group_id" => lab_group_1.id,
-        chip_type_1.name => {
+        chip_type_1.platform_and_name => {
           "owed_out"=>0, "returned_in"=>0, "borrowed_in"=>0, "used"=>10, "acquired"=>20, "owed_in"=>0,
           "borrowed_out"=>0, "chips"=>10, "returned_out"=>0, "traded_sold"=>0,
           "chip_type_id" => chip_type_1.id
         },
-        chip_type_2.name => {
+        chip_type_2.platform_and_name => {
           "owed_out"=>0, "returned_in"=>0, "borrowed_in"=>0, "used"=>0, "acquired"=>30, "owed_in"=>0,
           "borrowed_out"=>0, "chips"=>30, "returned_out"=>0, "traded_sold"=>0,
           "chip_type_id" => chip_type_2.id
@@ -174,7 +179,7 @@ describe "ChipTransaction" do
       },
       lab_group_2.name => {
         "lab_group_id" => lab_group_2.id,
-        chip_type_2.name => {
+        chip_type_2.platform_and_name => {
           "owed_out"=>0, "returned_in"=>0, "borrowed_in"=>0, "used"=>0, "acquired"=>5, "owed_in"=>0,
           "borrowed_out"=>0, "chips"=>5, "returned_out"=>0, "traded_sold"=>0,
           "chip_type_id" => chip_type_2.id
