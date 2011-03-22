@@ -112,4 +112,19 @@ class Chip < ActiveRecord::Base
 
     return layout
   end
+
+  def hybridization_date_number_string
+    hybridization_date ||= Date.today
+
+    return hybridization_date.year.to_s + ("%02d" % hybridization_date.month) +
+                           ("%02d" % hybridization_date.day) + "_" + ("%02d" % chip_number)
+  end
+
+  def default_name
+    if sample_set.chip_type.platform.uses_chip_numbers
+      return hybridization_date_number_string + "_" + microarrays.first.name
+    else
+      return ""
+    end
+  end
 end
