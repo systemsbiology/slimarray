@@ -73,14 +73,17 @@ class Project < ActiveRecord::Base
   end
   
   def detail_hash
+    samples = Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
+                          :conditions => ["sample_sets.project_id =?", self.id])
+
     return {
       :id => id,
       :name => name,
       :lab_group => lab_group_name,
       :lab_group_uri => "#{SiteConfig.site_url}/lab_groups/#{lab_group_id}",
       :updated_at => updated_at,
-      :sample_uris => sample_ids.sort.
-        collect {|x| "#{SiteConfig.site_url}/samples/#{x}" }
+      :sample_uris => samples.
+        collect {|sample| "#{SiteConfig.site_url}/samples/#{sample.id}" }
     }
   end
 
