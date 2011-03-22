@@ -1,11 +1,11 @@
 class QcSet < ActiveRecord::Base
-  belongs_to :hybridization
+  belongs_to :microarray
   has_many :qc_statistics
   has_many :qc_files
 
-  validates_presence_of :hybridization_id
-  validates_associated :hybridization
-  validates_uniqueness_of :hybridization_id
+  validates_presence_of :microarray_id
+  validates_associated :microarray
+  validates_uniqueness_of :microarray_id
 
   def after_create
     Notifier.deliver_qc_outlier_notification(self) unless outlier_statistics.empty?
@@ -14,13 +14,13 @@ class QcSet < ActiveRecord::Base
   def chip_name=(name)
     @chip_name = name
 
-    lookup_hybridization
+    lookup_microarray
   end
 
   def array_number=(number)
     @array_number = number
 
-    lookup_hybridization
+    lookup_microarray
   end
 
   def statistics=(statistic_hash)
@@ -62,12 +62,12 @@ class QcSet < ActiveRecord::Base
 
   private
 
-  def lookup_hybridization
+  def lookup_microarray
     return unless @chip_name && @array_number
 
-    self.hybridization = Hybridization.find(
+    self.microarray = Microarray.find(
       :first,
-      :include => {:microarray => :chip},
+      :include => :chip,
       :conditions => [ "chips.name = ? AND microarrays.array_number = ?",
                        @chip_name, @array_number ]
     )

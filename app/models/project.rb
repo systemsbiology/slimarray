@@ -90,4 +90,9 @@ class Project < ActiveRecord::Base
   def active_yes_or_no
     active ? "Yes" : "No"
   end
+
+  def samples
+    Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
+      :conditions => ["sample_sets.project_id = ?", self.id])
+  end
 end

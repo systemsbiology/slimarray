@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe QcSet do
   describe "validating a new QC set where the hybridization is directly specified" do
-    it "should be valid with a valid hybridization" do
-      hybridization = create_hybridization
-      QcSet.new(:hybridization => hybridization).should be_valid
+    it "should be valid with a valid microarray" do
+      microarray = create_microarray
+      QcSet.new(:microarray => microarray).should be_valid
     end
 
-    it "should not be valid without a hybridization_id" do
+    it "should not be valid without a microarray" do
       QcSet.new.should_not be_valid
     end
 
@@ -21,8 +21,7 @@ describe QcSet do
 
   describe "making a new QC set with chip/array identifiers, statistics and a file" do
     it "should be valid if the chip/array point to a hybridization" do
-      hybridization = create_hybridization
-      microarray = hybridization.microarray
+      microarray = create_microarray
       chip = microarray.chip
 
       qc_set = QcSet.new("chip_name" => chip.name, "array_number" => microarray.array_number,
@@ -33,8 +32,7 @@ describe QcSet do
     end
 
     it "should not be valid if the chip name doesn't point to an actual chip" do
-      hybridization = create_hybridization
-      microarray = hybridization.microarray
+      microarray = create_microarray
       chip = microarray.chip
 
       qc_set = QcSet.new("chip_name" => "1234", "array_number" => microarray.array_number,
@@ -45,8 +43,7 @@ describe QcSet do
     end
 
     it "should not be valid if the array number isn't an array on the chip" do
-      hybridization = create_hybridization
-      microarray = hybridization.microarray
+      microarray = create_microarray
       chip = microarray.chip
 
       qc_set = QcSet.new("chip_name" => chip.name, "array_number" => 42,
@@ -57,8 +54,7 @@ describe QcSet do
     end
 
     it "should make an associated QC file if a file path is provided" do
-      hybridization = create_hybridization
-      microarray = hybridization.microarray
+      microarray = create_microarray
       chip = microarray.chip
 
       qc_set = QcSet.new("chip_name" => chip.name, "array_number" => microarray.array_number,
@@ -70,8 +66,7 @@ describe QcSet do
     end
 
     it "should make associated QC statistics if they are provided" do
-      hybridization = create_hybridization
-      microarray = hybridization.microarray
+      microarray = create_microarray
       chip = microarray.chip
 
       qc_set = QcSet.new("chip_name" => chip.name, "array_number" => microarray.array_number,

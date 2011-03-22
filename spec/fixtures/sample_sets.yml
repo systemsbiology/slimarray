@@ -1,0 +1,18 @@
+sample_set1:
+  chip_type: alligator
+
+sample_set2:
+  chip_type: alligator
+
+sample_set3:
+  chip_type: alligator
+
+sample_set4:
+  chip_type: alligator
+
+sample_set5:
+  chip_type: alligator
+
+sample_set6:
+  chip_type: alligator
+  naming_scheme: yeast_scheme

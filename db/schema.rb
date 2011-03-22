@@ -285,9 +285,9 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
   end
 
   create_table "qc_sets", :force => true do |t|
-    t.integer  "hybridization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "microarray_id"
   end
 
   create_table "qc_statistics", :force => true do |t|

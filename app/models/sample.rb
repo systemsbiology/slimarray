@@ -56,6 +56,8 @@ class Sample < ActiveRecord::Base
   end
 
   def schemed_name=(attributes)
+    naming_scheme = microarray.chip.sample_set.naming_scheme
+
     # clear out old naming scheme records
     sample_terms.each {|t| t.destroy}
     sample_texts.each {|t| t.destroy}
@@ -68,6 +70,8 @@ class Sample < ActiveRecord::Base
   end
   
   def naming_element_visibility
+    naming_scheme = microarray.chip.sample_set.naming_scheme
+
     if(naming_scheme != nil)
       return @naming_element_visibility || naming_scheme.visibilities_from_terms(sample_terms)
     else
@@ -76,6 +80,8 @@ class Sample < ActiveRecord::Base
   end
   
   def text_values
+    naming_scheme = microarray.chip.sample_set.naming_scheme
+
     if(naming_scheme != nil)
       return @text_values || naming_scheme.texts_from_terms(sample_texts)
     else
@@ -84,6 +90,8 @@ class Sample < ActiveRecord::Base
   end
   
   def naming_element_selections
+    naming_scheme = microarray.chip.sample_set.naming_scheme
+
     if(naming_scheme != nil)
       return @naming_element_selections || naming_scheme.element_selections_from_terms(sample_terms)
     else
@@ -126,319 +134,321 @@ class Sample < ActiveRecord::Base
     end
   end
   
-  def self.to_csv(naming_scheme = "")
-    ###########################################
-    # set up spreadsheet
-    ###########################################
-    
-    csv_file_name = "#{RAILS_ROOT}/tmp/csv/samples_" +
-      "#{Date.today.to_s}-#{naming_scheme}.csv"
-    
-    csv_file = File.open(csv_file_name, 'wb')
-    CSV::Writer.generate(csv_file) do |csv|
-      if(naming_scheme == "")
-        csv << [ "Raw Data Path",
-          "Sample ID",
-          "Submission Date",
-          "Short Sample Name",
-          "Sample Name",
-          "Sample Group Name",
-          "Chip Type",
-          "Chip Name",
-          "Chip Number",
-          "Array Number",
-          "Organism",
-          "SBEAMS User",
-          "Project",
-          "Naming Scheme"
-        ]
+#  def self.to_csv(naming_scheme = "")
+#    ###########################################
+#    # set up spreadsheet
+#    ###########################################
+#    
+#    csv_file_name = "#{RAILS_ROOT}/tmp/csv/samples_" +
+#      "#{Date.today.to_s}-#{naming_scheme}.csv"
+#    
+#    csv_file = File.open(csv_file_name, 'wb')
+#    CSV::Writer.generate(csv_file) do |csv|
+#      if(naming_scheme == "")
+#        csv << [ "Raw Data Path",
+#          "Sample ID",
+#          "Submission Date",
+#          "Short Sample Name",
+#          "Sample Name",
+#          "Sample Group Name",
+#          "Chip Type",
+#          "Chip Name",
+#          "Chip Number",
+#          "Array Number",
+#          "Organism",
+#          "SBEAMS User",
+#          "Project",
+#          "Naming Scheme"
+#        ]
+#
+#        samples = Sample.find( :all, :conditions => {:naming_scheme_id => nil},
+#          :include => [:project, :chip_type, :organism], :order => "samples.id ASC" )
+#
+#        for sample in samples
+#          if(sample.hybridization != nil)
+#            hybridization = sample.hybridization
+#            chip_name = hybridization.microarray.chip.name
+#            chip_number = hybridization.chip_number
+#            array_number = hybridization.microarray.array_number
+#            cel_file = hybridization.raw_data_path
+#          else
+#            chip_name = chip_number = array_number = cel_file = ""
+#          end
+#          csv << [ cel_file,
+#            sample.id,
+#            sample.submission_date.to_s,
+#            sample.short_sample_name,
+#            sample.sample_name,
+#            sample.sample_group_name,
+#            sample.chip_type.name,
+#            chip_name,
+#            chip_number,
+#            array_number,
+#            sample.organism.name,
+#            sample.sbeams_user,
+#            sample.project.name,
+#            "None"
+#          ]
+#        end
+#      else
+#        scheme = NamingScheme.find(:first, :conditions => { :name => naming_scheme })
+#        
+#        if(scheme.nil?)
+#          return nil
+#        end
+#        
+#        # stock headings
+#        headings = [ "Raw Data Path",
+#          "Sample ID",
+#          "Submission Date",
+#          "Short Sample Name",
+#          "Sample Name",
+#          "Sample Group Name",
+#          "Chip Type",
+#          "Chip Name",
+#          "Chip Number",
+#          "Array Number",
+#          "Organism",
+#          "SBEAMS User",
+#          "Project",
+#          "Naming Scheme"
+#        ]
+#
+#        # headings for naming elements
+#        naming_elements = 
+#          scheme.naming_elements.find(:all, :order => "element_order ASC")
+#        naming_elements.each do |e|
+#          headings << e.name
+#        end
+#
+#        csv << headings
+#
+#        samples = Sample.find( :all, 
+#          :conditions => {:naming_scheme_id => scheme.id},
+#          :include => [:project, :chip_type, :organism],
+#          :order => "samples.id ASC" )
+#
+#        current_row = 0
+#        for sample in samples
+#          if(sample.hybridization != nil)
+#            hybridization = sample.hybridization
+#            chip_name = hybridization.microarray.chip.name
+#            chip_number = hybridization.chip_number
+#            array_number = hybridization.microarray.array_number
+#            cel_file = hybridization.raw_data_path
+#          else
+#            chip_name = chip_number = array_number = cel_file = ""
+#          end
+#          column_values = [ cel_file,
+#            sample.id,
+#            sample.submission_date.to_s,
+#            sample.short_sample_name,
+#            sample.sample_name,
+#            sample.sample_group_name,
+#            sample.chip_type.name,
+#            chip_name,
+#            chip_number,
+#            array_number,
+#            sample.organism.name,
+#            sample.sbeams_user,
+#            sample.project.name,
+#            sample.naming_scheme.name
+#          ]
+#          # values for naming elements
+#          naming_elements.each do |e|
+#            value = ""
+#            if(e.free_text == true)
+#              sample_text = SampleText.find(:first, 
+#                :conditions => {:sample_id => sample.id,
+#                  :naming_element_id => e.id})
+#              if(sample_text != nil)
+#                value = sample_text.text
+#              end
+#            else
+#              sample_term = SampleTerm.find(:first,
+#                :include => :naming_term,
+#                :conditions => ["sample_id = ? AND naming_terms.naming_element_id = ?",
+#                  sample.id, e.id] )
+#              if(sample_term != nil)
+#                value = sample_term.naming_term.term
+#              end
+#            end
+#            column_values << value
+#          end
+#
+#          csv << column_values
+#        end
+#      end    
+#    end
+#  
+#    csv_file.close
+#     
+#    return csv_file_name
+#  end
 
-        samples = Sample.find( :all, :conditions => {:naming_scheme_id => nil},
-          :include => [:project, :chip_type, :organism], :order => "samples.id ASC" )
-
-        for sample in samples
-          if(sample.hybridization != nil)
-            hybridization = sample.hybridization
-            chip_name = hybridization.microarray.chip.name
-            chip_number = hybridization.chip_number
-            array_number = hybridization.microarray.array_number
-            cel_file = hybridization.raw_data_path
-          else
-            chip_name = chip_number = array_number = cel_file = ""
-          end
-          csv << [ cel_file,
-            sample.id,
-            sample.submission_date.to_s,
-            sample.short_sample_name,
-            sample.sample_name,
-            sample.sample_group_name,
-            sample.chip_type.name,
-            chip_name,
-            chip_number,
-            array_number,
-            sample.organism.name,
-            sample.sbeams_user,
-            sample.project.name,
-            "None"
-          ]
-        end
-      else
-        scheme = NamingScheme.find(:first, :conditions => { :name => naming_scheme })
-        
-        if(scheme.nil?)
-          return nil
-        end
-        
-        # stock headings
-        headings = [ "Raw Data Path",
-          "Sample ID",
-          "Submission Date",
-          "Short Sample Name",
-          "Sample Name",
-          "Sample Group Name",
-          "Chip Type",
-          "Chip Name",
-          "Chip Number",
-          "Array Number",
-          "Organism",
-          "SBEAMS User",
-          "Project",
-          "Naming Scheme"
-        ]
-
-        # headings for naming elements
-        naming_elements = 
-          scheme.naming_elements.find(:all, :order => "element_order ASC")
-        naming_elements.each do |e|
-          headings << e.name
-        end
-
-        csv << headings
-
-        samples = Sample.find( :all, 
-          :conditions => {:naming_scheme_id => scheme.id},
-          :include => [:project, :chip_type, :organism],
-          :order => "samples.id ASC" )
-
-        current_row = 0
-        for sample in samples
-          if(sample.hybridization != nil)
-            hybridization = sample.hybridization
-            chip_name = hybridization.microarray.chip.name
-            chip_number = hybridization.chip_number
-            array_number = hybridization.microarray.array_number
-            cel_file = hybridization.raw_data_path
-          else
-            chip_name = chip_number = array_number = cel_file = ""
-          end
-          column_values = [ cel_file,
-            sample.id,
-            sample.submission_date.to_s,
-            sample.short_sample_name,
-            sample.sample_name,
-            sample.sample_group_name,
-            sample.chip_type.name,
-            chip_name,
-            chip_number,
-            array_number,
-            sample.organism.name,
-            sample.sbeams_user,
-            sample.project.name,
-            sample.naming_scheme.name
-          ]
-          # values for naming elements
-          naming_elements.each do |e|
-            value = ""
-            if(e.free_text == true)
-              sample_text = SampleText.find(:first, 
-                :conditions => {:sample_id => sample.id,
-                  :naming_element_id => e.id})
-              if(sample_text != nil)
-                value = sample_text.text
-              end
-            else
-              sample_term = SampleTerm.find(:first,
-                :include => :naming_term,
-                :conditions => ["sample_id = ? AND naming_terms.naming_element_id = ?",
-                  sample.id, e.id] )
-              if(sample_term != nil)
-                value = sample_term.naming_term.term
-              end
-            end
-            column_values << value
-          end
-
-          csv << column_values
-        end
-      end    
-    end
-  
-    csv_file.close
-     
-    return csv_file_name
-  end
-
-  def self.from_csv(csv_file_name, scheme_generation_allowed = false)
-
-    row_number = 0
-    header_row = nil
-
-    transaction do
-      CSV.open(csv_file_name, 'r') do |row|
-        # grab the header row or process sample rows
-        if(row_number == 0)
-          header_row = row
-        else
-          begin
-            sample = Sample.find(row[1].to_i)
-          rescue
-            sample = Sample.new
-          end
-        
-          # check to see if this sample should have a naming scheme
-          if(row[13] == "None")
-            ###########################################
-            # non-naming schemed sample
-            ###########################################
-          
-            # there should be 13 cells in each row
-            if(row.size != 14)
-              return "Wrong number of columns in row #{row_number}. Expected 14"
-            end
-
-            if( !sample.new_record? )
-              sample.destroy_existing_naming_scheme_info
-            end
-          
-            errors = sample.update_unschemed_columns(row)
-            if(errors != "")
-              return errors + " in row #{row_number} of non-naming schemed samples"
-            end
-          else
-            ###########################################
-            # naming schemed samples
-            ###########################################
-
-            naming_scheme = NamingScheme.find(:first, 
-              :conditions => {:name => row[13]})
-            # make sure this sample has a naming scheme
-            if(naming_scheme.nil?)
-              if(scheme_generation_allowed)
-                naming_scheme = NamingScheme.create(:name => row[13])
-              else
-                return "Naming scheme #{row[13]} doesn't exist in row #{row_number}"
-              end
-            end
-
-            naming_elements =
-              naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
-
-            expected_columns = 14 + naming_elements.size
-            if(row.size > expected_columns)
-              # create new naming elements if that's allowed
-              # otherwise return an error message
-              if(scheme_generation_allowed)
-                if(naming_elements.size > 0)
-                  current_element_order = naming_elements[-1].element_order + 1
-                else
-                  current_element_order = 1
-                end
-                (14..header_row.size-1).each do |i|
-                  NamingElement.create(
-                    :name => header_row[i],
-                    :element_order => current_element_order,
-                    :group_element => true,
-                    :optional => true,
-                    :naming_scheme_id => naming_scheme.id,
-                    :free_text => false,
-                    :include_in_sample_description => true,
-                    :dependent_element_id => 0)
-                  current_element_order += 1
-                end
-                
-                # re-populate naming elements array
-                naming_elements =
-                  naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
-              else
-                return "Wrong number of columns in row #{row_number}. " +
-                  "Expected #{expected_columns}"
-              end
-            end
-
-            if( !sample.new_record? )
-              sample.destroy_existing_naming_scheme_info
-            end
-          
-            # update the sample attributes
-            errors = sample.update_unschemed_columns(row)
-            if(errors != "")
-              return errors + " in row #{row_number}"
-            end
-
-            # create the new naming scheme records
-            current_column_index = 14
-            naming_elements.each do |e|
-              # do nothing if there's nothing in the cell
-              if(row[current_column_index] != nil)
-                if(e.free_text == true)
-                  sample_text = SampleText.new(
-                    :sample_id => sample.id,
-                    :naming_element_id => e.id,
-                    :text => row[current_column_index]
-                  )
-                  if(!sample_text.save)
-                    return "Unable to create #{e.name} for row #{row_number}"
-                  end
-                else
-                  naming_term = NamingTerm.find(:first, 
-                    :conditions => ["naming_element_id = ? AND " +
-                      "(term = ? OR abbreviated_term = ?)",
-                      e.id,
-                      row[current_column_index],
-                      row[current_column_index] ])
-                  # if naming term wasn't found,
-                  # match leading 0's if there are any
-                  if(naming_term.nil?)
-                    naming_term = NamingTerm.find(:first, 
-                      :conditions => ["naming_element_id = ? AND " +
-                        "(term REGEXP ? OR abbreviated_term REGEXP ?)",
-                        e.id,
-                        "0*" + row[current_column_index],
-                        "0*" + row[current_column_index] ])
-                  end
-                  if(naming_term.nil?)
-                    if(scheme_generation_allowed)
-                      naming_term = NamingTerm.create!(
-                        :naming_element_id => e.id,
-                        :term => row[current_column_index],
-                        :abbreviated_term => row[current_column_index],
-                        :term_order => 0
-                      )
-                    else
-                      return "Naming term #{row[current_column_index]} doesn't " +
-                        "exist for #{e.name} for row #{row_number}"
-                    end
-                  end
-                  sample_term = SampleTerm.new(
-                    :sample_id => sample.id,
-                    :naming_term_id => naming_term.id
-                  )
-                  if(!sample_term.save)
-                    return "Unable to create #{e.name} for row #{row_number}"
-                  end
-                end
-              end
-              current_column_index += 1
-            end
-            sample.update_attributes(:naming_scheme_id => naming_scheme.id)
-          end
-        end      
-        row_number += 1
-      end
-    end
-
-    return ""
-  end
+#  def self.from_csv(csv_file_name, scheme_generation_allowed = false)
+#
+#    row_number = 0
+#    header_row = nil
+#
+#    transaction do
+#      CSV.open(csv_file_name, 'r') do |row|
+#        # grab the header row or process sample rows
+#        if(row_number == 0)
+#          header_row = row
+#        else
+#          begin
+#            sample = Sample.find(row[1].to_i)
+#            sample_set = sample.microarray.chip.sample_set
+#          rescue
+#            sample_set = SampleSet.new
+#            sample = Sample.new(:microarray => Microarray.new(:chip => Chip.new(:sample_set => sample_set)))
+#          end
+#        
+#          # check to see if this sample should have a naming scheme
+#          if(row[13] == "None")
+#            ###########################################
+#            # non-naming schemed sample
+#            ###########################################
+#          
+#            # there should be 13 cells in each row
+#            if(row.size != 14)
+#              return "Wrong number of columns in row #{row_number}. Expected 14"
+#            end
+#
+#            if( !sample.new_record? )
+#              sample.destroy_existing_naming_scheme_info
+#            end
+#          
+#            errors = sample.update_unschemed_columns(row)
+#            if(errors != "")
+#              return errors + " in row #{row_number} of non-naming schemed samples"
+#            end
+#          else
+#            ###########################################
+#            # naming schemed samples
+#            ###########################################
+#
+#            naming_scheme = NamingScheme.find(:first, 
+#              :conditions => {:name => row[13]})
+#            # make sure this sample has a naming scheme
+#            if(naming_scheme.nil?)
+#              if(scheme_generation_allowed)
+#                naming_scheme = NamingScheme.create(:name => row[13])
+#              else
+#                return "Naming scheme #{row[13]} doesn't exist in row #{row_number}"
+#              end
+#            end
+#
+#            naming_elements =
+#              naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
+#
+#            expected_columns = 14 + naming_elements.size
+#            if(row.size > expected_columns)
+#              # create new naming elements if that's allowed
+#              # otherwise return an error message
+#              if(scheme_generation_allowed)
+#                if(naming_elements.size > 0)
+#                  current_element_order = naming_elements[-1].element_order + 1
+#                else
+#                  current_element_order = 1
+#                end
+#                (14..header_row.size-1).each do |i|
+#                  NamingElement.create(
+#                    :name => header_row[i],
+#                    :element_order => current_element_order,
+#                    :group_element => true,
+#                    :optional => true,
+#                    :naming_scheme_id => naming_scheme.id,
+#                    :free_text => false,
+#                    :include_in_sample_description => true,
+#                    :dependent_element_id => 0)
+#                  current_element_order += 1
+#                end
+#                
+#                # re-populate naming elements array
+#                naming_elements =
+#                  naming_scheme.naming_elements.find(:all, :order => "element_order ASC")
+#              else
+#                return "Wrong number of columns in row #{row_number}. " +
+#                  "Expected #{expected_columns}"
+#              end
+#            end
+#
+#            if( !sample.new_record? )
+#              sample.destroy_existing_naming_scheme_info
+#            end
+#          
+#            # update the sample attributes
+#            errors = sample.update_unschemed_columns(row)
+#            if(errors != "")
+#              return errors + " in row #{row_number}"
+#            end
+#
+#            # create the new naming scheme records
+#            current_column_index = 14
+#            naming_elements.each do |e|
+#              # do nothing if there's nothing in the cell
+#              if(row[current_column_index] != nil)
+#                if(e.free_text == true)
+#                  sample_text = SampleText.new(
+#                    :sample_id => sample.id,
+#                    :naming_element_id => e.id,
+#                    :text => row[current_column_index]
+#                  )
+#                  if(!sample_text.save)
+#                    return "Unable to create #{e.name} for row #{row_number}"
+#                  end
+#                else
+#                  naming_term = NamingTerm.find(:first, 
+#                    :conditions => ["naming_element_id = ? AND " +
+#                      "(term = ? OR abbreviated_term = ?)",
+#                      e.id,
+#                      row[current_column_index],
+#                      row[current_column_index] ])
+#                  # if naming term wasn't found,
+#                  # match leading 0's if there are any
+#                  if(naming_term.nil?)
+#                    naming_term = NamingTerm.find(:first, 
+#                      :conditions => ["naming_element_id = ? AND " +
+#                        "(term REGEXP ? OR abbreviated_term REGEXP ?)",
+#                        e.id,
+#                        "0*" + row[current_column_index],
+#                        "0*" + row[current_column_index] ])
+#                  end
+#                  if(naming_term.nil?)
+#                    if(scheme_generation_allowed)
+#                      naming_term = NamingTerm.create!(
+#                        :naming_element_id => e.id,
+#                        :term => row[current_column_index],
+#                        :abbreviated_term => row[current_column_index],
+#                        :term_order => 0
+#                      )
+#                    else
+#                      return "Naming term #{row[current_column_index]} doesn't " +
+#                        "exist for #{e.name} for row #{row_number}"
+#                    end
+#                  end
+#                  sample_term = SampleTerm.new(
+#                    :sample_id => sample.id,
+#                    :naming_term_id => naming_term.id
+#                  )
+#                  if(!sample_term.save)
+#                    return "Unable to create #{e.name} for row #{row_number}"
+#                  end
+#                end
+#              end
+#              current_column_index += 1
+#            end
+#            sample_set.update_attributes(:naming_scheme_id => naming_scheme.id)
+#          end
+#        end      
+#        row_number += 1
+#      end
+#    end
+#
+#    return ""
+#  end
 
   def destroy_existing_naming_scheme_info
     SampleText.find(:all, 
@@ -470,47 +480,42 @@ class Sample < ActiveRecord::Base
       return "Project doesn't exist"
     end
 
-    unless(update_attributes(
-          :submission_date => row[2],
+    chip = microarray.chip
+    sample_set = chip.sample_set
+
+    unless(
+        update_attributes(
           :short_sample_name => row[3],
           :sample_name => row[4],
           :sample_group_name => row[5],
+          :organism_id => organism.id
+        ) &&
+        sample_set.update_attributes(
+          :submission_date => row[2],
           :chip_type_id => chip_type.id,
-          :organism_id => organism.id,
-          :sbeams_user => row[11],
+          :submitted_by => row[11],
           :project_id => project.id
-        ))
+        )
+      )
 
       return "Problem updating values for sample id=#{id}: #{errors.full_messages}"
     end
 
-    if(hybridization)
-      hybridization.update_attributes(:raw_data_path => row[0])
+    if(raw_data_path)
+      microarray.update_attributes(:raw_data_path => row[0])
     elsif(row[0] && row[7] && row[9])
       chip_name = row[7]
       chip_number = row[8]
 
-      chip = Chip.find_or_create_by_name(chip_name)
-      microarray = Microarray.create!(:chip_id => chip.id, :array_number => row[9])
-
-      hybridization = Hybridization.create!(
-        :hybridization_date => row[2],
-        :chip_number => chip_number,
-        :raw_data_path => row[0],
-        :microarray_id => microarray.id,
-        :samples => [self]
-      )
+      chip.update_attributes(:name => chip_name)
+      microarray.update_attributes(:array_number => row[9])
     end
     
     return ""
   end
   
   def raw_data_path
-    if(hybridization.nil?)
-      return nil
-    else
-      return hybridization.raw_data_path
-    end
+    microarray.raw_data_path
   end
   
   def file_root
@@ -602,10 +607,14 @@ class Sample < ActiveRecord::Base
     value = Array.new
     case category
     when "project"
-      samples.group_by(&:project).each do |project, sub_samples|
+      Project.find(:all).each do |project|
+        project_samples = project.samples
+        sub_samples = samples & project_samples
+
         next if sub_samples.size == 0
 
         sub_prefix = combine_search(search_prefix, "project_id=#{project.id}")
+
         value << branch_hash(project.name, sub_samples, sub_prefix, categories)
       end
     when "submission_date"
@@ -658,20 +667,6 @@ class Sample < ActiveRecord::Base
           value << branch_hash(naming_scheme.name, sub_samples, sub_prefix, categories)
         end
       end
-    when "flow_cell"
-      FlowCell.find(:all).each do |flow_cell|
-        flow_cell_samples = Array.new
-        flow_cell.flow_cell_lanes.each do |lane|
-          flow_cell_samples.concat(lane.samples)
-        end
-        sub_samples = samples & flow_cell_samples
-
-        next if sub_samples.size == 0
-
-        sub_prefix = combine_search(search_prefix, "flow_cell_id=#{flow_cell.id}")
-
-        value << branch_hash(flow_cell.name, sub_samples, sub_prefix, categories)
-      end
     when "lab_group"
       LabGroup.find(:all).each do |lab_group|
         lab_group_samples = Array.new
@@ -708,11 +703,11 @@ class Sample < ActiveRecord::Base
 
   def self.find_by_sanitized_conditions(conditions)
     accepted_keys = {
-      'project_id' => 'samples.project_id',
-      'submission_date' => 'samples.submission_date',
-      'chip_type_id' => 'samples.chip_type_id',
+      'project_id' => 'sample_sets.project_id',
+      'submission_date' => 'sample_sets.submission_date',
+      'chip_type_id' => 'sample_sets.chip_type_id',
       'organism_id' => 'chip_types.organism_id',
-      'naming_scheme_id' => 'naming_scheme_id',
+      'naming_scheme_id' => 'sample_sets.naming_scheme_id',
       'naming_term_id' => 'sample_terms.naming_term_id',
       'lab_group_id' => 'projects.lab_group_id',
     }
@@ -732,7 +727,7 @@ class Sample < ActiveRecord::Base
     sanitized_conditions.each do |condition|
       search_samples = Sample.find(
         :all,
-        :include => [:sample_terms, :chip_type, :project],
+        :include => [:sample_terms, {:microarray => {:chip => {:sample_set => [:chip_type, :project]}}}],
         :conditions => condition
       )
 
@@ -797,6 +792,8 @@ class Sample < ActiveRecord::Base
   end
 
   def terms_for(schemed_params)
+    naming_scheme = microarray.chip.sample_set.naming_scheme
+
     terms = Array.new
     
     count = 1
@@ -824,6 +821,8 @@ class Sample < ActiveRecord::Base
   end
 
   def texts_for(schemed_params)
+    naming_scheme = microarray.chip.sample_set.naming_scheme
+
     texts = Array.new
     
     for element in naming_scheme.ordered_naming_elements
