@@ -110,15 +110,10 @@ module FixtureReplacement
 	end
 
   attributes_for :sample do |s|
-    s.submission_date = Date.today
     s.short_sample_name = String.random(5)
     s.sample_name = String.random(20)
     s.sample_group_name = String.random(15)
-    s.chip_type = default_chip_type
     s.organism = default_organism
-    s.sbeams_user = String.random(8)
-    s.status = "submitted"
-    s.project = default_project
     s.label = default_label
   end
 
@@ -142,6 +137,8 @@ module FixtureReplacement
 
   attributes_for :chip do |c|
     c.name = String.random(10)
+    c.status = "submitted"
+    c.sample_set = default_sample_set
   end
 
   attributes_for :microarray do |m|
@@ -153,7 +150,7 @@ module FixtureReplacement
   end
 
   attributes_for :qc_set do |s|
-    s.hybridization = default_hybridization
+    s.microarray = default_microarray
   end
 
   attributes_for :qc_statistic do |s|
@@ -180,4 +177,10 @@ module FixtureReplacement
     t.other_cost = 10
   end
 
+  attributes_for :sample_set do |s|
+    s.submission_date = Date.today
+    s.chip_type = default_chip_type
+    s.project = default_project
+    s.submitted_by = String.random(8)
+  end
 end
