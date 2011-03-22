@@ -206,21 +206,22 @@ Get detailed information about a single sample.
   end
 
   def grid
-    samples = Sample.find(:all, :include => :project) do
+    samples = Sample.find(:all, :include => {:microarray => {:chip => {:sample_set => :project}}}) do
       if params[:_search] == "true"
-        submission_date   =~ "%#{params[:submission_date]}%" if params[:submission_date].present?                
-        short_sample_name =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
-        sample_name       =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
-        status            =~ "%#{params[:status]}%" if params[:status].present? 
-        sbeams_user       =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
-        project.name      =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+        microarray.chip.sample_set.submission_date   =~ "%#{params[:submission_date]}%" if params[:submission_date].present?                
+        short_sample_name                       =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
+        sample_name                             =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
+        microarray.chip.status                  =~ "%#{params[:status]}%" if params[:status].present? 
+        microarray.chip.sample_set.sbeams_user  =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
+        microarray.chip.sample_set.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
     end
 
     render :json => samples.to_jqgrid_json(
-      [:submission_date, :short_sample_name, :sample_name, :status, :sbeams_user, "project.name"], 
+      ["microarray.chip.sample_set.submission_date", :short_sample_name, :sample_name, "microarray.chip.status",
+       "microarray.chip.sample_set.submitted_by", "microarray.chip.sample_set.project.name"], 
       params[:page], params[:rows], samples.total_entries
     )
   end
