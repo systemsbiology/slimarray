@@ -2,6 +2,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe LabelsController do
 
+  before(:each) do
+    @labels = mock("Label choices")
+  end
+
   def mock_label(stubs={})
     @mock_label ||= mock_model(Label, stubs)
   end
@@ -32,7 +36,8 @@ describe LabelsController do
 
   describe "GET edit" do
     it "assigns the requested label as @label" do
-      Label.stub!(:find).with("37").and_return(mock_label)
+      Label.should_receive(:find).with("37").and_return(mock_label)
+      Label.should_receive(:all).and_return(@labels)
       get :edit, :id => "37"
       assigns[:label].should equal(mock_label)
     end
