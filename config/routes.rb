@@ -55,15 +55,16 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :projects, :collection => {:grid => :get}
   map.resources :samples, :collection => {:browse => :get, :search => :get, :all => :get, :grid => :get, :approve => :get}
   map.resources :sample_sets, :only => [:new, :create, :cancel_new_project], :collection => {:sample_mixture_fields => :get}
-  map.resources :hybridizations, :collection => {:grid => :get}
-  map.resources :hybridization_sets, :collection => {:clear => :get}
   map.resources :labels, :collection => {:grid => :get}
   map.resources :platforms, :collection => {:grid => :get}
   map.resources :raw_data_paths, :only => :create
   map.resources :qc_sets, :only => [:create, :show]
   map.resources :qc_thresholds, :collection => {:grid => :get}
-  map.resources :microarrays, :only => [:index]
+  map.resources :microarrays, :only => [:index, :show]
   map.resources :chips, :only => [:edit, :update]
+
+  map.resources :hybridization_sets
+  map.connect 'hybridization_sets/new', :controller => 'hybridization_sets', :action => 'new'
 
   # The priority is based upon order of creation: first created -> highest priority.
 
