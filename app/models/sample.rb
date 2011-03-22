@@ -588,7 +588,7 @@ class Sample < ActiveRecord::Base
     cutoff_date = age_limit ? Date.today - age_limit.to_i : 0
 
     samples = Sample.find(:all, 
-      :include => 'project',
+      :include => {:microarray => {:chip => {:sample_set => :project}}},
       :conditions => [ "projects.lab_group_id IN (?) AND samples.updated_at > ?",
         user.get_lab_group_ids, cutoff_date ],
       :order => "submission_date DESC, samples.id ASC")
