@@ -5,3 +5,21 @@ array1:
 array2:
   chip: chip2
   array_number: 1
+
+microarray1:
+  chip: chip1
+
+microarray2:
+  chip: chip2
+
+microarray3:
+  chip: chip3
+
+microarray4:
+  chip: chip4
+
+microarray5:
+  chip: chip5
+
+microarray6:
+  chip: chip6
