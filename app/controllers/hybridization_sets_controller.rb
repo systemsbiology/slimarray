@@ -1,13 +1,19 @@
 class HybridizationSetsController < ApplicationController
   before_filter :login_required
-  before_filter :load_dropdown_selections
 
   def new
-    @hybridization_set = HybridizationSet.new
+    @chips = Array.new
 
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @hybridization_set }
+    current_chip_number = 1
+    params["chips"].sort.each do |id, selected|
+      if selected == "1"
+        chip = Chip.find(id)
+        if chip.sample_set.chip_type.platform.uses_chip_numbers
+          chip.update_attributes(:chip_number => current_chip_number)
+          current_chip_number += 1
+        end
+        @chips << chip
+      end
     end
   end
 
@@ -24,12 +30,6 @@ class HybridizationSetsController < ApplicationController
         format.xml  { render :xml => @hybridization_set.errors, :status => :unprocessable_entity }
       end
     end
-  end
-
-  private
-
-  def load_dropdown_selections
-    @platforms = Platform.find(:all, :order => "name ASC")
   end
 
 end
