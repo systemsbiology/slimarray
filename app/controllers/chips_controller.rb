@@ -1,4 +1,5 @@
 class ChipsController < ApplicationController
+  before_filter :login_required
 
   # GET /chips/1/edit
   def edit
