@@ -29,7 +29,7 @@ The prerequisites for SLIMarray are:
 SLIMarray is a Ruby on Rails application. Those familiar with setting up Ruby on Rails applications
 may find the following sufficient to get it up and running (with slimcore):
 
-    gem install rails -v=2.2.2
+    gem install rails -v=2.3.11
     git clone git://github.com/bmarzolf/slimarray.git
     cd slimarray
     rake setup authorizer=slimcore
