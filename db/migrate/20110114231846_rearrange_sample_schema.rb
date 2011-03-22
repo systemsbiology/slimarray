@@ -110,6 +110,19 @@ class RearrangeSampleSchema < ActiveRecord::Migration
       set.update_attributes(:submitted_by_id => user.id) if user
     end
 
+    puts "-- migrating QC sets"
+    add_column :qc_sets, :microarray_id, :integer
+    QcSet.reset_column_information
+    QcSet.find(:all).each do |set|
+      hybridization = Hybridization.find_by_id(set.hybridization_id)
+      if(hybridization)
+        microarray = Microarray.find(hybridization.microarray_id)
+        set.update_attributes(:microarray_id => microarray.id)
+      end
+    end
+    remove_column :qc_sets, :hybridization_id
+    
+    puts "-- migrating hybridizations"
     add_column :chips, :hybridization_date, :date
     add_column :chips, :chip_number, :integer
     add_column :microarrays, :raw_data_path, :string
