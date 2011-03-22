@@ -58,8 +58,8 @@ describe HybridizationSet do
       project = create_project
       chip_type = create_chip_type
       sample_set = create_sample_set(:project => project, :chip_type => chip_type)
-      sample_set.chips << @chip_1
-      sample_set.chips << @chip_2
+      @chip_1.update_attributes(:sample_set => sample_set)
+      @chip_2.update_attributes(:sample_set => sample_set)
 
       do_record
 
@@ -77,9 +77,9 @@ describe HybridizationSet do
       project_2 = create_project
       chip_type = create_chip_type
       sample_set_1 = create_sample_set(:project => project_2, :chip_type => chip_type)
-      sample_set_1.chips << @chip_1
+      @chip_1.update_attributes(:sample_set => sample_set_1)
       sample_set_2 = create_sample_set(:project => project_2, :chip_type => chip_type)
-      sample_set_2.chips << @chip_2
+      @chip_2.update_attributes(:sample_set => sample_set_2)
 
       do_record
 
