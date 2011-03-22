@@ -618,7 +618,11 @@ class Sample < ActiveRecord::Base
         value << branch_hash(project.name, sub_samples, sub_prefix, categories)
       end
     when "submission_date"
-      samples.group_by(&:submission_date).each do |submission_date, sub_samples|
+      SampleSet.all.group_by(&:submission_date).each do |submission_date, sample_sets|
+        submission_date_samples = Sample.find(:all, :include => {:microarray => :chip },
+          :conditions => ["chips.sample_set_id IN (?)", sample_sets.collect{|s| s.id}])
+        sub_samples = samples & submission_date_samples
+
         next if sub_samples.size == 0
 
         sub_prefix = combine_search(search_prefix, "submission_date=#{submission_date}")
@@ -626,7 +630,10 @@ class Sample < ActiveRecord::Base
         value << branch_hash(submission_date, sub_samples, sub_prefix, categories)
       end
     when "chip_type"
-      samples.group_by(&:chip_type).each do |chip_type, sub_samples|
+      ChipType.all.each do |chip_type|
+        chip_type_samples = chip_type.samples
+        sub_samples = samples & chip_type_samples
+
         next if sub_samples.size == 0
 
         sub_prefix = combine_search(search_prefix, "chip_type_id=#{chip_type.id}")
@@ -635,10 +642,7 @@ class Sample < ActiveRecord::Base
       end
     when "organism"
       Organism.find(:all).each do |organism|
-        organism_samples = Array.new
-        organism.chip_types.each do |chip_type|
-          organism_samples.concat(chip_type.samples)
-        end
+        organism_samples = organism.samples
         sub_samples = samples & organism_samples
 
         next if sub_samples.size == 0
@@ -648,7 +652,11 @@ class Sample < ActiveRecord::Base
         value << branch_hash(organism.name, sub_samples, sub_prefix, categories)
       end
     when "status"
-      samples.group_by(&:status).each do |status, sub_samples|
+      ["submitted", "hybridized"].each do |status|
+        status_samples = Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
+          :conditions => ["sample_sets.status = ?", status])
+        sub_samples = samples & status_samples
+
         next if sub_samples.size == 0
 
         sub_prefix = combine_search(search_prefix, "status=#{status}")
@@ -656,7 +664,11 @@ class Sample < ActiveRecord::Base
         value << branch_hash(status, sub_samples, sub_prefix, categories)
       end
     when "naming_scheme"
-      samples.group_by(&:naming_scheme).each do |naming_scheme, sub_samples|
+      NamingScheme.all.each do |naming_scheme|
+        scheme_samples = Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
+          :conditions => ["sample_sets.naming_scheme_id = ?", naming_scheme.id])
+        sub_samples = samples & scheme_samples
+
         next if sub_samples.size == 0
 
         if(naming_scheme.nil?)

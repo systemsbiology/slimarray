@@ -174,4 +174,8 @@ class ChipType < ActiveRecord::Base
     return layout
   end
 
+  def samples
+    Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
+      :conditions => ["sample_sets.chip_type_id = ?", self.id])
+  end
 end
