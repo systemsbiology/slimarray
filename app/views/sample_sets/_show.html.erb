@@ -1,6 +1,10 @@
 <div class="sample_set">
   <%=h sample_set.name %>
   <div class="sample_set_details">
-    <%= render :partial => "chips/show", :collection => sample_set.chips, :as => :chip %>
+    <% sample_set.chips.each do |chip| %>
+      <%= check_box_tag "chip[#{chip.id}]" %> Hybridize <%= link_to 'Edit', edit_chip_url(chip) %>
+
+      <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+    <% end %>
   </div>
 </div>
