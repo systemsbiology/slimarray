@@ -11,8 +11,11 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 <% end %>
 
 <p><%= link_to 'Submit New Samples', new_sample_set_path %></p>
-<p><%= link_to 'Hybridize Samples', new_hybridization_set_path %></p>
 
 <h3>Samples Submitted for Hybridization</h3>
 
-<%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>
+<% form_tag "/hybridization_sets/new" do %>
+  <%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>
+
+  <%= submit_tag "Hybridize" %>
+<% end %>
