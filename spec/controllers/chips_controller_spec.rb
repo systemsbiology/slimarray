@@ -67,4 +67,31 @@ describe ChipsController do
       end
     end
   end
+
+  describe "DELETE 'delete'" do
+    before(:each) do
+      @chip = mock_model(Chip)
+      Chip.stub!(:find).with("24").and_return(@chip)
+      @chip.stub!(:destroy)
+    end
+
+    def do_delete
+      delete 'destroy', :id => "24"
+    end
+
+    it "should find the chip" do
+      Chip.should_receive(:find).with("24").and_return(@chip)
+      do_delete
+    end
+
+    it "should destroy the chip" do
+      @chip.should_receive(:destroy)
+      do_delete
+    end
+
+    it "should redirect to the root url" do
+      do_delete
+      response.should redirect_to(root_url)
+    end
+  end
 end

@@ -2,9 +2,16 @@
   <%=h sample_set.name %>
   <div class="sample_set_details">
     <% sample_set.chips.each do |chip| %>
-      <%= check_box_tag "chip[#{chip.id}]" %> Hybridize <%= link_to 'Edit', edit_chip_url(chip) %>
-
-      <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+      <table>
+        <tr>
+          <td><%= check_box_tag "chip[#{chip.id}]" %></td>
+          <td>
+            <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+          </td>
+          <td><%= link_to 'Edit', edit_chip_url(chip) %></td>
+          <td><%= link_to 'Destroy', chip, :method => :delete %></td>
+        </tr>
+      </table>
     <% end %>
   </div>
 </div>

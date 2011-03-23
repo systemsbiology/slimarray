@@ -38,4 +38,11 @@ class ChipsController < ApplicationController
     end
   end
 
+  def destroy
+    Chip.find(params[:id]).destroy
+    
+    respond_to do |format|
+      format.html { redirect_to(root_url) }
+    end
+  end
 end
