@@ -46,16 +46,15 @@ class HybridizationSet
     transactions = Array.new
     hybs_per_date_group_chip.each do |date, group_hash|
       group_hash.each do |lab_group_id, chip_hash|
-        chip_hash.each do |chip_type_id, hybridization_count|
+        chip_hash.each do |chip_type_id, chip_count|
           chip_type = ChipType.find(chip_type_id)
-          chips_used = hybridization_count / chip_type.arrays_per_chip
 
           transactions << ChipTransaction.create(
             :lab_group_id => lab_group_id,
             :chip_type_id => chip_type_id,
             :date => date,
             :description => 'Hybridized on ' + date.to_s,
-            :used => chips_used
+            :used => chip_count
           )
         end
       end
