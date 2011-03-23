@@ -18,7 +18,11 @@ class SampleSet < ActiveRecord::Base
 
   def self.parse_api(attributes)
     # remove attributes that aren't stored
-    ["next_step"].each{|key| attributes.delete(key)}
+    attributes.delete("next_step")
+
+    # find the user
+    user = User.find_by_login(attributes["submitted_by"])
+    attributes["submitted_by_id"] = user.id if user
 
     sample_set = SampleSet.new(attributes)
     
