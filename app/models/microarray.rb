@@ -262,14 +262,16 @@ class Microarray < ActiveRecord::Base
 
     service_option = chip.sample_set.service_option || ServiceOption.new
 
+    # need to correct for sample number since costs are per sample, not array
+    sample_number = samples.size
     charge = Charge.create(:charge_set_id => charge_set_id,
                            :date => chip.hybridization_date,
                            :description => name,
                            :chips_used => 1,
-                           :chip_cost => service_option.chip_cost,
-                           :labeling_cost => service_option.labeling_cost,
-                           :hybridization_cost => service_option.hybridization_cost,
-                           :qc_cost => service_option.qc_cost,
-                           :other_cost => service_option.other_cost)
+                           :chip_cost => service_option.chip_cost * sample_number,
+                           :labeling_cost => service_option.labeling_cost * sample_number,
+                           :hybridization_cost => service_option.hybridization_cost * sample_number,
+                           :qc_cost => service_option.qc_cost * sample_number,
+                           :other_cost => service_option.other_cost * sample_number)
   end
 end
