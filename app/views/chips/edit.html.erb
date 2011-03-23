@@ -33,7 +33,7 @@
                     <select name="chip[microarrays_attributes][<%= sample[:array] %>][sample_ids][<%= sample[:channel] %>]">
                       <option value="0">- None -</option>
                       <%= options_from_collection_for_select(
-                      @available_samples, :id, :name_with_label, sample[:sample_id]) %>
+                      @available_samples, :id, :short_and_long_name_with_label, sample[:sample_id]) %>
                     </select>
                     <br/>
                   </td>
