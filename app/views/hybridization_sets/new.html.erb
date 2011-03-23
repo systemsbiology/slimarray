@@ -3,6 +3,7 @@
 <% form_tag :hybridization_sets do %>
   <% @chips.each_with_index do |chip, index| %>
     <%= hidden_field_tag "hybridization_set[chips][#{index}][id]", chip.id %>
+    Chip Type <%= chip.sample_set.chip_type.name_and_short_name %><br/>
     Chip Name 
     <%= text_field_tag "hybridization_set[chips][#{index}][name]", chip.name || chip.default_name %>
 
