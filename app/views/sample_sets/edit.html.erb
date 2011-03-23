@@ -1,0 +1,34 @@
+<%= error_messages_for 'sample_set' %>
+
+<h2>Editing Sample Set</h2>
+
+<% form_for @sample_set do |form| -%>
+
+  <p><%= form.label :submission_date %><br/>
+  <%= form.date_select :submission_date %></p>
+
+  <p>Submitted By: <%=h "#{@sample_set.submitted_by} (#{User.find(@sample_set.submitted_by_id).full_name})" %></p>
+  
+  <p><%= form.label :project_id, "Project" %><br>
+  <%= form.collection_select :project_id, @projects, :id, :name %></p>
+
+  <p><%= form.label :chip_type_id, "Chip Type" %><br/>
+  <%= form.collection_select :chip_type_id,
+    @chip_types, :id, :name, {:prompt => true} %><br/>
+    * Contact the facility to add a new chip type</p>
+
+  <p><%= form.label :service_option_id, "Service Option" %><br/>
+  <%= form.collection_select :service_option_id,
+    @sample_set.chip_type.service_options.find(:all, :order => "name ASC"), :id, :name, {:prompt => true} %><br/>
+
+  <% if @naming_schemes.size > 0 %>
+    <p><%= form.label :naming_scheme_id, "Naming Scheme" %><br/>
+    <select id='sample_set_naming_scheme_id' name='sample_set[naming_scheme_id]'>
+      <option value="">- None -</option>
+      <%= options_from_collection_for_select @naming_schemes, "id", "name",
+         @sample_set.naming_scheme_id.to_i %>
+    </select></p>
+  <% end %>
+
+  <p><%= submit_tag 'Update' %></p>
+<% end %>
