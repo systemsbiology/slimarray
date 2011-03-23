@@ -1,17 +1,22 @@
 <div class="sample_set">
-  <%=h sample_set.name %>
-  <div class="sample_set_details">
-    <% sample_set.chips.each do |chip| %>
-      <table>
-        <tr>
-          <td><%= check_box_tag "chip[#{chip.id}]" %></td>
-          <td>
-            <%= render :partial => "chips/show", :locals => {:chip => chip} %>
-          </td>
-          <td><%= link_to 'Edit', edit_chip_url(chip) %></td>
-          <td><%= link_to 'Destroy', chip, :method => :delete %></td>
-        </tr>
-      </table>
-    <% end %>
+  <div class="collapsed" style="display:none">
+    <%= image_tag 'collapsed.png', :class => "collapsed_icon" %> <%=h sample_set.name %>
+  </div>
+  <div class="expanded">
+    <%= image_tag 'expanded.png', :class => "expanded_icon" %> <%=h sample_set.name %>
+    <div class="sample_set_details">
+      <% sample_set.chips.each do |chip| %>
+        <table>
+          <tr>
+            <td><%= check_box_tag "chip[#{chip.id}]" %></td>
+            <td>
+              <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+            </td>
+            <td><%= link_to 'Edit', edit_chip_url(chip) %></td>
+            <td><%= link_to 'Destroy', chip, :method => :delete, :confirm => "Are you sure you want to destroy this chip?" %></td>
+          </tr>
+        </table>
+      <% end %>
+    </div>
   </div>
 </div>

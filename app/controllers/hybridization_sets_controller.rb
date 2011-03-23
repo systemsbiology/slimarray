@@ -5,7 +5,7 @@ class HybridizationSetsController < ApplicationController
     @chips = Array.new
 
     current_chip_number = 1
-    params["chips"].sort.each do |id, selected|
+    params[:chip].sort.each do |id, selected|
       if selected == "1"
         chip = Chip.find(id)
         if chip.sample_set.chip_type.platform.uses_chip_numbers

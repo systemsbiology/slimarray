@@ -17,5 +17,24 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 <% form_tag "/hybridization_sets/new" do %>
   <%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>
 
-  <%= submit_tag "Hybridize" %>
+  <p><%= submit_tag "Hybridize" %></p>
 <% end %>
+
+<script>
+  $(document).ready(function(){
+    $('div.collapsed').show();
+    $('div.expanded').hide();
+
+    $('.expanded_icon').click(function(evt) {
+      var div = $(evt.target).parent().parent();
+      div.children('.expanded').hide();
+      div.children('.collapsed').show();
+    });
+
+    $('.collapsed_icon').click(function(evt) {
+      var div = $(evt.target).parent().parent();
+      div.children('.expanded').show();
+      div.children('.collapsed').hide();
+    });
+  });
+</script>
