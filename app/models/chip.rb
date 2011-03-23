@@ -62,13 +62,12 @@ class Chip < ActiveRecord::Base
       else
         microarray = microarrays.first
         microarray_id = microarray && microarray.id
-        sample = microarray && microarray.samples.first
-        sample_id = sample && sample.id
 
         layout = [{
           :title => "Chip/Slide",
           :samples => 
           (1..channels).collect do |channel|
+            sample_id = microarray.samples[channel-1].id
             { :title => "Channel #{channel}", :array => 1, :channel => channel,
               :sample_id => sample_id, :microarray_id => microarray_id }
           end
