@@ -52,6 +52,8 @@
             <% if @service_option.channels > 1 %>
               <% current_label = current_label.match_label %>
             <% end %>
+          <% else %>
+            <%= hidden_field_tag field_prefix + "[label_id]", current_label.id %>
           <% end %>
 
           <td><%= collection_select field_prefix, :organism_id, @organisms,
