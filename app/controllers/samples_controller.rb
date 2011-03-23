@@ -72,7 +72,7 @@ Get detailed information about a single sample.
   def edit
     @sample = Sample.find(params[:id])
      
-    @naming_scheme = @sample.naming_scheme
+    @naming_scheme = @sample.microarray.chip.sample_set.naming_scheme
     if(@naming_scheme != nil)
       @naming_elements = @naming_scheme.ordered_naming_elements
     end
