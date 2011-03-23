@@ -2,68 +2,79 @@
   <% @n = 1 %>
   <% current_label ||= @chip_type.platform.default_label %>
 
-  <% @layout.each do |section| %>
-    <% if section[:title] %>
-      <h3><%=h section[:title] %><h3/>
+  <% @layout.each do |chip| %>
+    <h3><%=h chip[:title] %></h3>
+
+    <% if @already_hybridized %>
+      <% field_prefix = "sample_set[chips_attributes][#{chip[:slide]}]" %>
+      <p>Name <%= text_field field_prefix, :name %></p>
+      <%= hidden_field_tag field_prefix + "[hybridization_date]", Date.today %>
+      <%= hidden_field_tag field_prefix + "[status]", "hybridized" %>
     <% end %>
 
-    <table id="table" class="nonsortable" cellpadding="0" cellspacing="0" border="0">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name on the sample tube</th>
-          <% if @naming_scheme %>
-            <% for element in @naming_elements %>
-              <th><%=h element.name %></th>
-            <% end %>
-          <% else %>
-            <th>Sample Description</th>
-            <th>Sample Group (optional)</th>
-          <% end %>
-          <% if @chip_type.platform.multiple_labels %>
-            <th>Label</th>
-          <% end %>
-          <th>Organism</th>
-          <th>Chip Type</th>
-        </tr>
-      </thead>
-      <% section[:samples].each do |sample_info| %>
-        <% field_prefix = "sample_set[chips_attributes][#{sample_info[:slide]}][microarrays_attributes][#{sample_info[:array]}][samples_attributes][#{sample_info[:channel]}]" %>
-
-        <tr>
-          <td>
-            <%= sample_info[:title] %>
-            <%= hidden_field_tag "sample_set[chips_attributes][#{sample_info[:slide]}][microarrays_attributes][#{sample_info[:array]}][array_number]", sample_info[:array] %>
-          </td>
-          <td><%= text_field field_prefix, :short_sample_name, :size => 10, :class => "required" %></td>
-          <% if @naming_scheme == nil %>
-            <td><%= text_field field_prefix, :sample_name, :size => 30, :class => "required sample_description" %></td>
-            <td><%= text_field field_prefix, :sample_group_name, :size => 30 %></td>
-          <% else %>
-            <% @sample = Sample.new(:naming_scheme_id => @naming_scheme.id) %>
-            <%= render :partial => 'samples/schemed_sample_description', :locals => { 
-              :field_prefix => field_prefix } %>
-          <% end %>
-          
-          <% if @chip_type.platform.multiple_labels %>
-            <td><%= collection_select field_prefix, :label_id, @labels,
-              :id, :name, {:prompt => true, :selected => current_label.id} %></td>
-
-            <% if @service_option.channels > 1 %>
-              <% current_label = current_label.match_label %>
-            <% end %>
-          <% else %>
-            <%= hidden_field_tag field_prefix + "[label_id]", current_label.id %>
-          <% end %>
-
-          <td><%= collection_select field_prefix, :organism_id, @organisms,
-            :id, :name, {:prompt => true, :selected => @chip_type.organism_id} %></td>
-          
-          <td><%=h @chip_type.name %></td>
-        </tr>
-        <% @n += 1 %>
+    <% chip[:layout].each do |section| %>
+      <% if section[:title] %>
+        <h3><%=h section[:title] %><h3/>
       <% end %>
-    </table>
+
+      <table id="table" class="nonsortable" cellpadding="0" cellspacing="0" border="0">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name on the sample tube</th>
+            <% if @naming_scheme %>
+              <% for element in @naming_elements %>
+                <th><%=h element.name %></th>
+              <% end %>
+            <% else %>
+              <th>Sample Description</th>
+              <th>Sample Group (optional)</th>
+            <% end %>
+            <% if @chip_type.platform.multiple_labels %>
+              <th>Label</th>
+            <% end %>
+            <th>Organism</th>
+            <th>Chip Type</th>
+          </tr>
+        </thead>
+        <% section[:samples].each do |sample_info| %>
+          <% field_prefix = "sample_set[chips_attributes][#{sample_info[:slide]}][microarrays_attributes][#{sample_info[:array]}][samples_attributes][#{sample_info[:channel]}]" %>
+
+          <tr>
+            <td>
+              <%= sample_info[:title] %>
+              <%= hidden_field_tag "sample_set[chips_attributes][#{sample_info[:slide]}][microarrays_attributes][#{sample_info[:array]}][array_number]", sample_info[:array] %>
+            </td>
+            <td><%= text_field field_prefix, :short_sample_name, :size => 10, :class => "required" %></td>
+            <% if @naming_scheme == nil %>
+              <td><%= text_field field_prefix, :sample_name, :size => 30, :class => "required sample_description" %></td>
+              <td><%= text_field field_prefix, :sample_group_name, :size => 30 %></td>
+            <% else %>
+              <% @sample = Sample.new(:naming_scheme_id => @naming_scheme.id) %>
+              <%= render :partial => 'samples/schemed_sample_description', :locals => { 
+                :field_prefix => field_prefix } %>
+            <% end %>
+            
+            <% if @chip_type.platform.multiple_labels %>
+              <td><%= collection_select field_prefix, :label_id, @labels,
+                :id, :name, {:prompt => true, :selected => current_label.id} %></td>
+
+              <% if @service_option.channels > 1 %>
+                <% current_label = current_label.match_label %>
+              <% end %>
+            <% else %>
+              <%= hidden_field_tag field_prefix + "[label_id]", current_label.id %>
+            <% end %>
+
+            <td><%= collection_select field_prefix, :organism_id, @organisms,
+              :id, :name, {:prompt => true, :selected => @chip_type.organism_id} %></td>
+            
+            <td><%=h @chip_type.name %></td>
+          </tr>
+          <% @n += 1 %>
+        <% end %>
+      </table>
+    <% end %>
   <% end %>
 
 </div>

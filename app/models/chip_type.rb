@@ -98,8 +98,9 @@ class ChipType < ActiveRecord::Base
       # 1 array/slide, 1 channel
       if channels == 1
         layout = [{
+          :slide => s,
           :samples => (1..samples).collect do |s|
-            { :title => "Slide/Chip #{s}", :slide => s, :array => 1, :channel => 1 }
+            { :title => "Slide/Chip #{s}", :layout => [{:slide => s, :array => 1, :channel => 1 }]}
           end
         }]
       # 1 array/slide, multiple (usually 2) channels
@@ -112,9 +113,12 @@ class ChipType < ActiveRecord::Base
 
           layout << {
             :title => "Slide/Chip #{slide}",
-            :samples => (1..current_channels).collect do |channel|
-              { :title => "Channel #{channel}", :slide => slide, :array => 1, :channel => channel }
-            end
+            :slide => s,
+            :layout => [{
+              :samples => (1..current_channels).collect do |channel|
+                { :title => "Channel #{channel}", :slide => slide, :array => 1, :channel => channel }
+              end
+            }]
           }
 
           samples -= channels
@@ -132,9 +136,12 @@ class ChipType < ActiveRecord::Base
 
           layout << {
             :title => "Slide/Chip #{slide}",
-            :samples => (1..current_arrays).collect do |array|
-              { :title => "Array #{array}", :slide => slide, :array => array, :channel => 1 }
-            end
+            :slide => s,
+            :layout => [{
+              :samples => (1..current_arrays).collect do |array|
+                { :title => "Array #{array}", :slide => slide, :array => array, :channel => 1 }
+              end
+            }]
           }
 
           samples -= arrays_per_chip
@@ -150,12 +157,13 @@ class ChipType < ActiveRecord::Base
           # handle cases where there aren't enough arrays to fill a slide
           current_arrays = [samples.to_f/channels.ceil, arrays_per_chip].min
 
+          chip_layout = Array.new
           while current_arrays > 0
             # handle cases where there aren't enough samples to fill all channels on the array
             current_channels = [samples, channels].min
 
-            layout << {
-              :title => "Slide/Chip #{slide}, Array #{array}",
+            chip_layout << {
+              :title => "Array #{array}",
               :samples => (1..current_channels).collect do |channel|
                 { :title => "Channel #{channel}", :slide => slide, :array => array, :channel => channel }
               end
@@ -165,6 +173,8 @@ class ChipType < ActiveRecord::Base
             current_arrays -= 1
             array += 1
           end
+          
+          layout << {:title => "Slide/Chip #{slide}", :slide => slide, :layout => chip_layout}
 
           slide += 1
         end

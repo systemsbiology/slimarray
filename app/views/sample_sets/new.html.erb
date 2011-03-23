@@ -37,6 +37,9 @@
 
         <%= render :partial => 'projects' %>
 
+        <p><%= check_box :sample_set, :already_hybridized %>
+        <%= label :sample_set, :already_hybridized, "Already Hybridized?" %><p>
+
         <%= hidden_field :sample_set, :next_step, :value => "samples", :class => "link" %>
       </div>
       <div id="samples" class="step submit_step">

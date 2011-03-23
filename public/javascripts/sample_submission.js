@@ -49,6 +49,7 @@ $(document).ready(function() {
     number_of_samples = $('#sample_set_number').attr('value');
     service_option_id = $('#sample_set_service_option_id').attr('value');
     chip_type_id = $('#sample_set_chip_type_id').attr('value');
+    already_hybridized = $('#sample_set_already_hybridized').attr('value');
 
     params = {};
     if(project_id && project_id !== "") {
@@ -65,6 +66,9 @@ $(document).ready(function() {
     }
     if(chip_type_id && chip_type_id !== "") {
       params.chip_type_id = chip_type_id;
+    }
+    if(already_hybridized && already_hybridized !== "") {
+      params.already_hybridized = already_hybridized;
     }
 
     $.ajax({ // add a remote ajax call when moving next from the second step

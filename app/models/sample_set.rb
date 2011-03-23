@@ -12,7 +12,7 @@ class SampleSet < ActiveRecord::Base
 
   after_create :check_chip_inventory, :send_facility_notification, :send_approval_request
 
-  attr_accessor :number
+  attr_accessor :number, :already_hybridized
 
   #validate :at_least_one_sample
 

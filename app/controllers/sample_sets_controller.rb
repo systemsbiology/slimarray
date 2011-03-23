@@ -50,6 +50,7 @@ class SampleSetsController < ApplicationController
     @naming_scheme = NamingScheme.find(params[:sample_set][:naming_scheme_id]) if params[:sample_set][:naming_scheme_id]
     @naming_elements = @naming_scheme.naming_elements.find(:all, :order => "element_order ASC") if @naming_scheme
     @number_of_samples = params[:sample_set][:number_of_samples].to_i
+    @already_hybridized = params[:sample_set][:already_hybridized] == "1"
     @project = Project.find(params[:sample_set][:project_id])
     @service_option = ServiceOption.find(params[:sample_set][:service_option_id])
     @chip_type = ChipType.find(params[:sample_set][:chip_type_id])
