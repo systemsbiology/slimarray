@@ -1,7 +1,9 @@
 <table class="simple">
   <tr>
     <th>Array</th>
-    <th>Sample</th>
+    <% (1..chip.sample_set.service_option.channels).each do |channel| %>
+      <th>Sample <%= channel %></th>
+    <% end %>
   </tr>
   <%= render :partial => "microarrays/show", :collection => chip.microarrays, :as => :microarray %>
 </table>

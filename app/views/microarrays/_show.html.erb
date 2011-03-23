@@ -1,4 +1,6 @@
 <tr>
   <td><%= microarray.array_number %></td>
-  <td><%= microarray.name %></td>
+  <% microarray.samples.each do |sample| %>
+    <td><%= sample.short_and_long_name_with_label %></td>
+  <% end %>
 </tr>
