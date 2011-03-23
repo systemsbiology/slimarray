@@ -81,7 +81,7 @@ class RearrangeSampleSchema < ActiveRecord::Migration
       microarray = Microarray.find(sample.microarray_id)
 
       chip = Chip.find(microarray.chip_id)
-      chip.update_attributes(:status => sample.status)
+      chip.update_attribute('status', sample.status)
 
       sample_set = SampleSet.find(chip.sample_set_id)
       sample_set.update_attributes(

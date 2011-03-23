@@ -23,7 +23,7 @@ class Chip < ActiveRecord::Base
     
     if hybridized == "1"
       attributes["status"] = "hybridized"
-    else
+    elsif hybridized == "0"
       attributes["status"] = "submitted"
       attributes.delete("hybridization_date")
     end
