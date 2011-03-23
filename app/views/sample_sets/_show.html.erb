@@ -1,9 +1,11 @@
 <div class="sample_set">
   <div class="collapsed" style="display:none">
     <%= image_tag 'collapsed.png', :class => "collapsed_icon" %> <%=h sample_set.name %>
+      <%= link_to 'Edit', edit_sample_set_path(sample_set) %>
   </div>
   <div class="expanded">
     <%= image_tag 'expanded.png', :class => "expanded_icon" %> <%=h sample_set.name %>
+      <%= link_to 'Edit', edit_sample_set_path(sample_set) %>
     <div class="sample_set_details">
       <% sample_set.chips.each do |chip| %>
         <table>

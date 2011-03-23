@@ -17,6 +17,31 @@ class SampleSetsController < ApplicationController
     end
   end
 
+  def edit
+    @sample_set = SampleSet.find(params[:id])
+  end
+
+  def update
+    @sample_set = SampleSet.find(params[:id])
+    
+    begin
+      respond_to do |format|
+        if @sample_set.update_attributes(params[:sample_set])
+          flash[:notice] = 'Sample set was successfully updated.'
+          format.html { redirect_to(root_url) }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @sample_set.errors, :status => :unprocessable_entity }
+          format.json  { render :json => @sample_set.errors, :status => :unprocessable_entity }
+        end
+      end
+    rescue ActiveRecord::StaleObjectError
+      flash[:warning] = "Unable to update information. Another user has modified this sample set."
+      @sample_set = SampleSet.find(params[:id])
+      render :action => 'edit'
+    end
+  end
+
   def cancel_new_project
     render :partial => 'projects'
   end
