@@ -27,6 +27,7 @@
                   <td>
                     <%= sample[:title] %>
                     <%= hidden_field_tag "chip[microarrays_attributes][#{sample[:array]}][id]", sample[:microarray_id] %>
+                    <%= hidden_field_tag "chip[microarrays_attributes][#{sample[:array]}][array_number]", sample[:array] %>
                   </td>
                   <td>
                     <select name="chip[microarrays_attributes][<%= sample[:array] %>][sample_ids][<%= sample[:channel] %>]">
