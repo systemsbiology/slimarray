@@ -49,7 +49,7 @@ $(document).ready(function() {
     number_of_samples = $('#sample_set_number').attr('value');
     service_option_id = $('#sample_set_service_option_id').attr('value');
     chip_type_id = $('#sample_set_chip_type_id').attr('value');
-    already_hybridized = $('#sample_set_already_hybridized').attr('value');
+    already_hybridized = $('#sample_set_already_hybridized').attr('checked');
 
     params = {};
     if(project_id && project_id !== "") {
