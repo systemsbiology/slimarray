@@ -17,7 +17,7 @@
         <%= text_field :sample_set, :number, :size => 4, :class => "required" %></p>
 
         <p><%= label :sample_set, :chip_type_id, 'Chip Type' %><br/>
-        <%= collection_select :sample_set, :chip_type_id, @chip_types, :id, :name,
+        <%= collection_select :sample_set, :chip_type_id, @chip_types, :id, :platform_and_name,
           {:prompt => true}, :class => "required" %><br/>
           * Contact the facility to add a new chip type</p>
 

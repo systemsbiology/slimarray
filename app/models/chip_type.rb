@@ -36,7 +36,7 @@ class ChipType < ActiveRecord::Base
   end
 
   def platform_and_name
-    "#{name} (#{platform && platform.name})"
+    "#{platform && platform.name} #{name}"
   end
 
   def name_and_short_name
@@ -113,7 +113,7 @@ class ChipType < ActiveRecord::Base
 
           layout << {
             :title => "Slide/Chip #{slide}",
-            :slide => s,
+            :slide => slide,
             :layout => [{
               :samples => (1..current_channels).collect do |channel|
                 { :title => "Channel #{channel}", :slide => slide, :array => 1, :channel => channel }
@@ -136,7 +136,7 @@ class ChipType < ActiveRecord::Base
 
           layout << {
             :title => "Slide/Chip #{slide}",
-            :slide => s,
+            :slide => slide,
             :layout => [{
               :samples => (1..current_arrays).collect do |array|
                 { :title => "Array #{array}", :slide => slide, :array => array, :channel => 1 }

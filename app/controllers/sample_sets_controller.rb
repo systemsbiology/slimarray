@@ -68,7 +68,7 @@ private
   def load_dropdown_selections
     @projects = Project.accessible_to_user(current_user, true)
     @naming_schemes = NamingScheme.find(:all, :order => "name ASC")
-    @chip_types = ChipType.find(:all, :order => "name ASC")
+    @chip_types = ChipType.find(:all, :include => :platform, :order => "platforms.name ASC, chip_types.name ASC")
     @organisms = Organism.find(:all, :order => "name ASC")
     @labels = Label.find(:all, :order => "name ASC")
     @service_options = []

@@ -58,7 +58,7 @@ class SampleSet < ActiveRecord::Base
   end
 
   def name
-    "#{user && user.full_name || submitted_by} - #{chip_type.name} (#{chips.size} Chips/Slides)"
+    "#{user && user.full_name || submitted_by} - #{chip_type.platform_and_name} (#{chips.size} Chips/Slides)"
   end
 
   def user
