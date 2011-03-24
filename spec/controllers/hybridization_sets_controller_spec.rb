@@ -12,7 +12,7 @@ describe HybridizationSetsController do
     end
 
     def do_post
-      post 'new', :chips => {"123" => "1", "546" => "0"}
+      post 'new', :chip => {"123" => "1", "546" => "0"}
     end
 
     it "find the selected chips" do

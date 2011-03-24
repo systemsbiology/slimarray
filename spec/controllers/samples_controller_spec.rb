@@ -149,7 +149,13 @@ describe SamplesController do
       login_as_user
       mock_user_methods
 
-      @sample = mock_sample
+      @naming_scheme = mock_model(NamingScheme)
+      @naming_elements = [mock_model(NamingElement), mock_model(NamingElement)]
+      @naming_scheme.stub!(:ordered_naming_elements).and_return(@naming_elements)
+      @sample_set = mock_model(SampleSet)
+      @sample_set.stub!(:naming_scheme).and_return(@naming_scheme)
+      @sample = mock_sample(
+        :microarray => mock_model(Microarray, :chip => mock_model(Chip, :sample_set => @sample_set)))
       @sample.stub!(:naming_scheme).and_return(nil)     
     end
     
@@ -171,17 +177,14 @@ describe SamplesController do
 
     it "should not populate @naming_elements if the sample has no naming scheme" do
       Sample.should_receive(:find).with("37").and_return(@sample)
-      @sample.stub!(:naming_scheme).and_return(nil)
+      @sample_set.should_receive(:naming_scheme).and_return(nil)
       do_get
       assigns[:naming_elements].should == nil
     end
 
     it "should populate @naming_elements if the sample has a naming scheme" do
       Sample.should_receive(:find).with("37").and_return(@sample)
-      @naming_scheme = mock_model(NamingScheme)
-      @naming_elements = [mock_model(NamingElement), mock_model(NamingElement)]
       @naming_scheme.should_receive(:ordered_naming_elements).and_return(@naming_elements)
-      @sample.stub!(:naming_scheme).and_return(@naming_scheme)
       do_get
       assigns[:naming_elements].should == @naming_elements
     end    

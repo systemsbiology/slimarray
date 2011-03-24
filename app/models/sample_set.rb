@@ -10,11 +10,10 @@ class SampleSet < ActiveRecord::Base
 
   validates_presence_of :submission_date, :submitted_by, :chip_type_id, :project_id
 
-  after_create :check_chip_inventory, :send_facility_notification, :send_approval_request
+  after_create :check_chip_inventory, :send_facility_notification, :send_approval_request, :record_chip_transactions,
+    :mark_as_hybridized
 
   attr_accessor :number, :already_hybridized
-
-  #validate :at_least_one_sample
 
   def self.parse_api(attributes)
     # remove attributes that aren't stored
@@ -29,6 +28,16 @@ class SampleSet < ActiveRecord::Base
     return sample_set
   end
 
+  def record_chip_transactions
+    if already_hybridized == "1"
+      Chip.record_chip_transactions(chips)
+    end
+  end
+
+  def mark_as_hybridized
+    chips.each{|chip| chip.hybridize!}
+  end
+  
   def error_message
     messages = errors.full_messages
 

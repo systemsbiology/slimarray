@@ -97,12 +97,17 @@ class ChipType < ActiveRecord::Base
     if arrays_per_chip == 1
       # 1 array/slide, 1 channel
       if channels == 1
-        layout = [{
-          :slide => s,
-          :samples => (1..samples).collect do |s|
-            { :title => "Slide/Chip #{s}", :layout => [{:slide => s, :array => 1, :channel => 1 }]}
+        layout = 
+          (1..samples).collect do |s|
+            {:title => "Slide/Chip #{s}",
+              :slide => s,
+              :layout => [{
+                :samples => [
+                  { :slide => s, :array => 1, :channel => 1 }
+                ]
+              }]
+            }
           end
-        }]
       # 1 array/slide, multiple (usually 2) channels
       else
         slide = 1

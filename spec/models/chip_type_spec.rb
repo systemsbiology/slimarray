@@ -68,12 +68,18 @@ describe "ChipType" do
     it "provides a 1D layout when there is 1 array/slide and 1 channel" do
       chip_type = create_chip_type(:arrays_per_chip => 1)
 
-      chip_type.sample_layout(2,1).should == [{
-        :samples => [
-          { :title => "Slide/Chip 1", :slide => 1, :array => 1, :channel => 1 },
-          { :title => "Slide/Chip 2", :slide => 2, :array => 1, :channel => 1 }
-        ]
-      }]
+      chip_type.sample_layout(2,1).should == [
+        { :title => "Slide/Chip 1", :slide => 1, :layout => 
+          [{:samples => 
+            [{:slide => 1, :array => 1, :channel => 1 }]
+          }]
+        },
+        { :title => "Slide/Chip 2", :slide => 2, :layout => 
+          [{:samples => 
+            [{:slide => 2, :array => 1, :channel => 1 }]
+          }]
+        }
+      ]
     end
 
     it "provides a 2D layout when there is 1 array/slide and 2 channels" do
@@ -82,16 +88,22 @@ describe "ChipType" do
       chip_type.sample_layout(3,2).should == [
         {
           :title => "Slide/Chip 1",
-          :samples => [
-            { :title => "Channel 1", :slide => 1, :array => 1, :channel => 1 },
-            { :title => "Channel 2", :slide => 1, :array => 1, :channel => 2 }
-          ]
+          :slide => 1,
+          :layout => [{
+            :samples => [
+              { :title => "Channel 1", :slide => 1, :array => 1, :channel => 1 },
+              { :title => "Channel 2", :slide => 1, :array => 1, :channel => 2 }
+            ]
+          }]
         },
         {
           :title => "Slide/Chip 2",
-          :samples => [
-            { :title => "Channel 1", :slide => 2, :array => 1, :channel => 1 },
-          ]
+          :slide => 2,
+          :layout => [{
+            :samples => [
+              { :title => "Channel 1", :slide => 2, :array => 1, :channel => 1 },
+            ]
+          }]
         }
       ]
     end
@@ -102,16 +114,22 @@ describe "ChipType" do
       chip_type.sample_layout(3,1).should == [
         {
           :title => "Slide/Chip 1",
-          :samples => [
-            { :title => "Array 1", :slide => 1, :array => 1, :channel => 1 },
-            { :title => "Array 2", :slide => 1, :array => 2, :channel => 1 }
-          ]
+          :slide => 1,
+          :layout => [{
+            :samples => [
+              { :title => "Array 1", :slide => 1, :array => 1, :channel => 1 },
+              { :title => "Array 2", :slide => 1, :array => 2, :channel => 1 }
+            ]
+          }]
         },
         {
           :title => "Slide/Chip 2",
-          :samples => [
-            { :title => "Array 1", :slide => 2, :array => 1, :channel => 1 }
-          ]
+          :slide => 2,
+          :layout => [{
+            :samples => [
+              { :title => "Array 1", :slide => 2, :array => 1, :channel => 1 }
+            ]
+          }]
         }
       ]
     end
@@ -121,30 +139,42 @@ describe "ChipType" do
 
       chip_type.sample_layout(7,2).should == [
         {
-          :title => "Slide/Chip 1, Array 1",
-          :samples => [
-            { :title => "Channel 1", :slide => 1, :array => 1, :channel => 1 },
-            { :title => "Channel 2", :slide => 1, :array => 1, :channel => 2 }
+          :title => "Slide/Chip 1",
+          :slide => 1,
+          :layout => [
+            {
+              :title => "Array 1",
+              :samples => [
+                { :title => "Channel 1", :slide => 1, :array => 1, :channel => 1 },
+                { :title => "Channel 2", :slide => 1, :array => 1, :channel => 2 }
+              ]
+            },
+            {
+              :title => "Array 2",
+              :samples => [
+                { :title => "Channel 1", :slide => 1, :array => 2, :channel => 1 },
+                { :title => "Channel 2", :slide => 1, :array => 2, :channel => 2 }
+              ]
+            }
           ]
         },
         {
-          :title => "Slide/Chip 1, Array 2",
-          :samples => [
-            { :title => "Channel 1", :slide => 1, :array => 2, :channel => 1 },
-            { :title => "Channel 2", :slide => 1, :array => 2, :channel => 2 }
-          ]
-        },
-        {
-          :title => "Slide/Chip 2, Array 1",
-          :samples => [
-            { :title => "Channel 1", :slide => 2, :array => 1, :channel => 1 },
-            { :title => "Channel 2", :slide => 2, :array => 1, :channel => 2 }
-          ]
-        },
-        {
-          :title => "Slide/Chip 2, Array 2",
-          :samples => [
-            { :title => "Channel 1", :slide => 2, :array => 2, :channel => 1 },
+          :title => "Slide/Chip 2",
+          :slide => 2,
+          :layout => [
+            {
+              :title => "Array 1",
+              :samples => [
+                { :title => "Channel 1", :slide => 2, :array => 1, :channel => 1 },
+                { :title => "Channel 2", :slide => 2, :array => 1, :channel => 2 }
+              ]
+            },
+            {
+              :title => "Array 2",
+              :samples => [
+                { :title => "Channel 1", :slide => 2, :array => 2, :channel => 1 },
+              ]
+            }
           ]
         }
       ]

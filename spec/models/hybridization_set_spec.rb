@@ -31,7 +31,7 @@ describe HybridizationSet do
           "id" => @chip_2.id, "name" => "5678"
         }
     })
-    hybridization_set.should_receive(:record_chip_transactions)
+    Chip.should_receive(:record_chip_transactions).with([@chip_1, @chip_2])
     hybridization_set.save
 
     @chip_1.reload.attributes.should include("status" => "hybridized", "name" => "1234",

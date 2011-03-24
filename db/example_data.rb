@@ -181,6 +181,7 @@ module FixtureReplacement
     s.submission_date = Date.today
     s.chip_type = default_chip_type
     s.project = default_project
+    s.service_option = default_service_option
     s.submitted_by = String.random(8)
   end
 end
