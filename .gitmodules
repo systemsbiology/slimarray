@@ -1,6 +1,3 @@
-[submodule "vendor/plugins/naming_schemer"]
-	path = vendor/plugins/naming_schemer
-	url = git://github.com/bmarzolf/naming_schemer.git
 [submodule "vendor/plugins/jrails"]
 	path = vendor/plugins/jrails
 	url = git://github.com/aaronchi/jrails.git
