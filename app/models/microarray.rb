@@ -27,7 +27,7 @@ class Microarray < ActiveRecord::Base
 
   api_reader :lab_group
   def lab_group
-    hybridization.samples.first.project.lab_group_id
+    chip.sample_set.project.lab_group_id
   end
 
   api_reader :project
