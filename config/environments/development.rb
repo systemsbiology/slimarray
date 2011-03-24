@@ -22,3 +22,7 @@ require 'ruby-debug'
 # The :test delivery method accumulates sent emails in the
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
+
+# rack-debug
+config.gem 'rack-debug', :lib => 'rack/debug', :source => 'http://gemcutter.org'
+config.middleware.use 'Rack::Debug'
