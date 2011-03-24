@@ -14,3 +14,4 @@ first:
   track_inventory: 1
   administrator_email: admin@example.com
   quality_trace_dropoff: /tmp/
+  charge_instructions: "Pay us"
