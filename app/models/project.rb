@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  has_many :samples
+  has_many :sample_sets
   belongs_to :lab_group
   
   validates_presence_of :name, :budget
