@@ -18,6 +18,7 @@ class RearrangeSampleSchema < ActiveRecord::Migration
 
     puts "-- associate samples with microarrays instead of hybridizations"
     add_column :samples, :microarray_id, :integer
+    add_index :samples, :microarray_id
     Sample.reset_column_information
     Sample.find(:all, :conditions => "hybridization_id IS NOT NULL").each do |sample|
       hybridization = Hybridization.find(sample.hybridization_id)
@@ -36,6 +37,7 @@ class RearrangeSampleSchema < ActiveRecord::Migration
     # Sample sets have chips instead of samples
     puts "-- associate sample sets with chips instead of samples"
     add_column :chips, :sample_set_id, :integer
+    add_index :chips, :sample_set_id
     Chip.reset_column_information
     Sample.find(:all, :conditions => "sample_set_id IS NOT NULL").each do |sample|
       # Don't want to rely on associations here so there are a lot of lookups by id
@@ -56,6 +58,10 @@ class RearrangeSampleSchema < ActiveRecord::Migration
     add_column :sample_sets, :submitted_by_id, :integer
     add_column :chips, :status, :string, :null => false, :default => "submitted"
     add_column :sample_sets, :ready_for_processing, :boolean, :null => false, :default => true
+    add_index :sample_sets, :project_id
+    add_index :sample_sets, :chip_type_id
+    add_index :sample_sets, :naming_scheme_id
+    add_index :sample_sets, :service_option_id
     SampleSet.reset_column_information
     Chip.reset_column_information
 
@@ -112,6 +118,7 @@ class RearrangeSampleSchema < ActiveRecord::Migration
 
     puts "-- migrating QC sets"
     add_column :qc_sets, :microarray_id, :integer
+    add_index :qc_sets, :microarray_id
     QcSet.reset_column_information
     QcSet.find(:all).each do |set|
       hybridization = Hybridization.find_by_id(set.hybridization_id)
@@ -127,6 +134,7 @@ class RearrangeSampleSchema < ActiveRecord::Migration
     add_column :chips, :chip_number, :integer
     add_column :microarrays, :raw_data_path, :string
     add_column :microarrays, :charge_set_id, :integer
+    add_index :microarrays, :charge_set_id
     Chip.reset_column_information
     Microarray.reset_column_information
     Hybridization.find(:all, :include => {:microarray => :chip}).each do |hybridization|

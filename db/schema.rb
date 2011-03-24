@@ -126,6 +126,8 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
     t.integer  "chip_number"
   end
 
+  add_index "chips", ["sample_set_id"], :name => "index_chips_on_sample_set_id"
+
   create_table "engine_schema_info", :id => false, :force => true do |t|
     t.string  "engine_name"
     t.integer "version"
@@ -190,6 +192,7 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
     t.integer  "charge_set_id"
   end
 
+  add_index "microarrays", ["charge_set_id"], :name => "index_microarrays_on_charge_set_id"
   add_index "microarrays", ["chip_id"], :name => "index_microarrays_on_chip_id"
 
   create_table "naming_elements", :force => true do |t|
@@ -290,6 +293,8 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
     t.integer  "microarray_id"
   end
 
+  add_index "qc_sets", ["microarray_id"], :name => "index_qc_sets_on_microarray_id"
+
   create_table "qc_statistics", :force => true do |t|
     t.integer  "qc_set_id"
     t.integer  "qc_metric_id"
@@ -356,6 +361,11 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
     t.boolean  "ready_for_processing", :default => true, :null => false
   end
 
+  add_index "sample_sets", ["chip_type_id"], :name => "index_sample_sets_on_chip_type_id"
+  add_index "sample_sets", ["naming_scheme_id"], :name => "index_sample_sets_on_naming_scheme_id"
+  add_index "sample_sets", ["project_id"], :name => "index_sample_sets_on_project_id"
+  add_index "sample_sets", ["service_option_id"], :name => "index_sample_sets_on_service_option_id"
+
   create_table "sample_terms", :force => true do |t|
     t.integer  "term_order"
     t.integer  "sample_id"
@@ -397,6 +407,7 @@ ActiveRecord::Schema.define(:version => 20110114231846) do
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"
   add_index "samples", ["fragmented_quality_trace_id"], :name => "index_samples_on_fragmented_quality_trace_id"
   add_index "samples", ["label_id"], :name => "index_samples_on_label_id"
+  add_index "samples", ["microarray_id"], :name => "index_samples_on_microarray_id"
   add_index "samples", ["organism_id"], :name => "index_samples_on_organism_id"
   add_index "samples", ["starting_quality_trace_id"], :name => "index_samples_on_starting_quality_trace_id"
 
