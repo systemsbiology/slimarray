@@ -40,6 +40,7 @@ class Microarray < ActiveRecord::Base
     descriptors = Hash.new
 
     sample = samples.first
+    return [] unless sample
 
     sample.sample_terms.find(:all, :order => "term_order ASC").each do |term|
       descriptors[term.naming_term.naming_element.name] = term.naming_term.term
