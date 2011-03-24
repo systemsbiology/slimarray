@@ -35,7 +35,9 @@ class SampleSet < ActiveRecord::Base
   end
 
   def mark_as_hybridized
-    chips.each{|chip| chip.hybridize!}
+    if already_hybridized == "1"
+      chips.each{|chip| chip.hybridize!}
+    end
   end
   
   def error_message
