@@ -65,7 +65,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :chips, :only => [:edit, :update, :destroy]
 
   map.resources :hybridization_sets
-  map.connect 'hybridization_sets/new', :controller => 'hybridization_sets', :action => 'new'
+  map.new_hybridization_set 'hybridization_sets/new', :controller => 'hybridization_sets', :action => 'new', :method => :post
 
   # The priority is based upon order of creation: first created -> highest priority.
 
