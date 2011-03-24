@@ -16,15 +16,14 @@ class WelcomeController < ApplicationController
       redirect_to :action => 'staff'
     end
     
-    # get all possible naming schemes
-    @naming_schemes = NamingScheme.find(:all)
-
     # grab SBEAMS configuration parameter here, rather than
     # grabbing it in the list view for every element displayed
     @using_sbeams = SiteConfig.find(1).using_sbeams?
 
     @lab_groups = current_user.lab_groups
     @chip_types = ChipType.find(:all, :order => "name ASC")
+
+    @sample_sets = SampleSet.accessible_to_user_with_status(current_user, "submitted")
   end
 
   def staff

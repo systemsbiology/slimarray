@@ -14,10 +14,14 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
 
 <h3>Samples Submitted for Hybridization</h3>
 
-<% form_tag new_hybridization_set_path do %>
-  <%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>
+<% if @sample_sets.any? %>
+  <% form_tag new_hybridization_set_path do %>
+    <%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>
 
-  <p><%= submit_tag "Hybridize" %></p>
+    <p><%= submit_tag "Hybridize" %></p>
+  <% end %>
+<% else %>
+  <p>No samples are awaiting hybridization</p>
 <% end %>
 
 <script>

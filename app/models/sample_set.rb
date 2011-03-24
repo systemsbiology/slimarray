@@ -76,6 +76,13 @@ class SampleSet < ActiveRecord::Base
     submitted_by_id && User.find(submitted_by_id)
   end
 
+  def self.accessible_to_user_with_status(user, status)
+    lab_group_ids = user.get_lab_group_ids
+
+    SampleSet.find(:all, :include => [:project, :chips],
+      :conditions => ["projects.lab_group_id IN (?) AND chips.status = ?", lab_group_ids, status])
+  end
+
   private
 
   def sample_specific_attributes

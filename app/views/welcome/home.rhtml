@@ -6,28 +6,16 @@ SLIMarray web site</a> for documentation and additional information.</p>
 
 <%= link_to 'Submit New Samples', new_sample_set_path %>
 
-<% if(SiteConfig.track_hybridizations?) %>
-	<h3>Samples Submitted for Hybridization</h3>
-	
-  <%= jqgrid("Samples", "sample_grid", url_for(:action => "grid"),
-    [
-      { :field => "submission_date", :label => "Date", :width => 80 },
-      { :field => "short_sample_name", :label => "Name On Tube", :width => 130 },
-      { :field => "sample_name", :label => "Sample Description", :width => 300 },
-      { :field => "sbeams_user", :label => "User", :width => 80 },
-      { :field => "projects.name", :label => "Project", :width => 150 },
-      { :field => "service_option.name", :label => "Service Requested", :width => 240 },
-      { :field => "ready_for_processing", :label => "Ready", :width => 80 }
-    ],
-    :height => 550,
-    :sort_column => "submission_date DESC, samples.id ASC",
-    :rows_per_page => 25,
-    :multi_selection => true
-  ) %>
-	
-  <p><%= submit_tag "Edit Selected Sample", :id => "besample" %> 
-    <%= submit_tag "Destroy Selected Sample", :id => "bdsample" %></p>
+<h3>Samples Submitted for Hybridization</h3>
 
+<% if @sample_sets.any? %>
+  <% form_tag new_hybridization_set_path do %>
+    <%= render :partial => "sample_sets/show", :collection => @sample_sets, :as => :sample_set %>
+
+    <p><%= submit_tag "Hybridize" %></p>
+  <% end %>
+<% else %>
+  <p>No samples are awaiting hybridization</p>
 <% end %>
 
 <% if(SiteConfig.track_inventory?) %>
@@ -57,3 +45,21 @@ SLIMarray web site</a> for documentation and additional information.</p>
 	<% end %>
 <% end %>
 
+<script>
+  $(document).ready(function(){
+    $('div.collapsed').show();
+    $('div.expanded').hide();
+
+    $('.expanded_icon').click(function(evt) {
+      var div = $(evt.target).parent().parent();
+      div.children('.expanded').hide();
+      div.children('.collapsed').show();
+    });
+
+    $('.collapsed_icon').click(function(evt) {
+      var div = $(evt.target).parent().parent();
+      div.children('.expanded').show();
+      div.children('.collapsed').hide();
+    });
+  });
+</script>
