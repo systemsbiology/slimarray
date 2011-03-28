@@ -34,7 +34,7 @@ class WelcomeController < ApplicationController
     @lab_groups = LabGroup.find(:all, :order => "name ASC")
     @chip_types = ChipType.find(:all, :order => "name ASC")
 
-    @sample_sets = SampleSet.find(:all, :include => :chips, :conditions => "chips.status = 'submitted'")
+    @sample_sets = SampleSet.find(:all, :include => [:service_option, {:chips => {:microarrays => :samples}}], :conditions => "chips.status = 'submitted'")
   end
 
   def grid

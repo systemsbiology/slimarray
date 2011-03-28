@@ -1,0 +1,28 @@
+== QAR - QActiveResource for Ruby
+
+This is a drop in much faster replacement for ActiveResource's find with much
+of the same functionality, and vastly improved performance.
+
+You can switch on QAR for a specific resource by extending that resource with
+QAR:
+
+  require 'rubygems'
+  require 'active_resource'
+  require 'QAR'
+
+  class Product < ActiveResource::Base
+    extend QAR
+    self.site = 'http://localhost/'
+  end
+
+And then use find as you normally would.  There are a few subtle differences:
+
+- QAR uses its own Response class (QAR::Response) for error handling rather
+  the Ruby standard library classes, but does provide code, headers and body
+  methods, so it should fit most needs
+
+- QAR also provides a :follow_redirects => true option for following redirects
+  automatically (an annoying missing feature in the usual find.
+
+- QAR may not support all features of ActiveResource's find, please report
+  bugs or fork and extend

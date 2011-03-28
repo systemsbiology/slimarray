@@ -1,0 +1,5 @@
+package configuration for /opt/local/lib/pkgconfig/QtNetwork.pc
+cflags: -DQT_SHARED -I/opt/local/include -I/opt/local/include/QtNetwork -I/opt/local/include/QtCore  
+ldflags: -framework SystemConfiguration -framework CoreFoundation -framework ApplicationServices -L/opt/local/lib
+libs: -lQtNetwork -lssl -lcrypto -lQtCore -lz -lm  
+

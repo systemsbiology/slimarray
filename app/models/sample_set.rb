@@ -72,8 +72,14 @@ class SampleSet < ActiveRecord::Base
     "#{user && user.full_name || submitted_by} - #{chip_type.platform_and_name} (#{chips.size} Chips/Slides)"
   end
 
-  def user
-    submitted_by_id && User.find(submitted_by_id)
+  def user(options = {:cached => true})
+    if options[:cached]
+      @@all_users_by_id ||= User.all_by_id
+
+      return submitted_by_id && @@all_users_by_id[submitted_by_id]
+    else
+      return submitted_by_id && User.find(submitted_by_id)
+    end
   end
 
   def self.accessible_to_user_with_status(user, status)
