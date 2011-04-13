@@ -86,7 +86,7 @@ $(document).ready(function(){
 
   $("#besample").click(function(){
     var s; s = jQuery("#sample_grid").getGridParam('selarrrow');
-    if( s != null ) {
+    if( s !== null ) {
       if( s.length == 1) window.location.assign(samples_url + "/" + s + "/edit");
       else alert("Only one record can be edited at a time");
     }
@@ -97,11 +97,12 @@ $(document).ready(function(){
     var s; s = jQuery("#sample_grid").getGridParam('selarrrow');
     if( s == null || s.length == 0 ) alert("Please select a row to destroy");
     else if( s.length == 1 ) {
-      if( confirm("Are you sure you want to delete this sample?") )
+      if( confirm("Are you sure you want to delete this sample?") ) {
         $('<form method="post" action="' + samples_url + "/" + s + '" />')
             .append('<input type="hidden" name="_method" value="delete" />')
             .appendTo('body')
             .submit();
+      }
 
         return false;
     } else {
