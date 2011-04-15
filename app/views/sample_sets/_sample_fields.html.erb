@@ -50,7 +50,6 @@
               <td><%= text_field field_prefix, :sample_name, :size => 30, :class => "required sample_description" %></td>
               <td><%= text_field field_prefix, :sample_group_name, :size => 30 %></td>
             <% else %>
-              <% @sample = Sample.new(:naming_scheme_id => @naming_scheme.id) %>
               <%= render :partial => 'samples/schemed_sample_description', :locals => { 
                 :field_prefix => field_prefix } %>
             <% end %>

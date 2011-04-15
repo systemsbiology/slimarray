@@ -2,9 +2,15 @@ class Chip < ActiveRecord::Base
   belongs_to :sample_set
 
   has_many :microarrays, :dependent => :destroy
-  accepts_nested_attributes_for :microarrays
+  #accepts_nested_attributes_for :microarrays
 
   validate :no_redundant_samples
+
+  def microarrays_attributes=(attributes)
+    attributes.sort.each do |key, microarray_attributes|
+      microarray = microarrays.build(microarray_attributes.merge(:chip => self))
+    end
+  end
 
   def hybridize!
     update_attribute('status', 'hybridized')

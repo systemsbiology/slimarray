@@ -1,6 +1,6 @@
 class SampleSet < ActiveRecord::Base
   has_many :chips
-  accepts_nested_attributes_for :chips
+  #accepts_nested_attributes_for :chips
 
   belongs_to :chip_type
   belongs_to :project
@@ -14,6 +14,12 @@ class SampleSet < ActiveRecord::Base
     :mark_as_hybridized
 
   attr_accessor :number, :already_hybridized
+
+  def chips_attributes=(attributes)
+    attributes.sort.each do |key, chip_attributes|
+      chip = chips.build(chip_attributes.merge(:sample_set => self))
+    end
+  end
 
   def self.parse_api(attributes)
     # remove attributes that aren't stored

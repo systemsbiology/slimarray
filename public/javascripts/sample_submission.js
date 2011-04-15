@@ -35,7 +35,6 @@ $(document).ready(function() {
     if(data.currentStep == "samples") {
       generate_samples_form();
     }
-    console.log("previous step is " + data.previousStep);
     if(data.previousStep == "samples") {
       remove_samples_form();
     }

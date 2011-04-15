@@ -4,9 +4,18 @@ class Microarray < ActiveRecord::Base
   belongs_to :chip
 
   has_many :samples
-  accepts_nested_attributes_for :samples
+  #accepts_nested_attributes_for :samples
 
   has_one :hybridization
+
+  def samples_attributes=(attributes)
+    attributes.sort.each do |key, sample_attributes|
+      schemed_params = sample_attributes.delete(:schemed_name)
+      sample = samples.build(sample_attributes)
+      sample.microarray ||= self
+      sample.schemed_name = schemed_params
+    end
+  end
 
   api_reader :array_number
 

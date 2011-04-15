@@ -30,31 +30,6 @@ class Sample < ActiveRecord::Base
     label ? "#{sample_name} (#{label.name})" : sample_name
   end
 
-  # override new method to handle naming scheme stuff
-  def self.new(attributes=nil)
-    sample = super(attributes)
-
-#    if sample.sample_set
-#      sample.ready_for_processing = !sample.sample_set.needs_approval?
-#    end
-
-    # see if there's a naming scheme
-    begin
-      scheme = NamingScheme.find(sample.naming_scheme_id)
-    rescue
-      return sample
-    end
-    
-    schemed_params = attributes[:schemed_name]
-    if(schemed_params.nil?)
-      # use default selections if none are provided
-      @naming_element_visibility = scheme.default_visibilities
-      @text_values = scheme.default_texts
-    end
-    
-    return sample
-  end
-
   def schemed_name=(attributes)
     naming_scheme = microarray.chip.sample_set.naming_scheme
 
