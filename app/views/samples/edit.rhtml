@@ -21,7 +21,8 @@
           <% end %>
         </tr>
           <tr>
-            <%= render :partial => 'samples/schemed_sample_description' %>
+            <%= render :partial => 'samples/schemed_sample_description', :locals => { 
+                :field_prefix => "sample[0]" } %>
           </tr>
       </table>
     <% else %>
