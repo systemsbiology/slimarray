@@ -179,139 +179,143 @@ describe "Sample" do
     sample_2 = Sample.find( samples(:sample2).id )
     sample_2.short_sample_name.should == "old1"
     sample_2.sample_name.should == "Old1"
-    sample_2.chip_type_id.should == chip_types(:mouse).id
-    sample_2.sbeams_user.should == "robert"
-    sample_2.project_id.should == projects(:another).id
+    sample_2.microarray.array_number.should == 1
+    sample_2.microarray.chip.name == "Chip 1"
+    sample_2.microarray.chip.chip_number == 1
+    sample_set_2 = sample_2.microarray.chip.sample_set
+    sample_set_2.chip_type_id.should == chip_types(:mouse).id
+    sample_set_2.submitted_by.should == "robert"
+    sample_set_2.project_id.should == projects(:another).id
     sample_2.organism.name.should == "Hyena"
   end
   
-#  it "from csv updated schemed samples" do
-#    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_yeast_scheme_samples.csv"
-#    
-#    errors = Sample.from_csv(csv_file)
-#    
-#    errors.should == ""
-#    
-#    # changes to schemed sample
-#    SampleTerm.find(:first, :conditions => {
-#      :sample_id => samples(:sample6).id,
-#      :naming_term_id => naming_terms(:mutant).id } ).should_not == nil
-#    SampleTerm.find(:first, :conditions => {
-#      :sample_id => samples(:sample6).id,
-#      :naming_term_id => naming_terms(:replicateA).id } ).should_not == nil
-#    sample_6_number = SampleText.find(:first, :conditions => {
-#      :sample_id => samples(:sample6).id,
-#      :naming_element_id => naming_elements(:subject_number).id } )
-#    sample_6_number.text.should == "32236"
-#    assert_equal naming_schemes(:yeast_scheme).id,
-#      Sample.find( samples(:sample6) ).naming_scheme.id
-#  end
-#  
-#  it "should load a csv of sample info going from no scheme to scheme" do
-#    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/no_scheme_to_scheme.csv"
-#
-#    errors = Sample.from_csv(csv_file)
-#
-#    errors.should == ""
-#    
-#    # changes to schemed sample
-#    SampleTerm.find(:first, :conditions => {
-#      :sample_id => samples(:sample3).id,
-#      :naming_term_id => naming_terms(:wild_type).id } ).should_not == nil
-#    SampleTerm.find(:first, :conditions => {
-#      :sample_id => samples(:sample3).id,
-#      :naming_term_id => naming_terms(:heat).id } ).should_not == nil
-#    SampleTerm.find(:first, :conditions => {
-#      :sample_id => samples(:sample3).id,
-#      :naming_term_id => naming_terms(:replicateB).id } ).should_not == nil
-#    sample_6_number = SampleText.find(:first, :conditions => {
-#      :sample_id => samples(:sample3).id,
-#      :naming_element_id => naming_elements(:subject_number).id } )
-#    sample_6_number.text.should == "234"
-#    assert_equal naming_schemes(:yeast_scheme).id,
-#      Sample.find( samples(:sample3).id ).naming_scheme_id
-#  end
-#
-#  it "should load a csv of sample info with a new naming scheme" do
-#    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/update_samples_new_scheme.csv"
-#
-#    errors = Sample.from_csv(csv_file, true)
-#
-#    errors.should == ""
-#    
-#    # new naming scheme
-#    scheme = NamingScheme.find(:first, :conditions => {:name => "Badger"})
-#    scheme.should_not == nil
-#    
-#    # naming elements
-#    age_elements = NamingElement.find(:all,
-#      :conditions => { :name => "Age", :element_order => 1, :group_element => true,
-#        :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
-#        :include_in_sample_description => true
-#      }
-#    )
-#    age_elements.size.should == 1
-#    age_element = age_elements[0]
-#    
-#    disposition_elements = NamingElement.find(:all,
-#      :conditions => { :name => "Disposition", :element_order => 2, :group_element => true,
-#        :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
-#        :include_in_sample_description => true
-#      }
-#    )
-#    disposition_elements.size.should == 1
-#    disposition_element = disposition_elements[0]
-#    
-#    # naming terms
-#    age_1_terms = NamingTerm.find(:all,
-#      :conditions => {
-#        :term => "1", :abbreviated_term => "1", :naming_element_id => age_element.id,
-#        :term_order => 0
-#      }
-#    )
-#    age_1_terms.size.should == 1
-#    age_2_terms = NamingTerm.find(:all,
-#      :conditions => {
-#        :term => "2", :abbreviated_term => "2", :naming_element_id => age_element.id,
-#        :term_order => 0
-#      }
-#    )
-#    age_2_terms.size.should == 1
-#    age_3_terms = NamingTerm.find(:all,
-#      :conditions => {
-#        :term => "3", :abbreviated_term => "3", :naming_element_id => age_element.id,
-#        :term_order => 0
-#      }
-#    )
-#    age_3_terms.size.should == 1
-#    age_3_term = age_3_terms[0]
-#
-#    feisty_disposition_terms = NamingTerm.find(:all,
-#      :conditions => {
-#        :term => "Feisty", :abbreviated_term => "Feisty", :naming_element_id => disposition_element.id,
-#        :term_order => 0
-#      }
-#    )
-#    feisty_disposition_terms.size.should == 1
-#    feisty_disposition_term = feisty_disposition_terms[0]
-#    mellow_disposition_terms = NamingTerm.find(:all,
-#      :conditions => {
-#        :term => "Mellow", :abbreviated_term => "Mellow", :naming_element_id => disposition_element.id,
-#        :term_order => 0
-#      }
-#    )
-#    mellow_disposition_terms.size.should == 1
-#
-#    # sample terms and scheme
-#    assert_equal 1, SampleTerm.find(:all, :conditions => {
-#      :sample_id => samples(:sample3).id,
-#      :naming_term_id => age_3_term.id } ).size
-#    assert_equal 1, SampleTerm.find(:all, :conditions => {
-#      :sample_id => samples(:sample3).id,
-#      :naming_term_id => feisty_disposition_term.id } ).size
-#    assert_equal scheme.id,
-#      Sample.find( samples(:sample3).id ).naming_scheme_id
-#  end
+  it "from csv updated schemed samples" do
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_yeast_scheme_samples.csv"
+    
+    errors = Sample.from_csv(csv_file)
+    
+    errors.should == ""
+    
+    # changes to schemed sample
+    SampleTerm.find(:first, :conditions => {
+      :sample_id => samples(:sample6).id,
+      :naming_term_id => naming_terms(:mutant).id } ).should_not == nil
+    SampleTerm.find(:first, :conditions => {
+      :sample_id => samples(:sample6).id,
+      :naming_term_id => naming_terms(:replicateA).id } ).should_not == nil
+    sample_6_number = SampleText.find(:first, :conditions => {
+      :sample_id => samples(:sample6).id,
+      :naming_element_id => naming_elements(:subject_number).id } )
+    sample_6_number.text.should == "32236"
+    assert_equal naming_schemes(:yeast_scheme).id,
+      Sample.find( samples(:sample6) ).microarray.chip.sample_set.naming_scheme_id
+  end
+  
+  it "should load a csv of sample info going from no scheme to scheme" do
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/no_scheme_to_scheme.csv"
+
+    errors = Sample.from_csv(csv_file)
+
+    errors.should == ""
+    
+    # changes to schemed sample
+    SampleTerm.find(:first, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => naming_terms(:wild_type).id } ).should_not == nil
+    SampleTerm.find(:first, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => naming_terms(:heat).id } ).should_not == nil
+    SampleTerm.find(:first, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => naming_terms(:replicateB).id } ).should_not == nil
+    sample_6_number = SampleText.find(:first, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_element_id => naming_elements(:subject_number).id } )
+    sample_6_number.text.should == "234"
+    assert_equal naming_schemes(:yeast_scheme).id,
+      Sample.find( samples(:sample3).id ).microarray.chip.sample_set.naming_scheme_id
+  end
+
+  it "should load a csv of sample info with a new naming scheme" do
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/update_samples_new_scheme.csv"
+
+    errors = Sample.from_csv(csv_file, true)
+
+    errors.should == ""
+    
+    # new naming scheme
+    scheme = NamingScheme.find(:first, :conditions => {:name => "Badger"})
+    scheme.should_not == nil
+    
+    # naming elements
+    age_elements = NamingElement.find(:all,
+      :conditions => { :name => "Age", :element_order => 1, :group_element => true,
+        :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
+        :include_in_sample_description => true
+      }
+    )
+    age_elements.size.should == 1
+    age_element = age_elements[0]
+    
+    disposition_elements = NamingElement.find(:all,
+      :conditions => { :name => "Disposition", :element_order => 2, :group_element => true,
+        :optional => true, :naming_scheme_id => scheme.id, :free_text => false,
+        :include_in_sample_description => true
+      }
+    )
+    disposition_elements.size.should == 1
+    disposition_element = disposition_elements[0]
+    
+    # naming terms
+    age_1_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "1", :abbreviated_term => "1", :naming_element_id => age_element.id,
+        :term_order => 0
+      }
+    )
+    age_1_terms.size.should == 1
+    age_2_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "2", :abbreviated_term => "2", :naming_element_id => age_element.id,
+        :term_order => 0
+      }
+    )
+    age_2_terms.size.should == 1
+    age_3_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "3", :abbreviated_term => "3", :naming_element_id => age_element.id,
+        :term_order => 0
+      }
+    )
+    age_3_terms.size.should == 1
+    age_3_term = age_3_terms[0]
+
+    feisty_disposition_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "Feisty", :abbreviated_term => "Feisty", :naming_element_id => disposition_element.id,
+        :term_order => 0
+      }
+    )
+    feisty_disposition_terms.size.should == 1
+    feisty_disposition_term = feisty_disposition_terms[0]
+    mellow_disposition_terms = NamingTerm.find(:all,
+      :conditions => {
+        :term => "Mellow", :abbreviated_term => "Mellow", :naming_element_id => disposition_element.id,
+        :term_order => 0
+      }
+    )
+    mellow_disposition_terms.size.should == 1
+
+    # sample terms and scheme
+    assert_equal 1, SampleTerm.find(:all, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => age_3_term.id } ).size
+    assert_equal 1, SampleTerm.find(:all, :conditions => {
+      :sample_id => samples(:sample3).id,
+      :naming_term_id => feisty_disposition_term.id } ).size
+    assert_equal scheme.id,
+      Sample.find( samples(:sample3).id ).microarray.chip.sample_set.naming_scheme_id
+  end
   
   def assert_row_equal(expected, row)
     column = 0
@@ -321,53 +325,53 @@ describe "Sample" do
     end
   end
 
-#  it "should load a csv of new unschemed samples with hybridizations" do
-#    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/new_unschemed_samples.csv"
-#  
-#    errors = Sample.from_csv(csv_file)
-#
-#    errors.should == ""
-#    
-#    new_samples = Sample.find(:all, :limit => 2, :order => "id DESC")
-#    sample_2 = new_samples[0]
-#    chip_2 = sample_2.microarray.chip
-#    sample_set_2 = chip_2.sample_set
-#    sample_1 = new_samples[1]
-#    chip_1 = sample_1.microarray.chip
-#    sample_set_1 = chip_1.sample_set
-#
-#    sample_set_1.submission_date.should == Date.parse("2010-01-12")
-#    sample_1.short_sample_name.should == "N"
-#    sample_1.sample_name.should == "normal"
-#    sample_1.sample_group_name.should == "normal"
-#    sample_1.organism.name.should == "Mouse"
-#    sample_set_1.chip_type.name.should == "Mouse 430 2.0"
-#    sample_set_1.submitted_by.should == "bob"
-#    sample_set_1.project.name.should == "MouseGroup"
-#    chip_1.hybridization_date.should == Date.parse("2010-01-12")
-#    chip_1.chip_number.should == 1
-#    sample_1.microarray.raw_data_path.should == "/tmp/20100112_01_normal.CEL"
-#    sample_1.microarray.should_not be_nil
-#    sample_1.microarray.array_number.should == 1
-#    sample_1.microarray.chip.should_not be_nil
-#    sample_1.microarray.chip.name.should == "20100112_01"
-#
-#    sample_set_2.submission_date.should == Date.parse("2010-01-12")
-#    sample_2.short_sample_name.should == "D"
-#    sample_2.sample_name.should == "diseased"
-#    sample_2.sample_group_name.should == "diseased"
-#    sample_2.organism.name.should == "Mouse"
-#    sample_set_2.chip_type.name.should == "Mouse 430 2.0"
-#    sample_set_2.sbeams_user.should == "bob"
-#    sample_set_2.project.name.should == "MouseGroup"
-#    chip_2.hybridization_date.should == Date.parse("2010-01-12")
-#    chip_2.chip_number.should == 2
-#    sample_2.micoarray.raw_data_path.should == "/tmp/20100112_02_diseased.CEL"
-#    sample_2.microarray.should_not be_nil
-#    sample_2.microarray.array_number.should == 2
-#    chip_2.should_not be_nil
-#    chip_2.name.should == "20100112_02"
-#  end
+  it "should load a csv of new unschemed samples with hybridizations" do
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/new_unschemed_samples.csv"
+  
+    errors = Sample.from_csv(csv_file)
+
+    errors.should == ""
+    
+    new_samples = Sample.find(:all, :limit => 2, :order => "id DESC")
+    sample_2 = new_samples[0]
+    chip_2 = sample_2.microarray.chip
+    sample_set_2 = chip_2.sample_set
+    sample_1 = new_samples[1]
+    chip_1 = sample_1.microarray.chip
+    sample_set_1 = chip_1.sample_set
+
+    sample_set_1.submission_date.should == Date.parse("2010-01-12")
+    sample_1.short_sample_name.should == "N"
+    sample_1.sample_name.should == "normal"
+    sample_1.sample_group_name.should == "normal"
+    sample_1.organism.name.should == "Mouse"
+    sample_set_1.chip_type.name.should == "Mouse 430 2.0"
+    sample_set_1.submitted_by.should == "bob"
+    sample_set_1.project.name.should == "MouseGroup"
+    chip_1.hybridization_date.should == Date.parse("2010-01-12")
+    chip_1.chip_number.should == 1
+    sample_1.microarray.raw_data_path.should == "/tmp/20100112_01_normal.CEL"
+    sample_1.microarray.should_not be_nil
+    sample_1.microarray.array_number.should == 1
+    sample_1.microarray.chip.should_not be_nil
+    sample_1.microarray.chip.name.should == "20100112_01"
+
+    sample_set_2.submission_date.should == Date.parse("2010-01-12")
+    sample_2.short_sample_name.should == "D"
+    sample_2.sample_name.should == "diseased"
+    sample_2.sample_group_name.should == "diseased"
+    sample_2.organism.name.should == "Mouse"
+    sample_set_2.chip_type.name.should == "Mouse 430 2.0"
+    sample_set_2.submitted_by.should == "bob"
+    sample_set_2.project.name.should == "MouseGroup"
+    chip_2.hybridization_date.should == Date.parse("2010-01-12")
+    chip_2.chip_number.should == 2
+    sample_2.microarray.raw_data_path.should == "/tmp/20100112_02_diseased.CEL"
+    sample_2.microarray.should_not be_nil
+    sample_2.microarray.array_number.should == 2
+    chip_2.should_not be_nil
+    chip_2.name.should == "20100112_02"
+  end
   
   it "should take sample selections and provide the corresponding samples" do
     sample_1 = create_sample
