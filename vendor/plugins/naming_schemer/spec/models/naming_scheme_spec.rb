@@ -9,7 +9,7 @@ describe NamingScheme do
 
   it "destroy warning" do
     expected_warning = "Destroying this naming scheme will also destroy:\n" + 
-                       "1 sample(s)\n" +
+                       "1 sample set(s)\n" +
                        "5 naming element(s)\n" +
                        "Are you sure you want to destroy it?"
   
@@ -331,8 +331,8 @@ describe NamingScheme do
     project_1 = create_project
     project_2 = create_project
     project_3 = create_project
-    sample_1 = create_sample(:naming_scheme => scheme, :project => project_1)
-    sample_2 = create_sample(:naming_scheme => scheme, :project => project_2)
+    sample_set_1 = create_sample_set(:naming_scheme => scheme, :project => project_1)
+    sample_set_2 = create_sample_set(:naming_scheme => scheme, :project => project_2)
 
     scheme.reload.project_ids.should include(project_1.id)
     scheme.reload.project_ids.should include(project_2.id)
@@ -347,9 +347,9 @@ describe NamingScheme do
     project_1 = create_project(:lab_group => lab_group)
     project_2 = create_project(:lab_group => lab_group)
     project_3 = create_project
-    sample_1 = create_sample(:naming_scheme => scheme_1, :project => project_1)
-    sample_2 = create_sample(:naming_scheme => scheme_1, :project => project_2)
-    sample_3 = create_sample(:naming_scheme => scheme_2, :project => project_3)
+    sample_set_1 = create_sample_set(:naming_scheme => scheme_1, :project => project_1)
+    sample_set_2 = create_sample_set(:naming_scheme => scheme_1, :project => project_2)
+    sample_set_3 = create_sample_set(:naming_scheme => scheme_2, :project => project_3)
 
     NamingScheme.populated_for_user(user).should == [scheme_1]
   end

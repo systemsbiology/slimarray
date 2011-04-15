@@ -10,11 +10,11 @@ class NamingScheme < ActiveRecord::Base
   validates_uniqueness_of :name
 
   def destroy_warning
-    samples = Sample.find(:all, :conditions => ["naming_scheme_id = ?", id])
+    sample_sets = SampleSet.find(:all, :conditions => ["naming_scheme_id = ?", id])
     naming_elements = NamingElement.find(:all, :conditions => ["naming_scheme_id = ?", id])
     
     return "Destroying this naming scheme will also destroy:\n" + 
-           samples.size.to_s + " sample(s)\n" +
+           sample_sets.size.to_s + " sample set(s)\n" +
            naming_elements.size.to_s + " naming element(s)\n" +
            "Are you sure you want to destroy it?"
   end
@@ -376,8 +376,8 @@ class NamingScheme < ActiveRecord::Base
     lab_group_ids = user.get_lab_group_ids
 
     populated_schemes = all_schemes.select do |scheme|
-      Sample.find(:all, :include => {:microarray => {:chip => {:sample_set => :project}}},
-        :conditions => ["sample_sets.naming_scheme_id = ? AND projects.lab_group_id IN (?)", scheme.id, lab_group_ids]).size > 0
+      SampleSet.find(:all, :include => :project,
+        :conditions => ["naming_scheme_id = ? AND projects.lab_group_id IN (?)", scheme.id, lab_group_ids]).size > 0
     end
 
     return populated_schemes
