@@ -12,7 +12,7 @@ class Microarray < ActiveRecord::Base
       schemed_params = sample_attributes.delete(:schemed_name)
       sample = samples.build(sample_attributes)
       sample.microarray ||= self
-      sample.schemed_name = schemed_params
+      sample.schemed_name = schemed_params if schemed_params
     end
   end
 
