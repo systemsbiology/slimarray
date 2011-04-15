@@ -1,6 +1,5 @@
 class SampleSet < ActiveRecord::Base
   has_many :chips
-  #accepts_nested_attributes_for :chips
 
   belongs_to :chip_type
   belongs_to :project

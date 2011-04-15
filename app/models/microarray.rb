@@ -4,7 +4,6 @@ class Microarray < ActiveRecord::Base
   belongs_to :chip
 
   has_many :samples
-  #accepts_nested_attributes_for :samples
 
   has_one :hybridization
 
