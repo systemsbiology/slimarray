@@ -109,157 +109,161 @@ class Sample < ActiveRecord::Base
     end
   end
   
-#  def self.to_csv(naming_scheme = "")
-#    ###########################################
-#    # set up spreadsheet
-#    ###########################################
-#    
-#    csv_file_name = "#{RAILS_ROOT}/tmp/csv/samples_" +
-#      "#{Date.today.to_s}-#{naming_scheme}.csv"
-#    
-#    csv_file = File.open(csv_file_name, 'wb')
-#    CSV::Writer.generate(csv_file) do |csv|
-#      if(naming_scheme == "")
-#        csv << [ "Raw Data Path",
-#          "Sample ID",
-#          "Submission Date",
-#          "Short Sample Name",
-#          "Sample Name",
-#          "Sample Group Name",
-#          "Chip Type",
-#          "Chip Name",
-#          "Chip Number",
-#          "Array Number",
-#          "Organism",
-#          "SBEAMS User",
-#          "Project",
-#          "Naming Scheme"
-#        ]
-#
-#        samples = Sample.find( :all, :conditions => {:naming_scheme_id => nil},
-#          :include => [:project, :chip_type, :organism], :order => "samples.id ASC" )
-#
-#        for sample in samples
-#          if(sample.hybridization != nil)
-#            hybridization = sample.hybridization
-#            chip_name = hybridization.microarray.chip.name
-#            chip_number = hybridization.chip_number
-#            array_number = hybridization.microarray.array_number
-#            cel_file = hybridization.raw_data_path
-#          else
-#            chip_name = chip_number = array_number = cel_file = ""
-#          end
-#          csv << [ cel_file,
-#            sample.id,
-#            sample.submission_date.to_s,
-#            sample.short_sample_name,
-#            sample.sample_name,
-#            sample.sample_group_name,
-#            sample.chip_type.name,
-#            chip_name,
-#            chip_number,
-#            array_number,
-#            sample.organism.name,
-#            sample.sbeams_user,
-#            sample.project.name,
-#            "None"
-#          ]
-#        end
-#      else
-#        scheme = NamingScheme.find(:first, :conditions => { :name => naming_scheme })
-#        
-#        if(scheme.nil?)
-#          return nil
-#        end
-#        
-#        # stock headings
-#        headings = [ "Raw Data Path",
-#          "Sample ID",
-#          "Submission Date",
-#          "Short Sample Name",
-#          "Sample Name",
-#          "Sample Group Name",
-#          "Chip Type",
-#          "Chip Name",
-#          "Chip Number",
-#          "Array Number",
-#          "Organism",
-#          "SBEAMS User",
-#          "Project",
-#          "Naming Scheme"
-#        ]
-#
-#        # headings for naming elements
-#        naming_elements = 
-#          scheme.naming_elements.find(:all, :order => "element_order ASC")
-#        naming_elements.each do |e|
-#          headings << e.name
-#        end
-#
-#        csv << headings
-#
-#        samples = Sample.find( :all, 
-#          :conditions => {:naming_scheme_id => scheme.id},
-#          :include => [:project, :chip_type, :organism],
-#          :order => "samples.id ASC" )
-#
-#        current_row = 0
-#        for sample in samples
-#          if(sample.hybridization != nil)
-#            hybridization = sample.hybridization
-#            chip_name = hybridization.microarray.chip.name
-#            chip_number = hybridization.chip_number
-#            array_number = hybridization.microarray.array_number
-#            cel_file = hybridization.raw_data_path
-#          else
-#            chip_name = chip_number = array_number = cel_file = ""
-#          end
-#          column_values = [ cel_file,
-#            sample.id,
-#            sample.submission_date.to_s,
-#            sample.short_sample_name,
-#            sample.sample_name,
-#            sample.sample_group_name,
-#            sample.chip_type.name,
-#            chip_name,
-#            chip_number,
-#            array_number,
-#            sample.organism.name,
-#            sample.sbeams_user,
-#            sample.project.name,
-#            sample.naming_scheme.name
-#          ]
-#          # values for naming elements
-#          naming_elements.each do |e|
-#            value = ""
-#            if(e.free_text == true)
-#              sample_text = SampleText.find(:first, 
-#                :conditions => {:sample_id => sample.id,
-#                  :naming_element_id => e.id})
-#              if(sample_text != nil)
-#                value = sample_text.text
-#              end
-#            else
-#              sample_term = SampleTerm.find(:first,
-#                :include => :naming_term,
-#                :conditions => ["sample_id = ? AND naming_terms.naming_element_id = ?",
-#                  sample.id, e.id] )
-#              if(sample_term != nil)
-#                value = sample_term.naming_term.term
-#              end
-#            end
-#            column_values << value
-#          end
-#
-#          csv << column_values
-#        end
-#      end    
-#    end
-#  
-#    csv_file.close
-#     
-#    return csv_file_name
-#  end
+  def self.to_csv(naming_scheme = "")
+    ###########################################
+    # set up spreadsheet
+    ###########################################
+    
+    csv_file_name = "#{RAILS_ROOT}/tmp/csv/samples_" +
+      "#{Date.today.to_s}-#{naming_scheme}.csv"
+    
+    csv_file = File.open(csv_file_name, 'wb')
+    CSV::Writer.generate(csv_file) do |csv|
+      if(naming_scheme == "")
+        csv << [ "Raw Data Path",
+          "Sample ID",
+          "Submission Date",
+          "Short Sample Name",
+          "Sample Name",
+          "Sample Group Name",
+          "Chip Type",
+          "Chip Name",
+          "Chip Number",
+          "Array Number",
+          "Organism",
+          "Submitted By",
+          "Project",
+          "Naming Scheme"
+        ]
+
+        samples = Sample.find( :all, :conditions => "sample_sets.naming_scheme_id IS NULL",
+          :include => [:organism, {:microarray => {:chip => {:sample_set => [:project, :chip_type]}}}], :order => "samples.sample_name ASC" )
+
+        for sample in samples
+          if(sample.microarray != nil)
+            microarray = sample.microarray
+            chip = microarray.chip
+            sample_set = chip.sample_set
+
+            chip_name = chip.name
+            chip_number = chip.chip_number
+            array_number = microarray.array_number
+            raw_data_path = microarray.raw_data_path
+          else
+            chip_name = chip_number = array_number = raw_data_path = ""
+          end
+          csv << [ raw_data_path,
+            sample.id,
+            sample_set.submission_date.to_s,
+            sample.short_sample_name,
+            sample.sample_name,
+            sample.sample_group_name,
+            sample_set.chip_type.name,
+            chip_name,
+            chip_number,
+            array_number,
+            sample.organism.name,
+            sample_set.submitted_by,
+            sample_set.project.name,
+            "None"
+          ]
+        end
+      else
+        scheme = NamingScheme.find(:first, :conditions => { :name => naming_scheme })
+        
+        if(scheme.nil?)
+          return nil
+        end
+        
+        # stock headings
+        headings = [ "Raw Data Path",
+          "Sample ID",
+          "Submission Date",
+          "Short Sample Name",
+          "Sample Name",
+          "Sample Group Name",
+          "Chip Type",
+          "Chip Name",
+          "Chip Number",
+          "Array Number",
+          "Organism",
+          "Submitted By",
+          "Project",
+          "Naming Scheme"
+        ]
+
+        # headings for naming elements
+        naming_elements = 
+          scheme.naming_elements.find(:all, :order => "element_order ASC")
+        naming_elements.each do |e|
+          headings << e.name
+        end
+
+        csv << headings
+
+        samples = Sample.find( :all, :conditions => ["sample_sets.naming_scheme_id = ?", scheme.id],
+          :include => [:organism, {:microarray => {:chip => {:sample_set => [:project, :chip_type]}}}], :order => "samples.sample_name ASC" )
+
+        current_row = 0
+        for sample in samples
+          microarray = sample.microarray
+          if(microarray != nil)
+            chip = microarray.chip
+            sample_set = chip.sample_set
+
+            chip_name = chip.name
+            chip_number = chip.chip_number
+            array_number = microarray.array_number
+            raw_data_path = microarray.raw_data_path
+          else
+            chip_name = chip_number = array_number = raw_data_path = ""
+          end
+          column_values = [ raw_data_path,
+            sample.id,
+            sample_set.submission_date.to_s,
+            sample.short_sample_name,
+            sample.sample_name,
+            sample.sample_group_name,
+            sample_set.chip_type.name,
+            chip_name,
+            chip_number,
+            array_number,
+            sample.organism.name,
+            sample_set.submitted_by,
+            sample_set.project.name,
+            scheme.name
+          ]
+          # values for naming elements
+          naming_elements.each do |e|
+            value = ""
+            if(e.free_text == true)
+              sample_text = SampleText.find(:first, 
+                :conditions => {:sample_id => sample.id,
+                  :naming_element_id => e.id})
+              if(sample_text != nil)
+                value = sample_text.text
+              end
+            else
+              sample_term = SampleTerm.find(:first,
+                :include => :naming_term,
+                :conditions => ["sample_id = ? AND naming_terms.naming_element_id = ?",
+                  sample.id, e.id] )
+              if(sample_term != nil)
+                value = sample_term.naming_term.term
+              end
+            end
+            column_values << value
+          end
+
+          csv << column_values
+        end
+      end    
+    end
+  
+    csv_file.close
+     
+    return csv_file_name
+  end
 
 #  def self.from_csv(csv_file_name, scheme_generation_allowed = false)
 #

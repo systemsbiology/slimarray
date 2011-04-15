@@ -4,187 +4,187 @@ require 'parseexcel'
 describe "Sample" do
   fixtures :all
 
-#  it "should write a csv of sample info without a naming scheme" do
-#    csv_file_name = Sample.to_csv
-#    
-#    csv = CSV.open(csv_file_name, 'r')
-#    
-#    # heading
-#    assert_row_equal([
-#      "Raw Data Path",
-#      "Sample ID",
-#      "Submission Date",
-#      "Short Sample Name",
-#      "Sample Name",
-#      "Sample Group Name",
-#      "Chip Type",
-#      "Chip Name",
-#      "Chip Number",
-#      "Array Number",
-#      "Organism",
-#      "SBEAMS User",
-#      "Project",
-#      "Naming Scheme"
-#    ], csv.shift)
-#    
-#    # samples
-#    assert_row_equal([
-#      "",
-#      samples(:sample1).id.to_s,
-#      "2006-02-10",
-#      "yng",
-#      "Young",
-#      "Young",
-#      "Alligator 670 2.0",
-#      "",
-#      "",
-#      "",
-#      "Mouse",
-#      "bob",
-#      "MouseGroup",
-#      "None"
-#    ], csv.shift)
-#    
-#    assert_row_equal([
-#      "",
-#      samples(:sample5).id.to_s,
-#      "2006-09-10",
-#      "bb",
-#      "Bob B",
-#      "Bob",
-#      "Alligator 670 2.0",
-#      "",
-#      "",
-#      "",
-#      "Mouse",
-#      "bob",
-#      "Bob's Stuff",
-#      "None"
-#    ], csv.shift)
-#    
-#    assert_row_equal([
-#      "/tmp/20060210_01_Old.CEL",
-#      samples(:sample2).id.to_s,
-#      "2006-02-10",
-#      "old",
-#      "Old",
-#      "Old",
-#      "Alligator 670 2.0",
-#      "chip 1",
-#      "1",
-#      "1",
-#      "Mouse",
-#      "bob",
-#      "MouseGroup",
-#      "None"
-#    ], csv.shift)
-#    
-#    assert_row_equal([
-#      "",
-#      samples(:sample3).id.to_s,
-#      "2006-02-10",
-#      "vold",
-#      "Very Old",
-#      "Old",
-#      "Alligator 670 2.0",
-#      "",
-#      "",
-#      "",
-#      "Mouse",
-#      "bob",
-#      "MouseGroup",
-#      "None"
-#    ], csv.shift)
-#    
-#    assert_row_equal([
-#      "/tmp/20060210_02_Very Very Old.CEL",
-#      samples(:sample4).id.to_s,
-#      "2006-02-10",
-#      "vvold",
-#      "Very Very Old",
-#      "Old",
-#      "Alligator 670 2.0",
-#      "chip 2",
-#      "2",
-#      "1",
-#      "Mouse",
-#      "bob",
-#      "MouseGroup",
-#      "None"
-#    ], csv.shift)
-#  end
-#  
-#  it "should write a csv of sample info with a naming scheme" do
-#    csv_file_name = Sample.to_csv('Yeast Scheme')
-#    
-#    csv = CSV.open(csv_file_name, 'r')
-#    
-#    assert_row_equal([
-#      "Raw Data Path",
-#      "Sample ID",
-#      "Submission Date",
-#      "Short Sample Name",
-#      "Sample Name",
-#      "Sample Group Name",
-#      "Chip Type",
-#      "Chip Name",
-#      "Chip Number",
-#      "Array Number",
-#      "Organism",
-#      "SBEAMS User",
-#      "Project",
-#      "Naming Scheme",
-#      "Strain",
-#      "Perturbation",
-#      "Perturbation Time",
-#      "Replicate",
-#      "Subject Number",
-#    ], csv.shift)
-#    
-#    assert_row_equal([
-#      "",
-#      samples(:sample6).id.to_s,
-#      "2007-05-31",
-#      "a1",
-#      "wt_HT_024_B_32234",
-#      "wt_HT_024",
-#      "Alligator 670 2.0",
-#      "",
-#      "",
-#      "",
-#      "Mouse",
-#      "bob",
-#      "Bob's Stuff",
-#      "Yeast Scheme",
-#      "wild-type",
-#      "heat",
-#      "024",
-#      "B",
-#      "32234"      
-#    ], csv.shift)
-#  end
-#
-#  it "should load a csv of updated unschemed samples" do
-#    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_unschemed_samples.csv"
-#  
-#    errors = Sample.from_csv(csv_file)
-#
-#    errors.should == ""
-#    
-#    # one change was made to sample 1
-#    sample_1 = Sample.find( samples(:sample1).id )
-#    sample_1.short_sample_name.should == "yng1"
-#    
-#    # multiple changes to sample 2
-#    sample_2 = Sample.find( samples(:sample2).id )
-#    sample_2.short_sample_name.should == "old1"
-#    sample_2.sample_name.should == "Old1"
-#    sample_2.chip_type_id.should == chip_types(:mouse).id
-#    sample_2.sbeams_user.should == "robert"
-#    sample_2.project_id.should == projects(:another).id
-#    sample_2.organism.name.should == "Hyena"
-#  end
-#  
+  it "should write a csv of sample info without a naming scheme" do
+    csv_file_name = Sample.to_csv
+    
+    csv = CSV.open(csv_file_name, 'r')
+    
+    # heading
+    assert_row_equal([
+      "Raw Data Path",
+      "Sample ID",
+      "Submission Date",
+      "Short Sample Name",
+      "Sample Name",
+      "Sample Group Name",
+      "Chip Type",
+      "Chip Name",
+      "Chip Number",
+      "Array Number",
+      "Organism",
+      "Submitted By",
+      "Project",
+      "Naming Scheme"
+    ], csv.shift)
+    
+    # samples
+    assert_row_equal([
+      "",
+      samples(:sample5).id.to_s,
+      "2006-09-10",
+      "bb",
+      "Bob B",
+      "Bob",
+      "Alligator 670 2.0",
+      "chip 5",
+      "",
+      "1",
+      "Mouse",
+      "bob",
+      "Bob's Stuff",
+      "None"
+    ], csv.shift)
+    
+    assert_row_equal([
+      "/tmp/20060210_02_Very Very Old.CEL",
+      samples(:sample2).id.to_s,
+      "2006-02-10",
+      "old",
+      "Old",
+      "Old",
+      "Alligator 670 2.0",
+      "chip 2",
+      "",
+      "1",
+      "Mouse",
+      "bob",
+      "MouseGroup",
+      "None"
+    ], csv.shift)
+    
+    assert_row_equal([
+      "",
+      samples(:sample3).id.to_s,
+      "2006-02-10",
+      "vold",
+      "Very Old",
+      "Old",
+      "Alligator 670 2.0",
+      "chip 3",
+      "",
+      "1",
+      "Mouse",
+      "bob",
+      "MouseGroup",
+      "None"
+    ], csv.shift)
+    
+    assert_row_equal([
+      "",
+      samples(:sample4).id.to_s,
+      "2006-02-10",
+      "vvold",
+      "Very Very Old",
+      "Old",
+      "Alligator 670 2.0",
+      "chip 4",
+      "",
+      "1",
+      "Mouse",
+      "bob",
+      "MouseGroup",
+      "None"
+    ], csv.shift)
+    
+    assert_row_equal([
+      "/tmp/20060210_01_Old.CEL",
+      samples(:sample1).id.to_s,
+      "2006-02-10",
+      "yng",
+      "Young",
+      "Young",
+      "Alligator 670 2.0",
+      "chip 1",
+      "",
+      "1",
+      "Mouse",
+      "bob",
+      "MouseGroup",
+      "None"
+    ], csv.shift)
+  end
+  
+  it "should write a csv of sample info with a naming scheme" do
+    csv_file_name = Sample.to_csv('Yeast Scheme')
+    
+    csv = CSV.open(csv_file_name, 'r')
+    
+    assert_row_equal([
+      "Raw Data Path",
+      "Sample ID",
+      "Submission Date",
+      "Short Sample Name",
+      "Sample Name",
+      "Sample Group Name",
+      "Chip Type",
+      "Chip Name",
+      "Chip Number",
+      "Array Number",
+      "Organism",
+      "Submitted By",
+      "Project",
+      "Naming Scheme",
+      "Strain",
+      "Perturbation",
+      "Perturbation Time",
+      "Replicate",
+      "Subject Number",
+    ], csv.shift)
+    
+    assert_row_equal([
+      "",
+      samples(:sample6).id.to_s,
+      "2007-05-31",
+      "a1",
+      "wt_HT_024_B_32234",
+      "wt_HT_024",
+      "Alligator 670 2.0",
+      "chip 6",
+      "",
+      "1",
+      "Mouse",
+      "bob",
+      "Bob's Stuff",
+      "Yeast Scheme",
+      "wild-type",
+      "heat",
+      "024",
+      "B",
+      "32234"      
+    ], csv.shift)
+  end
+
+  it "should load a csv of updated unschemed samples" do
+    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_unschemed_samples.csv"
+  
+    errors = Sample.from_csv(csv_file)
+
+    errors.should == ""
+    
+    # one change was made to sample 1
+    sample_1 = Sample.find( samples(:sample1).id )
+    sample_1.short_sample_name.should == "yng1"
+    
+    # multiple changes to sample 2
+    sample_2 = Sample.find( samples(:sample2).id )
+    sample_2.short_sample_name.should == "old1"
+    sample_2.sample_name.should == "Old1"
+    sample_2.chip_type_id.should == chip_types(:mouse).id
+    sample_2.sbeams_user.should == "robert"
+    sample_2.project_id.should == projects(:another).id
+    sample_2.organism.name.should == "Hyena"
+  end
+  
 #  it "from csv updated schemed samples" do
 #    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/updated_yeast_scheme_samples.csv"
 #    
@@ -312,15 +312,15 @@ describe "Sample" do
 #    assert_equal scheme.id,
 #      Sample.find( samples(:sample3).id ).naming_scheme_id
 #  end
-#  
-#  def assert_row_equal(expected, row)
-#    column = 0
-#    expected.each do |cell|
-#      row.at(column).to_s.should == cell
-#      column += 1
-#    end
-#  end
-#
+  
+  def assert_row_equal(expected, row)
+    column = 0
+    expected.each do |cell|
+      row.at(column).to_s.should == cell
+      column += 1
+    end
+  end
+
 #  it "should load a csv of new unschemed samples with hybridizations" do
 #    csv_file = "#{RAILS_ROOT}/spec/fixtures/csv/new_unschemed_samples.csv"
 #  

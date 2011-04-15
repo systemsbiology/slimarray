@@ -8,9 +8,11 @@ array2:
 
 microarray1:
   chip: chip1
+  raw_data_path: /tmp/20060210_01_Old.CEL
 
 microarray2:
   chip: chip2
+  raw_data_path: /tmp/20060210_02_Very Very Old.CEL
 
 microarray3:
   chip: chip3
