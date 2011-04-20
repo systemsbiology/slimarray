@@ -71,6 +71,8 @@ class Sample < ActiveRecord::Base
   end
 
   def schemed_name=(attributes)
+    return unless naming_scheme
+
     # clear out old naming scheme records
     sample_terms.each {|t| t.destroy}
     sample_texts.each {|t| t.destroy}
