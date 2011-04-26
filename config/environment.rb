@@ -38,7 +38,7 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_restful_authentication_test_session',
+    :session_key => '_slimarray_session',
     :secret      => 'f60f394add7aa3c74c2529e823cb87fc30780205e8f058b2fdd0e08a26d60f23c53f5fbc4142a58df75ef237b8ff3f79c9d5b571bf372d1cb70f28818aae3975'
   }
 
