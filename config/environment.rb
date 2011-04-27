@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.9' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.11' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -33,22 +33,22 @@ Rails::Initializer.run do |config|
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
 
-  # Your secret key for verifying cookie session data integrity.
-  # If you change this key, all old sessions will become invalid!
-  # Make sure the secret is at least 30 characters and all random, 
-  # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
-    :session_key => '_slimarray_session',
-    :secret      => 'f60f394add7aa3c74c2529e823cb87fc30780205e8f058b2fdd0e08a26d60f23c53f5fbc4142a58df75ef237b8ff3f79c9d5b571bf372d1cb70f28818aae3975'
-  }
-
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with 'rake db:sessions:create')
   # config.action_controller.session_store = :active_record_store
   
   # Use pstore, since we're storing > 4K in session
-  config.action_controller.session_store = :cookie_store
+  config.action_controller.session_store = :active_record_store
+
+  # Your secret key for verifying cookie session data integrity.
+  # If you change this key, all old sessions will become invalid!
+  # Make sure the secret is at least 30 characters and all random, 
+  # no regular words or you'll be exposed to dictionary attacks.
+  config.action_controller.session = {
+    :key => '_slimarray_session',
+    :secret      => 'f60f394add7aa3c74c2529e823cb87fc30780205e8f058b2fdd0e08a26d60f23c53f5fbc4142a58df75ef237b8ff3f79c9d5b571bf372d1cb70f28818aae3975'
+  }
   
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
@@ -67,7 +67,7 @@ Rails::Initializer.run do |config|
   config.gem 'ar-extensions'
   config.gem 'json'
   config.gem 'highline'
-  config.gem 'rubycas-client', :version => '2.1.0'
+  config.gem 'rubycas-client', :version => '2.2.1'
   config.gem 'formtastic', :version => '1.1.0'
   config.gem 'parseexcel', :version => '0.5.2'
   config.gem 'rest-client', :lib => 'rest_client', :version => '0.8.2'

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101026183831) do
+ActiveRecord::Schema.define(:version => 20110427153929) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -403,7 +403,6 @@ ActiveRecord::Schema.define(:version => 20101026183831) do
     t.integer  "sample_set_id"
     t.boolean  "ready_for_processing",                      :default => true, :null => false
     t.integer  "service_option_id"
-    t.string   "labeled_concentration_uri"
   end
 
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"
@@ -438,8 +437,17 @@ ActiveRecord::Schema.define(:version => 20101026183831) do
     t.float    "other_cost"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "concentration_requirement", :default => ""
   end
+
+  create_table "sessions", :force => true do |t|
+    t.string   "session_id", :null => false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "site_config", :force => true do |t|
     t.string   "site_name",             :limit => 50
