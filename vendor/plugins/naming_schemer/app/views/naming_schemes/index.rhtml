@@ -1,0 +1,25 @@
+<h1>Listing naming schemes</h1>
+
+<p><%= link_to 'New naming scheme', :action => 'new' %></p>
+
+<table id="table" class="sortable" cellpadding="0" cellspacing="0" border="0">
+  <thead>
+    <tr>
+    <% for column in ["Name", "Modify", "Rename", "Destroy"] %>
+      <th class="nosort"><h3><%= column %></h3></th>
+    <% end %>
+    </tr>
+  </thead>
+<% for naming_scheme in @naming_schemes %>
+  <tr>
+    <td><%=h naming_scheme.name %></td>
+    <td><%= link_to 'Modify Naming Elements', :controller => 'naming_elements', 
+                              :action => 'list_for_naming_scheme',
+                              :naming_scheme_id => naming_scheme %></td>
+    <td><%= link_to 'Rename', :action => 'rename', :id => naming_scheme %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => naming_scheme }, :confirm => naming_scheme.destroy_warning %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/tinytable', :locals => {:sort_column => 0} %>
