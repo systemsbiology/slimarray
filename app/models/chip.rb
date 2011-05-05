@@ -6,6 +6,8 @@ class Chip < ActiveRecord::Base
   validate :no_redundant_samples
 
   def microarrays_attributes=(attributes)
+    microarrays.clear
+
     attributes.sort.each do |key, microarray_attributes|
       microarray = microarrays.build(microarray_attributes.merge(:chip => self))
     end
