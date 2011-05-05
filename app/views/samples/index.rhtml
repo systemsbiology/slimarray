@@ -1,13 +1,9 @@
-<h2>Samples</h2>
-
 <% if(@lab_groups != nil && @lab_groups.size > 0) %>
-  <div id="samples-index">
-    <ul>
-      <li><%= link_to 'Submit New Samples', :controller => 'sample_sets', :action => 'new' %></li>
+  <p><%= link_to 'Submit New Samples', :controller => 'sample_sets', :action => 'new' %> |
+  <%= link_to 'Browse Samples', '#', :id => "browse" %>
 
-      <li><%= link_to "Show All #{@samples.size} Samples", :controller => 'samples', :action => 'all' %></li>
-
-      <li><% form_tag( {:action => 'browse'}, {:name => "browse"} ) do -%>
+    <div id="browse_options" style="display:none">
+      <% form_tag( {:action => 'browse'}, {:name => "browse"} ) do -%>
         Browse by<br>
         <ol>
           <li><select name="category_1"><option value="none">Please Select</option><%= options_for_select @browse_categories %></select></li>
@@ -17,12 +13,39 @@
         </ol>
         <div style="display:none"><%= link_to 'Add Category', "#" %> OR </div><br/>
         <%= submit_tag 'Done' %>
-      <% end -%></li>
-    </ul>
-  </div>    
+      <% end -%>
+    </div>
+  </p>
+
+  <%= jqgrid("Samples", "sample_grid", @grid_action,
+    [
+      { :field => "submission_date", :label => "Date Submitted", :width => 150 },
+      { :field => "short_sample_name", :label => "Name On Tube", :width => 130 },
+      { :field => "sample_name", :label => "Sample Description", :width => 350 },
+      { :field => "status", :label => "Status", :width => 80 },
+      { :field => "sbeams_user", :label => "User", :width => 80 },
+      { :field => "projects.name", :label => "Project", :width => 150 },
+    ],
+    :height => 550,
+    :sort_column => "sample_sets.submission_date DESC, samples.id ASC",
+    #:sort_order => "desc",
+    :rows_per_page => 25,
+    :multi_selection => true
+  ) %>
+
+  <p><%= submit_tag "Edit Selected Sample", :id => "besample" %> 
+    <%= submit_tag "Destroy Selected Sample", :id => "bdsample" %></p>
 <% else %>
   <p>You need to belong to one or more lab groups before you can see or submit any samples.<br>
   Please contact your administrator at <a href="mailto:<%=h SiteConfig.administrator_email %>">
   <%=h SiteConfig.administrator_email %></a>
   if you need<br>to be added to any lab groups.</p>
 <% end %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('a#browse').click(function() {
+      $('#browse_options').toggle();
+    });
+  });
+</script>

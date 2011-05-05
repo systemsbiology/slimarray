@@ -36,37 +36,33 @@ describe SamplesController do
       login_as_user
       mock_user_methods
 
-      @accessible_samples = [mock_model(Sample), mock_model(Sample)]
-      @accessible_lab_group_ids = [1,2,3]
-      @current_user.should_receive(:get_lab_group_ids).any_number_of_times.
-        and_return(@accessible_lab_group_ids)
-      Sample.should_receive(:browsing_categories).and_return( mock("Browsing categories") )
+      @sample_1 = mock_model(Sample)
+      @sample_2 = mock_model(Sample)
+      @accessible_samples = [@sample_1, @sample_2]
+      @accessible_lab_groups = [mock_model(LabGroup)]
       #User.should_receive(:all_by_id).and_return( mock("User hash") )
       controller.stub!(:paginate).and_return(["Samples Pages", @accessible_samples])
     end
 
-    it "should expose all samples accessible by the user as @samples" do
-      Sample.should_receive(:accessible_to_user).with(@current_user, nil).and_return(@accessible_samples)
-      get :index
-      assigns[:samples].should == @accessible_samples
-    end
+    describe "with mime type of html" do
+      it "prepares to show the grid" do
+        @current_user.should_receive(:accessible_lab_groups).and_return(@accessible_lab_groups)
+        Sample.should_receive(:browsing_categories).and_return( mock("Browsing categories") )
 
-    it "should limit samples with by age" do
-      Sample.should_receive(:accessible_to_user).with(@current_user, "2").and_return(@accessible_samples)
-      get :index, :age_limit => 2
-      assigns[:samples].should == @accessible_samples
+        get :index
+      end
     end
 
     describe "with mime type of xml" do
-      it "should render all accessible samples as xml" do
-        sample_1 = mock_model(Sample)
-        sample_2 = mock_model(Sample)
-        sample_1.should_receive(:summary_hash).and_return( {:n => 1} )
-        sample_2.should_receive(:summary_hash).and_return( {:n => 2} )
-        samples = [sample_1, sample_2]
+      before(:each) do
+        @sample_1.should_receive(:summary_hash).and_return( {:n => 1} )
+        @sample_2.should_receive(:summary_hash).and_return( {:n => 2} )
         
         request.env["HTTP_ACCEPT"] = "application/xml"
-        Sample.should_receive(:accessible_to_user).and_return(samples)
+      end
+
+      it "should render all accessible samples as xml" do
+        Sample.should_receive(:accessible_to_user).and_return(@accessible_samples)
         get :index
         response.body.should ==
           "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<records type=\"array\">\n  " +
@@ -75,6 +71,17 @@ describe SamplesController do
         
       end
       
+      it "should expose all samples accessible by the user as @samples" do
+        Sample.should_receive(:accessible_to_user).with(@current_user, nil).and_return(@accessible_samples)
+        get :index
+        assigns[:samples].should == @accessible_samples
+      end
+
+      it "should limit samples with by age" do
+        Sample.should_receive(:accessible_to_user).with(@current_user, "2").and_return(@accessible_samples)
+        get :index, :age_limit => 2
+        assigns[:samples].should == @accessible_samples
+      end
     end
 
     describe "with mime type of json" do

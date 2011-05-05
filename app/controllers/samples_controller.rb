@@ -24,20 +24,21 @@ available when retrieving single samples (see GET /samples/[sample id]).
 =end
   
   def index
-    @lab_groups = current_user.accessible_lab_groups
-
-    @samples = Sample.accessible_to_user(current_user, params[:age_limit])
-
-    @browse_categories = Sample.browsing_categories
-
     respond_to do |format|
-      format.html  #index.html
-      format.xml   { render :xml => @samples.
-        collect{|x| x.summary_hash}
-      }
-      format.json  { render :json => @samples.
-        collect{|x| x.summary_hash}.to_json 
-      }
+      format.html do
+        @lab_groups = current_user.accessible_lab_groups
+
+        @browse_categories = Sample.browsing_categories
+        @grid_action = grid_samples_url
+      end
+      format.xml   do
+        @samples = Sample.accessible_to_user(current_user, params[:age_limit])
+        render :xml => @samples.collect{|x| x.summary_hash}
+      end
+      format.json  do
+        @samples = Sample.accessible_to_user(current_user, params[:age_limit])
+        render :json => @samples.collect{|x| x.summary_hash}.to_json 
+      end
     end
   end
 

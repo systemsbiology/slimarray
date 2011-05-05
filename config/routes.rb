@@ -62,7 +62,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :qc_sets, :only => [:create, :show]
   map.resources :qc_thresholds, :collection => {:grid => :get}
   map.resources :microarrays, :only => [:index, :show]
-  map.resources :chips, :only => [:edit, :update, :destroy]
+  map.resources :chips, :only => [:index, :edit, :update, :destroy], :collection => {:grid => :get}
 
   map.resources :hybridization_sets
   map.new_hybridization_set 'hybridization_sets/new', :controller => 'hybridization_sets', :action => 'new', :method => :post
