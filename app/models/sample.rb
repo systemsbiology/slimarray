@@ -515,7 +515,7 @@ class Sample < ActiveRecord::Base
       :id => id,
       :file_root => file_root,
       :sample_description => sample_name,
-      :submission_date => submission_date,
+      :submission_date => microarray.chip.sample_set.submission_date,
       :updated_at => updated_at,
       :uri => "#{SiteConfig.site_url}/samples/#{id}"
     }
@@ -536,25 +536,27 @@ class Sample < ActiveRecord::Base
       }
     end
     
+    sample_set = microarray.chip.sample_set
+
     return {
       :id => id,
-      :user => sbeams_user,
-      :project => project.name,
+      :user => sample_set.submitted_by,
+      :project => sample_set.project.name,
       :name_on_tube => short_sample_name,
       :sample_description => sample_name,
       :sample_group_name => sample_group_name,
-      :submission_date => submission_date,
+      :submission_date => sample_set.submission_date,
       :updated_at => updated_at,
-      :status => status,
-      :naming_scheme => naming_scheme ? naming_scheme.name : "",
+      :status => microarray.chip.status,
+      :naming_scheme => sample_set.naming_scheme ? sample_set.naming_scheme.name : "",
       :sample_terms => sample_term_array,
       :sample_texts => sample_text_array,
       :raw_data_path => raw_data_path,
-      :raw_data_type => chip_type.platform.raw_data_type || "",
+      :raw_data_type => sample_set.chip_type.platform.raw_data_type || "",
       :file_root => file_root,
       :organism => organism ? organism.name : "",
-      :chip_type => chip_type.short_name,
-      :chip_type_uri => "#{SiteConfig.site_url}/chip_types/#{chip_type_id}",
+      :chip_type => sample_set.chip_type.short_name,
+      :chip_type_uri => "#{SiteConfig.site_url}/chip_types/#{sample_set.chip_type_id}",
       :label => label ? label.name : ""
     }
   end
