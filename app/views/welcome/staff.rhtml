@@ -40,5 +40,12 @@ and <%= link_to 'creating some chip types', :controller => 'chip_types', :action
       div.children('.expanded').show();
       div.children('.collapsed').hide();
     });
+
+    $('form').submit(function(evt) {
+      if( $(':checked').length == 0 ) {
+        evt.preventDefault();
+        alert("Select some chips to hybridize first. You can view the chips under a set of samples by clicking the triangle to the left of it");
+      }
+    })
   });
 </script>
