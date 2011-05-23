@@ -4,7 +4,7 @@ class HybridizationSet
   def initialize(attributes)
     @chips = Array.new
 
-    attributes["chips"].each do |index, chip_attributes|
+    attributes["chips"].sort{|a,b| a[0].to_i <=> b[0].to_i}.each do |index, chip_attributes|
       chip = Chip.find(chip_attributes["id"])
       chip.name = chip_attributes["name"]
 
