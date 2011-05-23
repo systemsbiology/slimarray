@@ -168,8 +168,11 @@ Get detailed information about a single sample.
         # create a cache for the samples queried
         sample_list = SampleList.create
 
+        @lab_groups = current_user.accessible_lab_groups
+        @browse_categories = Sample.browsing_categories
+
         @grid_action = request.url + "&sample_list_id=" + sample_list.id.to_s
-        render :action => "list"
+        render :action => "index"
       }
       format.json {
         # see if this search is cached
@@ -196,14 +199,6 @@ Get detailed information about a single sample.
           params[:page], params[:rows], samples.size
         )
       }
-    end
-  end
-
-  def all
-    @grid_action = grid_samples_url
-
-    respond_to do |format|
-      format.html { render :action => "list" }
     end
   end
 
