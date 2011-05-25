@@ -3,7 +3,7 @@ class ChargeSet < ActiveRecord::Base
   belongs_to :lab_group
   
   has_many :charges, :dependent => :destroy
-  has_many :hybridizations, :dependent => :nullify
+  has_many :microarrays, :dependent => :nullify
   
   def get_totals
     totals = Hash.new(0)
