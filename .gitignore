@@ -8,3 +8,5 @@ vendor/plugins/slimcore_authorizer
 vendor/plugins/newrelic_rpm
 public/plugin_assets/2dc_jqgrid
 tmp/excel/*
+public/javascripts/all.js
+.rvmrc
