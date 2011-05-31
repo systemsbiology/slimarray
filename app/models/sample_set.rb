@@ -1,4 +1,6 @@
 class SampleSet < ActiveRecord::Base
+  include SharedMethods
+
   has_many :chips
 
   belongs_to :chip_type
@@ -15,7 +17,7 @@ class SampleSet < ActiveRecord::Base
   attr_accessor :number, :already_hybridized
 
   def chips_attributes=(attributes)
-    attributes.sort.each do |key, chip_attributes|
+    sort_attributes_numerically(attributes).each do |key, chip_attributes|
       chip = chips.build(chip_attributes.merge(:sample_set => self))
     end
   end

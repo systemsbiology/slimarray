@@ -1,5 +1,6 @@
 class Microarray < ActiveRecord::Base
   extend ApiAccessible
+  include SharedMethods
 
   belongs_to :chip
 
@@ -8,7 +9,7 @@ class Microarray < ActiveRecord::Base
   has_one :hybridization
 
   def samples_attributes=(attributes)
-    attributes.sort.each do |key, sample_attributes|
+    sort_attributes_numerically(attributes).each do |key, sample_attributes|
       schemed_params = sample_attributes.delete(:schemed_name)
       sample = samples.build(sample_attributes)
       sample.microarray ||= self

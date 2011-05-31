@@ -1,4 +1,6 @@
 class Chip < ActiveRecord::Base
+  include SharedMethods
+
   belongs_to :sample_set
 
   has_many :microarrays, :dependent => :destroy
@@ -8,7 +10,7 @@ class Chip < ActiveRecord::Base
   def microarrays_attributes=(attributes)
     microarrays.clear
 
-    attributes.sort.each do |key, microarray_attributes|
+    sort_attributes_numerically(attributes).each do |key, microarray_attributes|
       microarray = microarrays.build(microarray_attributes.merge(:chip => self))
     end
   end
