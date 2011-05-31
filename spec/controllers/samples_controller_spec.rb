@@ -419,24 +419,14 @@ describe SamplesController do
   
     before(:each) do
       login_as_user
+      lab_groups = [mock_model(LabGroup), mock_model(LabGroup)]
+      @current_user.stub!(:accessible_lab_groups).and_return(lab_groups)
+      Sample.should_receive(:browsing_categories).and_return("browsing categories")
     end
 
     it "should render the 'list' view" do
       get :search
-      response.should render_template('list')
-    end
-
-  end
-
-  describe "responding to GET all" do
-    
-    before(:each) do
-      login_as_user
-    end
-
-    it "should render the 'list' view" do
-      get :all
-      response.should render_template('list')
+      response.should render_template('index')
     end
 
   end
