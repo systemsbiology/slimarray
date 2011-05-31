@@ -8,6 +8,7 @@
 	    <th>Select</th>
 	    <th>Date</th>
 	    <th>Description</th>
+	    <th>Service Name</th>
 	    <th>Chips Used</th>
 	    <th>Chip Cost</th>
 	    <th>Labeling Cost</th>
@@ -23,6 +24,7 @@
 	    <td><%= check_box 'selected_charges', charge.id %></td>
 	    <td><%= charge.date %></td>
 	    <td><%= charge.description %></td>
+	    <td><%= charge.service_name %></td>
 	    <td><%= charge.chips_used %></td>
 	    <td><%= fmt_dollars(charge.chip_cost) %></td>
 	    <td><%= fmt_dollars(charge.labeling_cost) %></td>

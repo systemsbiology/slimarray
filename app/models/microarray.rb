@@ -6,7 +6,7 @@ class Microarray < ActiveRecord::Base
 
   has_many :samples
 
-  has_one :hybridization
+  has_one :charge
 
   def samples_attributes=(attributes)
     sort_attributes_numerically(attributes).each do |key, sample_attributes|
@@ -282,6 +282,7 @@ class Microarray < ActiveRecord::Base
                            :labeling_cost => service_option.labeling_cost * sample_number,
                            :hybridization_cost => service_option.hybridization_cost * sample_number,
                            :qc_cost => service_option.qc_cost * sample_number,
-                           :other_cost => service_option.other_cost * sample_number)
+                           :other_cost => service_option.other_cost * sample_number,
+                           :microarray_id => id)
   end
 end

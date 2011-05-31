@@ -1,5 +1,6 @@
 class Charge < ActiveRecord::Base
   belongs_to :charge_set
+  belongs_to :microarray
 
   validates_numericality_of :chips_used
   validates_numericality_of :chip_cost
@@ -172,4 +173,13 @@ class Charge < ActiveRecord::Base
     return charge
   end
 
+  def service_name
+    service_option = microarray.try(:chip).try(:sample_set).try(:service_option)
+
+    if service_option
+      "#{service_option.notes} #{service_option.name}"
+    else
+      ""
+    end
+  end
 end

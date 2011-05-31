@@ -49,8 +49,8 @@ class ChargePeriod < ActiveRecord::Base
                      "Chips" => totals['chips'], "Chip Charge" => fmt_dollars(totals['chip_cost']),
                      "Labeling Charge" => fmt_dollars(totals['labeling_cost']),
                      "Hyb/Wash/Stain/\nScan Charge" => fmt_dollars(totals['hybridization_cost']),
-                     "QC Cost" => fmt_dollars(totals['qc_cost']), "Other Cost" => fmt_dollars(totals['other_cost']),
-                     "Total Cost" => fmt_dollars(totals['total_cost'])}
+                     "QC Charge" => fmt_dollars(totals['qc_cost']), "Other Charge" => fmt_dollars(totals['other_cost']),
+                     "Total Charge" => fmt_dollars(totals['total_cost'])}
     end
     
     # show totals
@@ -58,12 +58,12 @@ class ChargePeriod < ActiveRecord::Base
                "Chips" => set_totals['chips'], "Chip Charge" => fmt_dollars(set_totals['chip_cost']),
                "Labeling Charge" => fmt_dollars(set_totals['labeling_cost']),
                "Hyb/Wash/Stain/\nScan Charge" => fmt_dollars(set_totals['hybridization_cost']),
-               "QC Cost" => fmt_dollars(set_totals['qc_cost']), "Other Cost" => fmt_dollars(set_totals['other_cost']),
-               "Total Cost" => fmt_dollars(set_totals['total_cost'])}
+               "QC Charge" => fmt_dollars(set_totals['qc_cost']), "Other Charge" => fmt_dollars(set_totals['other_cost']),
+               "Total Charge" => fmt_dollars(set_totals['total_cost'])}
     
     table.column_order = [ "Charge Set", "Budget/PO", "Chips", "Chip Charge",
                            "Labeling Charge", "Hyb/Wash/Stain/\nScan Charge",
-                           "QC Cost", "Other Cost", "Total Cost" ]
+                           "QC Charge", "Other Charge", "Total Charge" ]
     table.render_on(_pdf)
     
     ############### 
@@ -112,22 +112,21 @@ class ChargePeriod < ActiveRecord::Base
                        charge.qc_cost + charge.other_cost
           total = total + line_total
           table.data << { "Date" => charge.date, "Description" => charge.description[0..49],
-                       "Chip Charge" => fmt_dollars(charge.chip_cost),
-                       "Labeling Charge" => fmt_dollars(charge.labeling_cost),
+                       "Service" => charge.service_name,
+                       "Chip\nCharge" => fmt_dollars(charge.chip_cost),
+                       "Labeling\nCharge" => fmt_dollars(charge.labeling_cost),
                        "Hyb/Wash/Stain/\nScan Charge" => fmt_dollars(charge.hybridization_cost),
-                       "QC Cost" => fmt_dollars(charge.qc_cost),
-                       "Other Cost" => fmt_dollars(charge.other_cost),
-                       "Sample Total" => fmt_dollars(line_total) }
+                       "QC\nCharge" => fmt_dollars(charge.qc_cost),
+                       "Other\nCharge" => fmt_dollars(charge.other_cost),
+                       "Total\nCharge" => fmt_dollars(line_total) }
         end
-        table.column_order = [ "Date", "Description", "Chip Charge",
-                       "Labeling Charge", "Hyb/Wash/Stain/\nScan Charge",
-                       "QC Cost", "Other Cost", "Sample Total" ]
-        table.columns["Other Cost"] = PDF::SimpleTable::Column.new("Other Cost") { |col|
-          col.width = 60
+        table.column_order = [ "Date", "Description", "Service", "Chip\nCharge",
+                       "Labeling\nCharge", "Hyb/Wash/Stain/\nScan Charge",
+                       "QC\nCharge", "Other\nCharge", "Total\nCharge" ]
+        table.columns["Description"] = PDF::SimpleTable::Column.new("Description") { |col|
+          col.width = 130
         }
-        table.columns["Sample Total"] = PDF::SimpleTable::Column.new("Sample Total") { |col|
-          col.width = 60
-        }      
+
         table.render_on(_pdf)
       end
 
@@ -230,11 +229,11 @@ class ChargePeriod < ActiveRecord::Base
         detail[set.name].write row+=1, 1, "Budget Manager: " + set.budget_manager
         detail[set.name].write row+=1, 1, "Budget Manager Approval: _________________________________"
       else
-        detail[set.name].write row+=1, 1, "P.O. Number: " + set.budget || ""
+        detail[set.name].write row+=1, 1, "P.O. Number: " + (set.budget || "")
       end
       
       # charge headings
-      detail[set.name].write row+=3, 1, [ "Date", "Description", "Chip Charge",
+      detail[set.name].write row+=3, 1, [ "Date", "Description", "Service", "Chip Charge",
                      "Labeling Charge", "Hyb/Wash/Stain/\nScan Charge",
                      "QC Cost", "Other Cost", "Sample Total" ], bordered
                      
@@ -245,7 +244,8 @@ class ChargePeriod < ActiveRecord::Base
         line_total = charge.chip_cost + charge.labeling_cost + charge.hybridization_cost +
                      charge.qc_cost + charge.other_cost
         total = total + line_total
-        detail[set.name].write row+=1, 1, [ charge.date.to_s, charge.description, fmt_dollars(charge.chip_cost),
+        detail[set.name].write row+=1, 1, [ charge.date.to_s, charge.description,
+                     charge.service_name, fmt_dollars(charge.chip_cost),
                      fmt_dollars(charge.labeling_cost), fmt_dollars(charge.hybridization_cost),
                      fmt_dollars(charge.qc_cost), fmt_dollars(charge.other_cost),
                      fmt_dollars(line_total) ], bordered

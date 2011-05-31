@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110427153929) do
+ActiveRecord::Schema.define(:version => 20110531202249) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(:version => 20110427153929) do
     t.integer  "lock_version",                      :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "microarray_id"
   end
 
   add_index "charges", ["charge_set_id"], :name => "charge_set_id"
