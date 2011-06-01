@@ -147,7 +147,6 @@ $(document).ready(function(){
     setHybridizationDateVisibility();
   });
 
-  showServiceOptions();
   updateCostEstimate();
   setHybridizationDateVisibility();
 
