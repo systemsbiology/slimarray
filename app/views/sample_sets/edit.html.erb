@@ -17,9 +17,11 @@
     @chip_types, :id, :name, {:prompt => true} %><br/>
     * Contact the facility to add a new chip type</p>
 
-  <p><%= form.label :service_option_id, "Service Option" %><br/>
-  <%= form.collection_select :service_option_id,
-    @sample_set.chip_type.service_options.find(:all, :order => "name ASC"), :id, :name, {:prompt => true} %><br/>
+  <div id="sample_set_service_options">
+    <p><%= form.label :service_option_id, "Service Option" %><br/>
+    <%= form.collection_select :service_option_id,
+      @sample_set.chip_type.service_options.find(:all, :order => "name ASC"), :id, :name, {:prompt => true} %><br/>
+  </div>
 
   <% if @naming_schemes.size > 0 %>
     <p><%= form.label :naming_scheme_id, "Naming Scheme" %><br/>
@@ -28,6 +30,12 @@
       <%= options_from_collection_for_select @naming_schemes, "id", "name",
          @sample_set.naming_scheme_id.to_i %>
     </select></p>
+  <% end %>
+
+  <h3>Chips</h3>
+
+  <% form.fields_for :chips do |chip_form| %>
+    <%= render :partial => 'chips/edit', :locals => {:chip_form => chip_form, :chip => chip_form.object} %>
   <% end %>
 
   <p><%= submit_tag 'Update' %></p>

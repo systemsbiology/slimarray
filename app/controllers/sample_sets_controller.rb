@@ -19,6 +19,7 @@ class SampleSetsController < ApplicationController
 
   def edit
     @sample_set = SampleSet.find(params[:id])
+    @available_samples = @sample_set.available_samples
   end
 
   def update

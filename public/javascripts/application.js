@@ -16,7 +16,7 @@ $(document).ready(function(){
               $("#sample_set_chip_type_id option:selected")[0].value;
 
     if(sel) {
-      $.get('../chip_types/' + sel + '/service_options', function(data) {
+      $.get(root_url + 'chip_types/' + sel + '/service_options', function(data) {
         $('#sample_set_service_options').html(data);
       });
     }
@@ -42,13 +42,8 @@ $(document).ready(function(){
   }
 
   function setHybridizationDateVisibility() {
-    checked = $('#chip_hybridized').attr('checked');
-
-    if(checked) {
-      $('#hybridization_date').show();
-    } else {
-      $('#hybridization_date').hide();
-    }
+    $('.chip_hybridized:checked').closest('div').find('.hybridization_date').show();
+    $('.chip_hybridized').not(':checked').closest('div').find('.hybridization_date').hide();
   }
 
   $("#bedata").click(function(){
@@ -148,7 +143,7 @@ $(document).ready(function(){
     updateCostEstimate();
   });
 
-  $('#chip_hybridized').click(function(evt) {
+  $('.chip_hybridized').click(function(evt) {
     setHybridizationDateVisibility();
   });
 

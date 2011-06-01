@@ -18,7 +18,13 @@ class SampleSet < ActiveRecord::Base
 
   def chips_attributes=(attributes)
     sort_attributes_numerically(attributes).each do |key, chip_attributes|
-      chip = chips.build(chip_attributes.merge(:sample_set => self))
+      chip = chips.find_by_id(chip_attributes[:id])
+
+      if(chip)
+        chip.update_attributes(chip_attributes.merge(:sample_set => self))
+      else
+        chips.build(chip_attributes.merge(:sample_set => self))
+      end
     end
   end
 
@@ -94,6 +100,11 @@ class SampleSet < ActiveRecord::Base
 
     SampleSet.find(:all, :include => [:project, :chips],
       :conditions => ["projects.lab_group_id IN (?) AND chips.status = ?", lab_group_ids, status])
+  end
+
+  def available_samples
+    Sample.find(:all, :include => {:microarray => :chip},
+      :conditions => ["chips.status = 'submitted' OR microarray_id IS NULL OR chip_id IN (?)", chip_ids])
   end
 
   private

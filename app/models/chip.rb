@@ -8,10 +8,14 @@ class Chip < ActiveRecord::Base
   validate :no_redundant_samples
 
   def microarrays_attributes=(attributes)
-    microarrays.clear
-
     sort_attributes_numerically(attributes).each do |key, microarray_attributes|
-      microarray = microarrays.build(microarray_attributes.merge(:chip => self))
+      microarray = microarrays.find_by_id(microarray_attributes[:id])
+
+      if(microarray)
+        microarray.update_attributes(microarray_attributes.merge(:chip => self))
+      else
+        microarrays.build(microarray_attributes.merge(:chip => self))
+      end
     end
   end
 
@@ -94,7 +98,7 @@ class Chip < ActiveRecord::Base
       attributes["status"] = "hybridized"
     elsif hybridized == "0"
       attributes["status"] = "submitted"
-      attributes.delete("hybridization_date")
+      attributes["hybridization_date"] = nil
     end
 
     super

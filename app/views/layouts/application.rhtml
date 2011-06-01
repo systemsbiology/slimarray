@@ -12,6 +12,7 @@
         'jquery.form.js', 'jquery.validate.js', 'jrails.js', 'jquery.form.wizard-3.0.4.min.js', :cache => true  %>
       <%= javascript_include_tag 'application' %>
       <%= javascript_tag "var samples_url = '#{url_for(:controller => "samples", :only_path => false)}'" %>
+      <%= javascript_tag "var root_url = '#{root_url}'" %>
   </head>
   <body>
     <div id="title_bar">

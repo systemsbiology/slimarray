@@ -27,9 +27,9 @@ class ChipsController < ApplicationController
 
   # GET /chips/1/edit
   def edit
-    @chip = Chip.find(params[:id])
-    @layout = @chip.layout
-    @available_samples = @chip.available_samples
+    sample_set = Chip.find(params[:id]).sample_set
+
+    redirect_to edit_sample_set_url(sample_set)
   end
 
   # PUT /chips/1

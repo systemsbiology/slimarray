@@ -1,0 +1,53 @@
+<div class="chip">
+  <%= error_messages_for 'chip' %>
+
+  <%
+     @layout = chip.layout
+     @prefix = "#{chip_form.object_name}[microarrays_attributes]"
+  %>
+
+  <p><%= chip_form.label :name, "Chip Name" %>
+  <%= chip_form.text_field :name %></p>
+
+  <p><%= chip_form.label :hybridized %>
+  <%= chip_form.check_box :hybridized, :class => "chip_hybridized" %></p>
+
+  <div class="hybridization_date">
+    <p><%= chip_form.label :hybridization_date %>
+    <%= chip_form.date_select :hybridization_date %></p>
+  </div>
+
+  <table class="simple">
+    <% @layout.each do |section| %>
+      <tr>
+        <td>
+          <%= section[:title] %>
+        </td>
+        <td>
+          <table class="simple">
+            <% section[:samples].each do |sample| %>
+              <tr>
+                <td>
+                  <%= sample[:title] %>
+                  <%= hidden_field_tag "#{@prefix}[#{section[:array]}][id]", section[:microarray_id] %>
+                  <%= hidden_field_tag "#{@prefix}[#{section[:array]}][array_number]", section[:array] %>
+                </td>
+                <td>
+                  <select name="<%= @prefix %>[<%= section[:array] %>][sample_ids][<%= sample[:channel] %>]">
+                    <option value="0">- None -</option>
+                    <%= options_from_collection_for_select(
+                    @available_samples, :id, :short_and_long_name_with_label, sample[:sample_id]) %>
+                  </select>
+                  <br/>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </td>
+        <td>
+          Raw data path: <%= text_field_tag "#{@prefix}[#{section[:array]}][raw_data_path]", section[:raw_data_path], :size => 50 %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>
