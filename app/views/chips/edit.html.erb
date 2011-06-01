@@ -26,11 +26,11 @@
                 <tr>
                   <td>
                     <%= sample[:title] %>
-                    <%= hidden_field_tag "chip[microarrays_attributes][#{sample[:array]}][id]", sample[:microarray_id] %>
-                    <%= hidden_field_tag "chip[microarrays_attributes][#{sample[:array]}][array_number]", sample[:array] %>
+                    <%= hidden_field_tag "chip[microarrays_attributes][#{section[:array]}][id]", section[:microarray_id] %>
+                    <%= hidden_field_tag "chip[microarrays_attributes][#{section[:array]}][array_number]", section[:array] %>
                   </td>
                   <td>
-                    <select name="chip[microarrays_attributes][<%= sample[:array] %>][sample_ids][<%= sample[:channel] %>]">
+                    <select name="chip[microarrays_attributes][<%= section[:array] %>][sample_ids][<%= sample[:channel] %>]">
                       <option value="0">- None -</option>
                       <%= options_from_collection_for_select(
                       @available_samples, :id, :short_and_long_name_with_label, sample[:sample_id]) %>
@@ -40,6 +40,9 @@
                 </tr>
               <% end %>
             </table>
+          </td>
+          <td>
+            Raw data path: <%= text_field_tag "chip[microarrays_attributes][#{section[:array]}][raw_data_path]", section[:raw_data_path], :size => 50 %>
           </td>
         </tr>
       <% end %>

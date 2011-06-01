@@ -118,12 +118,16 @@ class Chip < ActiveRecord::Base
     if arrays_per_chip == 1
       # 1 array/slide, 1 channel
       if channels == 1
+        microarray = microarrays.first
+
         layout = [
           { :title => "Chip/Slide",
+            :array => 1,
+            :microarray_id => microarray.id,
+            :raw_data_path => microarray.raw_data_path,
             :samples => [
-              { :title => "Channel 1", :array => 1, :channel => 1,
-                :sample_id => microarrays.first.samples.first.id,
-                :microarray_id => microarrays.first.id }
+              { :title => "Channel 1", :channel => 1,
+                :sample_id => microarray.samples.first.id }
             ]
           }
         ]
@@ -134,11 +138,14 @@ class Chip < ActiveRecord::Base
 
         layout = [{
           :title => "Chip/Slide",
+          :array => 1,
+          :microarray_id => microarray_id,
+          :raw_data_path => microarray.raw_data_path,
           :samples => 
           (1..channels).collect do |channel|
             sample_id = microarray.samples[channel-1].id
-            { :title => "Channel #{channel}", :array => 1, :channel => channel,
-              :sample_id => sample_id, :microarray_id => microarray_id }
+            { :title => "Channel #{channel}", :channel => channel,
+              :sample_id => sample_id }
           end
         }]
       end
@@ -153,9 +160,12 @@ class Chip < ActiveRecord::Base
 
           layout << {
             :title => "Array #{array}",
+            :array => array,
+            :microarray_id => microarray_id,
+            :raw_data_path => microarray.raw_data_path,
             :samples => [
-              { :title => "Channel 1", :array => array, :channel => 1,
-                :sample_id => sample_id, :microarray_id => microarray_id }
+              { :title => "Channel 1", :channel => 1,
+                :sample_id => sample_id }
             ]
           }
         end
@@ -167,11 +177,14 @@ class Chip < ActiveRecord::Base
 
           layout << {
             :title => "Array #{array}",
+            :array => array,
+            :microarray_id => microarray_id,
+            :raw_data_path => microarray.raw_data_path,
             :samples => (1..channels).collect do |channel|
               sample = microarray && microarray.samples[channel-1]
               sample_id = sample && sample.id
-              { :title => "Channel #{channel}", :array => array,
-                :channel => channel, :sample_id => sample_id, :microarray_id => microarray_id }
+              { :title => "Channel #{channel}",
+                :channel => channel, :sample_id => sample_id }
             end
           }
         end
