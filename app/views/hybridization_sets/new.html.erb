@@ -2,13 +2,23 @@
 
 <% form_tag :hybridization_sets do %>
   <% @chips.each_with_index do |chip, index| %>
-    <%= hidden_field_tag "hybridization_set[chips][#{index}][id]", chip.id %>
-    Chip Type <%= chip.sample_set.chip_type.name_and_short_name %><br/>
-    Chip Name 
-    <%= text_field_tag "hybridization_set[chips][#{index}][name]", chip.name || chip.default_name %>
+    <% if chip.microarrays.size > 1 %>
+      <p>
+        <%= hidden_field_tag "hybridization_set[chips][#{index}][id]", chip.id %>
+        Chip Type <%= chip.sample_set.chip_type.name_and_short_name %><br/>
+        Chip Name 
+        <%= text_field_tag "hybridization_set[chips][#{index}][name]", chip.name || chip.default_name, :size => 75 %><br/>
 
-    <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+        <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+      </p>
+    <% else %>
+      <%= hidden_field_tag "hybridization_set[chips][#{index}][id]", chip.id %>
+      <%= text_field_tag "hybridization_set[chips][#{index}][name]", chip.name || chip.default_name, :size => 75 %> 
+      <%= chip.microarrays.first.samples.collect{|s| s.short_sample_name}.join(", ") %> : 
+      <%= chip.sample_set.chip_type.name_and_short_name %>
+      <br/>
+    <% end %>
   <% end %>
 
-  <%= submit_tag "Record Hybridizations" %>
+  <p><%= submit_tag "Record Hybridizations" %></p>
 <% end %>

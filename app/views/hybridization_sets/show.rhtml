@@ -1,9 +1,21 @@
 <h2>Hybridizations Recorded:</h2>
 
-<% @hybridization_set.chips.each_with_index do |chip, index| %>
-  <p>Chip Name: <%=h chip.name %></br>
-  Hybridization Date: <%=h chip.hybridization_date %><br/>
+<table class="simple">
+  <% @hybridization_set.chips.sort{|a,b| a.name <=> b.name}.each_with_index do |chip, index| %>
+    <tr>
+      <% if chip.microarrays.size > 1 %>
+        <td colspan="3">
+          <p>Chip Name: <%=h chip.name %></br>
+          Hybridization Date: <%=h chip.hybridization_date %><br/>
 
-  <%= render :partial => "chips/show", :locals => {:chip => chip} %>
-  </p>
-<% end %>
+          <%= render :partial => "chips/show", :locals => {:chip => chip} %>
+          </p>
+        </td>
+      <% else %>
+        <td><%= chip.microarrays.first.samples.collect{|s| s.short_sample_name}.join(", ") %></td>
+        <td><%= chip.name %></td>
+        <td><%= chip.sample_set.chip_type.name_and_short_name %></td>
+      <% end %>
+    <% end %>
+  </tr>
+</table>

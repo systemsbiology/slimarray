@@ -27,7 +27,7 @@ body {
     border-bottom: solid 1px;
 }
 
-h1, h2, a { display: none; }
+h1, h2 { display: none; }
 
 .fieldset {
 	width:300px; }
@@ -114,3 +114,14 @@ th {
   font-size: 12px;
   list-style: square;
 }
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+table.simple {
+  border-collapse: collapse;
+  margin: 5px;
+}
+
