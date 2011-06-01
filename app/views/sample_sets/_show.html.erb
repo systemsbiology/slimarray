@@ -7,17 +7,17 @@
     <%= image_tag 'expanded.png', :class => "expanded_icon" %> <%=h sample_set.name %>
       <%= link_to 'Edit', edit_sample_set_path(sample_set) %>
     <div class="sample_set_details">
-      <% sample_set.chips.each do |chip| %>
-        <table>
+      <table class="simple">
+        <% sample_set.chips.each do |chip| %>
           <tr>
-            <td><%= check_box_tag "chip[#{chip.id}]" %></td>
-            <td>
+            <td class="outer"><%= check_box_tag "chip[#{chip.id}]" %></td>
+            <td class="outer">
               <%= render :partial => "chips/show", :locals => {:chip => chip} %>
             </td>
-            <td><%= link_to 'Destroy', chip, :method => :delete, :confirm => "Are you sure you want to destroy this chip?" %></td>
+            <td class="outer"><%= link_to 'Destroy', chip, :method => :delete, :confirm => "Are you sure you want to destroy this chip?" %></td>
           </tr>
-        </table>
-      <% end %>
+        <% end %>
+      </table>
     </div>
   </div>
 </div>

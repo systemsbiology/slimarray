@@ -1,9 +1,13 @@
-<table class="simple">
-  <tr>
-    <th>Array</th>
-    <% (1..chip.sample_set.service_option.channels).each do |channel| %>
-      <th>Sample <%= channel %></th>
-    <% end %>
-  </tr>
-  <%= render :partial => "microarrays/show", :collection => chip.microarrays, :as => :microarray %>
-</table>
+<% if chip.microarrays.size > 1 %>
+  <table class="simple">
+    <tr>
+      <th>Array</th>
+      <% (1..chip.sample_set.service_option.channels).each do |channel| %>
+        <th>Sample <%= channel %></th>
+      <% end %>
+    </tr>
+    <%= render :partial => "microarrays/show", :collection => chip.microarrays, :as => :microarray, :locals => {:table => true} %>
+  </table>
+<% else %>
+    <%= render :partial => "microarrays/show", :collection => chip.microarrays, :as => :microarray, :locals => {:table => false} %>
+<% end %>

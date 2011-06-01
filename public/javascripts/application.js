@@ -11,11 +11,12 @@ $(document).ready(function(){
     }
   }
 
-  function showServiceOptions() {
-    var sel = $("#sample_set_chip_type_id option:selected")[0] &&
-              $("#sample_set_chip_type_id option:selected")[0].value;
+  function showServiceOptions(overwrite) {
+    var existing = $('#sample_set_service_option_id').attr('value');
 
-    if(sel) {
+    var sel = $("#sample_set_chip_type_id option:selected").attr('value');
+
+    if( (existing === "" || overwrite) && sel !== "") {
       $.get(root_url + 'chip_types/' + sel + '/service_options', function(data) {
         $('#sample_set_service_options').html(data);
       });
@@ -136,7 +137,7 @@ $(document).ready(function(){
   });
 
   $('#sample_set_chip_type_id').change(function() {
-    showServiceOptions();
+    showServiceOptions(true);
   });
 
   $('#sample_set_service_options,#sample_set_number_of_samples').change(function() {
@@ -147,6 +148,7 @@ $(document).ready(function(){
     setHybridizationDateVisibility();
   });
 
+  showServiceOptions(false);
   updateCostEstimate();
   setHybridizationDateVisibility();
 

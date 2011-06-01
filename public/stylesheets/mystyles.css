@@ -209,6 +209,11 @@ table.simple td, table.simple th {
   padding: 2px;
 }
 
+table.simple td.outer {
+  border: 1pt inset #666;
+  padding: 10px;
+}
+
 label.error {
   margin-left: 1em;
   color: #D00;

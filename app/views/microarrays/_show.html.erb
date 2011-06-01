@@ -1,6 +1,12 @@
-<tr>
-  <td><%= microarray.array_number %></td>
+<% if table %>
+  <tr>
+    <td><%= microarray.array_number %></td>
+    <% microarray.samples.each do |sample| %>
+      <td><%= link_to sample.short_and_long_name_with_label, edit_sample_path(sample) %></td>
+    <% end %>
+  </tr>
+<% else %>
   <% microarray.samples.each do |sample| %>
-    <td><%= link_to sample.short_and_long_name_with_label, edit_sample_path(sample) %></td>
+    <%= link_to sample.short_and_long_name_with_label, edit_sample_path(sample) %>
   <% end %>
-</tr>
+<% end %>
