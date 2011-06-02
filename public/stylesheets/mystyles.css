@@ -219,3 +219,10 @@ label.error {
   color: #D00;
 }
 
+.expanded_icon, .collapsed_icon {
+  padding: 3px;
+}
+
+.sample_set {
+  font-size: 13px;
+}
