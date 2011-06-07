@@ -9,7 +9,8 @@ describe ChipsController do
 
   describe "GET 'edit'" do
     before(:each) do
-      @chip = mock_model(Chip)
+      @sample_set = mock_model(SampleSet)
+      @chip = mock_model(Chip, :sample_set => @sample_set)
       @layout = mock("Layout")
       @available_sample = mock("Available Samples")
       Chip.stub!(:find).and_return(@chip)
@@ -22,13 +23,8 @@ describe ChipsController do
       get 'edit', :id => "23"
     end
 
-    it "generates the chip layout" do
-      @chip.should_receive(:layout).and_return(@layout)
-      get 'edit', :id => "23"
-    end
-      
-    it "loads available samples" do
-      @chip.should_receive(:available_samples).and_return(@available_samples)
+    it "finds the associated sample set" do
+      @chip.should_receive(:sample_set).and_return(@sample_set)
       get 'edit', :id => "23"
     end
   end
