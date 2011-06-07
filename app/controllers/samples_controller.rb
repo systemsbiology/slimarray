@@ -209,7 +209,7 @@ Get detailed information about a single sample.
         short_sample_name                       =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
         sample_name                             =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
         microarray.chip.status                  =~ "%#{params[:status]}%" if params[:status].present? 
-        microarray.chip.sample_set.sbeams_user  =~ "%#{params[:sbeams_user]}%" if params[:sbeams_user].present?                
+        microarray.chip.sample_set.submitted_by =~ "%#{params[:submitted_by]}%" if params[:submitted_by].present?                
         microarray.chip.sample_set.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      

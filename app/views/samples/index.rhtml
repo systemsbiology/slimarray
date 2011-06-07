@@ -19,11 +19,11 @@
 
   <%= jqgrid("Samples", "sample_grid", @grid_action,
     [
-      { :field => "submission_date", :label => "Date Submitted", :width => 150 },
+      { :field => "sample_sets.submission_date", :label => "Date Submitted", :width => 150 },
       { :field => "short_sample_name", :label => "Name On Tube", :width => 130 },
       { :field => "sample_name", :label => "Sample Description", :width => 350 },
       { :field => "status", :label => "Status", :width => 80 },
-      { :field => "sbeams_user", :label => "User", :width => 80 },
+      { :field => "sample_sets.submitted_by", :label => "User", :width => 80 },
       { :field => "projects.name", :label => "Project", :width => 150 },
     ],
     :height => 550,
