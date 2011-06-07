@@ -208,8 +208,8 @@ Get detailed information about a single sample.
         microarray.chip.sample_set.submission_date =~ "%#{params["sample_sets.submission_date"]}%" if params["sample_sets.submission_date"].present?                
         short_sample_name                          =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
         sample_name                                =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
-        microarray.chip.status                     =~ "%#{params[:status]}%" if params[:status].present? 
-        microarray.chip.sample_set.submitted_by    =~ "%#{params[:submitted_by]}%" if params[:submitted_by].present?                
+        microarray.chip.status                     =~ "%#{params["chips.status"]}%" if params["chips.status"].present? 
+        microarray.chip.sample_set.submitted_by    =~ "%#{params["sample_sets.submitted_by"]}%" if params["sample_sets.submitted_by"].present?                
         microarray.chip.sample_set.project.name    =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      

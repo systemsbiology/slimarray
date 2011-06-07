@@ -9,9 +9,9 @@ class ChipsController < ApplicationController
     chips = Chip.find(:all, :include => {:sample_set => :project}) do
       if params[:_search] == "true"
         hybridization_date      =~ "%#{params[:hybridization_date]}%" if params[:hybridization_date].present?
-        name                    =~ "%#{params[:name]}%" if params[:name].present?  
+        name                    =~ "%#{params["name"]}%" if params["name"].present?  
         status                  =~ "%#{params[:status]}%" if params[:status].present? 
-        sample_set.submitted_by =~ "%#{params[:submitted_by]}%" if params[:submitted_by].present?                
+        sample_set.submitted_by =~ "%#{params["sample_sets.submitted_by"]}%" if params["sample_sets.submitted_by"].present?                
         sample_set.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      

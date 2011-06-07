@@ -1,14 +1,13 @@
 <%= jqgrid("Hybridizations", "data_grid", grid_chips_path,
   [
     { :field => "hybridization_date", :label => "Hybridization Date", :width => 150 },
-    { :field => "chips.name", :label => "Chip Name", :width => 200 },
+    { :field => "name", :label => "Chip Name", :width => 200 },
     { :field => "status", :label => "Status", :width => 80 },
     { :field => "sample_sets.submitted_by", :label => "User", :width => 100 },
     { :field => "projects.name", :label => "Project", :width => 250 },
   ],
   :height => 550,
   :sort_column => "hybridization_date DESC, chips.id ASC",
-  #:sort_order => "desc",
   :rows_per_page => 25,
   :multi_selection => true
 ) %>
