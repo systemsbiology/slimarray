@@ -25,7 +25,7 @@ class Notifier < ActionMailer::Base
   def qc_outlier_notification(qc_set)
     recipients UserProfile.notify_of_qc_outliers.collect{|x| x.user.email}.join(",")
     from       %("SLIMarray" <slimarray@#{`hostname`.strip}>)
-    subject    "[SLIMarray] QC Thresolds exceeded for #{qc_set.hybridization.sample_names}"
+    subject    "[SLIMarray] QC Thresolds exceeded for #{qc_set.microarray.name}"
     body       :qc_set => qc_set
   end
 
