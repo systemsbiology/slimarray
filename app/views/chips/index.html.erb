@@ -1,9 +1,9 @@
 <%= jqgrid("Hybridizations", "data_grid", grid_chips_path,
   [
     { :field => "hybridization_date", :label => "Hybridization Date", :width => 150 },
-    { :field => "name", :label => "Chip Name", :width => 200 },
+    { :field => "chips.name", :label => "Chip Name", :width => 200 },
     { :field => "status", :label => "Status", :width => 80 },
-    { :field => "submitted_by", :label => "User", :width => 100 },
+    { :field => "sample_sets.submitted_by", :label => "User", :width => 100 },
     { :field => "projects.name", :label => "Project", :width => 250 },
   ],
   :height => 550,
