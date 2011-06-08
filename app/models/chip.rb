@@ -166,7 +166,7 @@ class Chip < ActiveRecord::Base
             :title => "Array #{array}",
             :array => array,
             :microarray_id => microarray_id,
-            :raw_data_path => microarray.raw_data_path,
+            :raw_data_path => microarray && microarray.raw_data_path,
             :samples => [
               { :title => "Channel 1", :channel => 1,
                 :sample_id => sample_id }
