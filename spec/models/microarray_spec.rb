@@ -91,7 +91,7 @@ describe Microarray do
     microarray.reload.create_gcos_import_file
 
     # make sure gcos file was created, then delete it
-    expected_file_path = "#{RAILS_ROOT}/#{Date.today.strftime("%Y%m%d")}_01_test.txt"
+    expected_file_path = "#{RAILS_ROOT}/1234.txt"
     File.exists?(expected_file_path).should be_true
     FileUtils.rm(expected_file_path)
   end
@@ -115,7 +115,7 @@ describe Microarray do
     microarray.reload.create_agcc_array_file
 
     # make sure gcos file was created, then delete it
-    expected_file_path = "#{RAILS_ROOT}/#{Date.today.strftime("%Y%m%d")}_01_test.ARR"
+    expected_file_path = "#{RAILS_ROOT}/1234.ARR"
     File.exists?(expected_file_path).should be_true
     FileUtils.rm(expected_file_path)
   end

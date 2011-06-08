@@ -157,8 +157,7 @@ class Microarray < ActiveRecord::Base
     return unless chip.sample_set && chip.sample_set.chip_type.platform && chip.sample_set.chip_type.platform.name == "Affymetrix"
 
     # open an output file for writing
-    gcos_file = File.new(SiteConfig.gcos_output_path + "/" + chip.hybridization_date_number_string +
-                "_" + sample.sample_name + ".txt", "w")
+    gcos_file = File.new(SiteConfig.gcos_output_path + "/" + chip.name + ".txt", "w")
 
     # gather individual and group naming scheme info, if a naming scheme is being used
     if chip.sample_set.naming_scheme_id != nil
@@ -207,7 +206,7 @@ class Microarray < ActiveRecord::Base
 
     gcos_file << "\n"
     gcos_file << "[EXPERIMENT]\n"
-    gcos_file << "ExperimentName=" + chip.hybridization_date_number_string + "_" + sample.sample_name + "\n"
+    gcos_file << "ExperimentName=" + chip.name + "\n"
     gcos_file << "ArrayType=" + chip.sample_set.chip_type.short_name + "\n"
     gcos_file << "ExperimentUser=affybot\n"
     gcos_file << "ExperimentUpdate=0\n"
@@ -245,11 +244,10 @@ class Microarray < ActiveRecord::Base
                                       "MasterFileGUID" => chip_type_name + "_MASTER",
                                       "LibraryPackageName" => chip_type.library_package,
                                       "GUID" => Guid.new,
-                                      "ArrayName" => (chip.hybridization_date_number_string + "_" + sample.sample_name),
+                                      "ArrayName" => (chip.name),
                                       "MediaType" => 'Cartridge'})
 
-    agcc_file = File.new(SiteConfig.agcc_output_path + "/" + chip.hybridization_date_number_string +
-                  "_" + sample.sample_name + ".ARR", "w")
+    agcc_file = File.new(SiteConfig.agcc_output_path + "/" + chip.name + ".ARR", "w")
 
     d.write(agcc_file)
     agcc_file.close
