@@ -6,13 +6,13 @@ class ChipsController < ApplicationController
   end
 
   def grid
-    chips = Chip.find(:all, :include => {:sample_set => :project}) do
+    chips = Chip.find(:all, :include => {:microarrays => {:samples => :project}}) do
       if params[:_search] == "true"
         hybridization_date      =~ "%#{params[:hybridization_date]}%" if params[:hybridization_date].present?
         name                    =~ "%#{params["name"]}%" if params["name"].present?  
         status                  =~ "%#{params[:status]}%" if params[:status].present? 
         sample_set.submitted_by =~ "%#{params["sample_sets.submitted_by"]}%" if params["sample_sets.submitted_by"].present?                
-        sample_set.project.name =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+        project.name            =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
@@ -20,7 +20,7 @@ class ChipsController < ApplicationController
 
     render :json => chips.to_jqgrid_json(
       [:hybridization_date, :name, :status, "sample_set.submitted_by",
-       "sample_set.project.name"], 
+       "microarrays.first.samples.first.project.name"], 
       params[:page], params[:rows], chips.total_entries
     )
   end

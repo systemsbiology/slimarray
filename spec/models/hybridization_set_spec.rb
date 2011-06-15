@@ -57,9 +57,13 @@ describe HybridizationSet do
     it "should create a single transaction for chips with the same date/lab/chip type" do
       project = create_project
       chip_type = create_chip_type
-      sample_set = create_sample_set(:project => project, :chip_type => chip_type)
+      sample_set = create_sample_set(:chip_type => chip_type)
       @chip_1.update_attributes(:sample_set => sample_set)
+      microarray_1 = create_microarray(:chip => @chip_1)
+      sample_1 = create_sample(:microarray => microarray_1, :project => project)
       @chip_2.update_attributes(:sample_set => sample_set)
+      microarray_2 = create_microarray(:chip => @chip_2)
+      sample_2 = create_sample(:microarray => microarray_2, :project => project)
 
       do_record
 
@@ -76,10 +80,14 @@ describe HybridizationSet do
       project_1 = create_project
       project_2 = create_project
       chip_type = create_chip_type
-      sample_set_1 = create_sample_set(:project => project_2, :chip_type => chip_type)
+      sample_set_1 = create_sample_set(:chip_type => chip_type)
       @chip_1.update_attributes(:sample_set => sample_set_1)
-      sample_set_2 = create_sample_set(:project => project_2, :chip_type => chip_type)
+      microarray_1 = create_microarray(:chip => @chip_1)
+      sample_1 = create_sample(:microarray => microarray_1, :project => project_1)
+      sample_set_2 = create_sample_set(:chip_type => chip_type)
       @chip_2.update_attributes(:sample_set => sample_set_2)
+      microarray_2 = create_microarray(:chip => @chip_2)
+      sample_2 = create_sample(:microarray => microarray_2, :project => project_2)
 
       do_record
 

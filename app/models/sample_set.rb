@@ -4,17 +4,16 @@ class SampleSet < ActiveRecord::Base
   has_many :chips
 
   belongs_to :chip_type
-  belongs_to :project
   belongs_to :naming_scheme
   belongs_to :service_option
-  validates_associated :chip_type, :project, :service_option
+  validates_associated :chip_type, :service_option
 
-  validates_presence_of :submission_date, :submitted_by, :chip_type_id, :project_id
+  validates_presence_of :submission_date, :submitted_by, :chip_type_id
 
   after_create :check_chip_inventory, :send_facility_notification, :send_approval_request, :record_chip_transactions,
     :mark_as_hybridized
 
-  attr_accessor :number, :already_hybridized
+  attr_accessor :number, :already_hybridized, :project_id
 
   def chips_attributes=(attributes)
     sort_attributes_numerically(attributes).each do |key, chip_attributes|
@@ -98,7 +97,7 @@ class SampleSet < ActiveRecord::Base
   def self.accessible_to_user_with_status(user, status)
     lab_group_ids = user.get_lab_group_ids
 
-    SampleSet.find(:all, :include => [:project, :chips],
+    SampleSet.find(:all, :include => [{:chips => {:microarrays => {:samples => :project}}}, :chips],
       :conditions => ["projects.lab_group_id IN (?) AND chips.status = ?", lab_group_ids, status])
   end
 
@@ -184,5 +183,9 @@ class SampleSet < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def project
+    chips.first.try(:microarrays).try(:first).try(:samples).try(:first).try(:project)
   end
 end

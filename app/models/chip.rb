@@ -51,7 +51,7 @@ class Chip < ActiveRecord::Base
       date = chip.hybridization_date
       hybs_per_date_group_chip[date] ||= Hash.new
 
-      lab_group_id = chip.sample_set.project.lab_group_id
+      lab_group_id = chip.microarrays.first.samples.first.project.lab_group_id
       hybs_per_date_group_chip[date][lab_group_id] ||= Hash.new
       
       chip_type_id = chip.sample_set.chip_type_id

@@ -185,7 +185,7 @@ describe "Sample" do
     sample_set_2 = sample_2.microarray.chip.sample_set
     sample_set_2.chip_type_id.should == chip_types(:mouse).id
     sample_set_2.submitted_by.should == "robert"
-    sample_set_2.project_id.should == projects(:another).id
+    sample_2.project_id.should == projects(:another).id
     sample_2.organism.name.should == "Hyena"
   end
   
@@ -347,7 +347,7 @@ describe "Sample" do
     sample_1.organism.name.should == "Mouse"
     sample_set_1.chip_type.name.should == "Mouse 430 2.0"
     sample_set_1.submitted_by.should == "bob"
-    sample_set_1.project.name.should == "MouseGroup"
+    sample_1.project.name.should == "MouseGroup"
     chip_1.hybridization_date.should == Date.parse("2010-01-12")
     chip_1.chip_number.should == 1
     sample_1.microarray.raw_data_path.should == "/tmp/20100112_01_normal.CEL"
@@ -363,7 +363,7 @@ describe "Sample" do
     sample_2.organism.name.should == "Mouse"
     sample_set_2.chip_type.name.should == "Mouse 430 2.0"
     sample_set_2.submitted_by.should == "bob"
-    sample_set_2.project.name.should == "MouseGroup"
+    sample_2.project.name.should == "MouseGroup"
     chip_2.hybridization_date.should == Date.parse("2010-01-12")
     chip_2.chip_number.should == 2
     sample_2.microarray.raw_data_path.should == "/tmp/20100112_02_diseased.CEL"
@@ -391,20 +391,18 @@ describe "Sample" do
     lab_group_2 = mock_model(LabGroup)
     user = mock_model(User, :get_lab_group_ids => [lab_group_1.id])
     sample_1 = create_sample(
+      :project => create_project(:lab_group => lab_group_1),
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => create_project(:lab_group => lab_group_1)
-          )
+          :sample_set => create_sample_set
         )
       )
     )
     sample_2 = create_sample(
+      :project => create_project(:lab_group => lab_group_2),
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => create_project(:lab_group => lab_group_2)
-          )
+          :sample_set => create_sample_set
         )
       )
     )
@@ -417,29 +415,26 @@ describe "Sample" do
     lab_group_2 = mock_model(LabGroup)
     user = mock_model(User, :get_lab_group_ids => [lab_group_1.id])
     sample_1 = create_sample(
+      :project => create_project(:lab_group => lab_group_1),
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => create_project(:lab_group => lab_group_1)
-          )
+          :sample_set => create_sample_set
         )
       )
     )
     sample_2 = create_sample(
+      :project => create_project(:lab_group => lab_group_2),
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => create_project(:lab_group => lab_group_2)
-          )
+          :sample_set => create_sample_set
         )
       )
     )
     sample_3 = create_sample(
+      :project => create_project(:lab_group => lab_group_1),
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => create_project(:lab_group => lab_group_1)
-          )
+          :sample_set => create_sample_set
         )
       )
     )
@@ -463,38 +458,34 @@ describe "Sample" do
     project_1 = create_project(:name => "Prion")
     project_2 = create_project(:name => "Cancer")
     sample_1 = create_sample(
+      :project => project_1,
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => project_1
-          )
+          :sample_set => create_sample_set
         )
       )
     )
     sample_2 = create_sample(
+      :project => project_1,
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => project_1
-          )
+          :sample_set => create_sample_set
         )
       )
     )
     sample_3 = create_sample(
+      :project => project_1,
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => project_1
-          )
+          :sample_set => create_sample_set
         )
       )
     )
     sample_4 = create_sample(
+      :project => project_2,
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => project_2
-          )
+          :sample_set => create_sample_set
         )
       )
     )
@@ -580,40 +571,42 @@ describe "Sample" do
     project_2 = create_project(:name => "RNA-Seq")
     chip_type = create_chip_type
     sample_1 = create_sample(
+      :project => project_1, 
       :microarray => create_microarray(
         :chip => create_chip(
           :sample_set => create_sample_set(
-            :project => project_1, :submission_date => '2009-05-01',
-            :naming_scheme_id => scheme.id, :chip_type => chip_type
+            :naming_scheme_id => scheme.id, :chip_type => chip_type,
+            :submission_date => '2009-05-01'
           )
         )
       )
     )
     sample_2 = create_sample(
+      :project => project_1, 
       :microarray => create_microarray(
         :chip => create_chip(
           :sample_set => create_sample_set(
-            :project => project_1, :submission_date => '2009-05-02'
+            :submission_date => '2009-05-02'
           )
         )
       )
     )
     sample_3 = create_sample(
+      :project => project_1, 
       :microarray => create_microarray(
         :chip => create_chip(
           :sample_set => create_sample_set(
-            :project => project_1, :submission_date => '2009-05-01',
+            :submission_date => '2009-05-01',
             :naming_scheme_id => scheme.id, :chip_type => chip_type
           )
         )
       )
     )
     sample_4 = create_sample(
+      :project => project_2,
       :microarray => create_microarray(
         :chip => create_chip(
-          :sample_set => create_sample_set(
-            :project => project_2
-          )
+          :sample_set => create_sample_set
         )
       )
     )

@@ -195,7 +195,7 @@ Get detailed information about a single sample.
 
         render :json => paged_samples.to_jqgrid_json(
           ["microarray.chip.sample_set.submission_date", :short_sample_name, :sample_name, "microarray.chip.status",
-           "microarray.chip.sample_set.submitted_by", "microarray.chip.sample_set.project.name"], 
+           "microarray.chip.sample_set.submitted_by", "project.name"], 
           params[:page], params[:rows], samples.size
         )
       }
@@ -203,14 +203,14 @@ Get detailed information about a single sample.
   end
 
   def grid
-    samples = Sample.find(:all, :include => {:microarray => {:chip => {:sample_set => :project}}}) do
+    samples = Sample.find(:all, :include => [{:microarray => {:chip => :sample_set}}, :project]) do
       if params[:_search] == "true"
         microarray.chip.sample_set.submission_date =~ "%#{params["sample_sets.submission_date"]}%" if params["sample_sets.submission_date"].present?                
         short_sample_name                          =~ "%#{params["short_sample_name"]}%" if params["short_sample_name"].present?
         sample_name                                =~ "%#{params[:sample_name]}%" if params[:sample_name].present?                
         microarray.chip.status                     =~ "%#{params["chips.status"]}%" if params["chips.status"].present? 
         microarray.chip.sample_set.submitted_by    =~ "%#{params["sample_sets.submitted_by"]}%" if params["sample_sets.submitted_by"].present?                
-        microarray.chip.sample_set.project.name    =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
+        project.name                               =~ "%#{params["projects.name"]}%" if params["projects.name"].present?                
       end
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
@@ -218,14 +218,15 @@ Get detailed information about a single sample.
 
     render :json => samples.to_jqgrid_json(
       ["microarray.chip.sample_set.submission_date", :short_sample_name, :sample_name, "microarray.chip.status",
-       "microarray.chip.sample_set.submitted_by", "microarray.chip.sample_set.project.name"], 
+       "microarray.chip.sample_set.submitted_by", "project.name"], 
       params[:page], params[:rows], samples.total_entries
     )
   end
 
   def approve
     accessible_projects = Project.accessible_to_user(current_user)
-    @samples = Sample.find(:all, :conditions => ["project_id IN (?) and status = ?",
+    @samples = Sample.find(:all, :include => {:microarray => :chip},
+                           :conditions => ["project_id IN (?) and chips.status = ?",
                            accessible_projects.collect{|p| p.id}, 'submitted'], :order => "id ASC")
   end
 

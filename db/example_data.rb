@@ -115,6 +115,7 @@ module FixtureReplacement
     s.sample_group_name = String.random(15)
     s.organism = default_organism
     s.label = default_label
+    s.project = default_project
   end
 
   attributes_for :site_config do |a|
@@ -180,7 +181,6 @@ module FixtureReplacement
   attributes_for :sample_set do |s|
     s.submission_date = Date.today
     s.chip_type = default_chip_type
-    s.project = default_project
     s.service_option = default_service_option
     s.submitted_by = String.random(8)
   end

@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  has_many :sample_sets
+  has_many :samples
   belongs_to :lab_group
   
   validates_presence_of :name, :budget
@@ -73,8 +73,7 @@ class Project < ActiveRecord::Base
   end
   
   def detail_hash
-    samples = Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
-                          :conditions => ["sample_sets.project_id =?", self.id])
+    samples = Sample.find(:all, :conditions => ["project_id =?", self.id])
 
     return {
       :id => id,
@@ -92,7 +91,6 @@ class Project < ActiveRecord::Base
   end
 
   def samples
-    Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
-      :conditions => ["sample_sets.project_id = ?", self.id])
+    Sample.find(:all, :conditions => ["project_id = ?", self.id])
   end
 end

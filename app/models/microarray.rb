@@ -36,12 +36,12 @@ class Microarray < ActiveRecord::Base
 
   api_reader :lab_group
   def lab_group
-    chip.sample_set.project.lab_group_id
+    sample.project.lab_group_id
   end
 
   api_reader :project
   def project
-    chip.sample_set.project_id
+    samples.first.try(:project_id)
   end
 
   api_reader :schemed_descriptors
@@ -81,7 +81,7 @@ class Microarray < ActiveRecord::Base
   def self.custom_find(user, params)
     # Fields that can be included in the SQL query
     query_fields = {
-      "project_id" => "sample_sets.project_id",
+      "project_id" => "samples.project_id",
       "naming_scheme_id" => "sample_sets.naming_scheme_id",
       "lab_group_id" => "projects.lab_group_id"
     }
@@ -98,8 +98,8 @@ class Microarray < ActiveRecord::Base
     end
 
     microarrays = find(:all, :include => {
-        :chip => {:sample_set => [{:chip_type => :platform}, :project, :naming_scheme]},
-        :samples => :label,
+        :chip => {:sample_set => [{:chip_type => :platform}, :naming_scheme]},
+        :samples => [:project, :label]
       },
       :conditions => conditions)
 
@@ -192,7 +192,7 @@ class Microarray < ActiveRecord::Base
     gcos_file << "[SAMPLE]\n"
     gcos_file << "SampleName=" + sample.sample_group_name + "\n"
     gcos_file << "SampleType=" + Organism.find(chip.sample_set.chip_type.organism_id).name + "\n"
-    gcos_file << "SampleProject=" + chip.sample_set.project.name + "\n"
+    gcos_file << "SampleProject=" + samples.first.project.name + "\n"
     gcos_file << "SampleUser=affybot\n"
     gcos_file << "SampleUpdate=1\n"
     gcos_file << "Array User Name=" + chip.sample_set.submitted_by + "\n"
@@ -255,15 +255,13 @@ class Microarray < ActiveRecord::Base
 
   def record_charge
     # set up a charge set if needed
-    project = chip.sample_set.project
-
     charge_period = ChargePeriod.find(:last)
     charge_period = ChargePeriod.create(:name => "Default") unless charge_period
 
     charge_set = ChargeSet.find_or_create_by_charge_period_id_and_lab_group_id_and_name(
       :charge_period_id => charge_period.id,
-      :lab_group_id => project.lab_group_id,
-      :name => project.name
+      :lab_group_id => samples.first.project.lab_group_id,
+      :name => samples.first.project.name
     )
 
     update_attributes(:charge_set_id => charge_set.id)

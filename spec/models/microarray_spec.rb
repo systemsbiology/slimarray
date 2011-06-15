@@ -20,10 +20,10 @@ describe Microarray do
       @user = mock_model(User)
       @project = create_project(:lab_group_id => @lab_group.id)
       @naming_scheme = create_naming_scheme
-      @sample_set = create_sample_set(:naming_scheme => @naming_scheme, :project => @project)
+      @sample_set = create_sample_set(:naming_scheme => @naming_scheme)
       @chip = create_chip(:sample_set => @sample_set)
       @microarray = create_microarray(:chip => @chip)
-      @sample = create_sample(:microarray => @microarray)
+      @sample = create_sample(:microarray => @microarray, :project => @project)
 
       @user.should_receive(:get_lab_group_ids).and_return( [@lab_group.id] )
     end
@@ -53,8 +53,8 @@ describe Microarray do
   it "should provide a summary hash" do
     naming_scheme = create_naming_scheme
     project = create_project
-    sample = create_sample(:sample_name => "1_hour")
-    sample_set = create_sample_set(:project => project, :naming_scheme => naming_scheme)
+    sample = create_sample(:project => project, :sample_name => "1_hour")
+    sample_set = create_sample_set(:naming_scheme => naming_scheme)
     chip = create_chip(:name => "251486827605", :sample_set => sample_set)
     microarray = create_microarray(:array_number => 2, :chip => chip, :samples => [sample], :raw_data_path => "/path/to/data")
 

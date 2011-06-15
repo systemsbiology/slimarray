@@ -9,9 +9,6 @@
 
   <p>Submitted By: <%=h "#{@sample_set.submitted_by} (#{User.find(@sample_set.submitted_by_id).full_name})" %></p>
   
-  <p><%= form.label :project_id, "Project" %><br>
-  <%= form.collection_select :project_id, @projects, :id, :name %></p>
-
   <p><%= form.label :chip_type_id, "Chip Type" %><br/>
   <%= form.collection_select :chip_type_id,
     @chip_types, :id, :name, {:prompt => true} %><br/>

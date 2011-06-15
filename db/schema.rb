@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110531202249) do
+ActiveRecord::Schema.define(:version => 20110615172749) do
 
   create_table "bioanalyzer_runs", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -352,7 +352,6 @@ ActiveRecord::Schema.define(:version => 20110531202249) do
   create_table "sample_sets", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "project_id"
     t.integer  "chip_type_id"
     t.integer  "naming_scheme_id"
     t.integer  "service_option_id"
@@ -364,7 +363,6 @@ ActiveRecord::Schema.define(:version => 20110531202249) do
 
   add_index "sample_sets", ["chip_type_id"], :name => "index_sample_sets_on_chip_type_id"
   add_index "sample_sets", ["naming_scheme_id"], :name => "index_sample_sets_on_naming_scheme_id"
-  add_index "sample_sets", ["project_id"], :name => "index_sample_sets_on_project_id"
   add_index "sample_sets", ["service_option_id"], :name => "index_sample_sets_on_service_option_id"
 
   create_table "sample_terms", :force => true do |t|
@@ -403,6 +401,7 @@ ActiveRecord::Schema.define(:version => 20110531202249) do
     t.datetime "updated_at"
     t.integer  "label_id"
     t.integer  "microarray_id"
+    t.integer  "project_id"
   end
 
   add_index "samples", ["amplified_quality_trace_id"], :name => "index_samples_on_amplified_quality_trace_id"

@@ -1,41 +1,35 @@
 sample_set1:
   chip_type: alligator
-  project: first
   submission_date: 2006-02-10
   chip_type: alligator
   submitted_by: bob
 
 sample_set2:
   chip_type: alligator
-  project: first
   submission_date: 2006-02-10
   chip_type: alligator
   submitted_by: bob
 
 sample_set3:
   chip_type: alligator
-  project: first
   submission_date: 2006-02-10
   chip_type: alligator
   submitted_by: bob
 
 sample_set4:
   chip_type: alligator
-  project: first
   submission_date: 2006-02-10
   chip_type: alligator
   submitted_by: bob
 
 sample_set5:
   chip_type: alligator
-  project: another
   submission_date: 2006-09-10
   chip_type: alligator
   submitted_by: bob
 
 sample_set6:
   naming_scheme: yeast_scheme
-  project: another
   submission_date: 2007-05-31
   chip_type: alligator
   submitted_by: bob

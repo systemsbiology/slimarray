@@ -34,7 +34,7 @@
               <th>Label</th>
             <% end %>
             <th>Organism</th>
-            <th>Chip Type</th>
+            <th>Project</th>
           </tr>
         </thead>
         <% section[:samples].each do |sample_info| %>
@@ -68,7 +68,9 @@
             <td><%= collection_select field_prefix, :organism_id, @organisms,
               :id, :name, {:prompt => true, :selected => @chip_type.organism_id} %></td>
             
-            <td><%=h @chip_type.name %></td>
+            <td><%= collection_select field_prefix, :project_id, @projects,
+              :id, :name, {:prompt => true, :selected => @project.id} %></td>
+
           </tr>
           <% @n += 1 %>
         <% end %>

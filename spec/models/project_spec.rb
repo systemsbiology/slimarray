@@ -107,12 +107,12 @@ describe "Project" do
     project.stub!(:lab_group_id).and_return(3)
     project.stub!(:lab_group).and_return(lab_group)
 
-    sample_set = create_sample_set(:project => project)
+    sample_set = create_sample_set
     chip = create_chip(:sample_set => sample_set)
     microarray = create_microarray(:chip => chip)
 
-    sample_1 = create_sample(:microarray => microarray)
-    sample_2 = create_sample(:microarray => microarray)
+    sample_1 = create_sample(:microarray => microarray, :project => project)
+    sample_2 = create_sample(:microarray => microarray, :project => project)
 
     project.detail_hash.should == {
       :id => project.id,

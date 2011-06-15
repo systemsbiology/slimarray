@@ -30,7 +30,6 @@ describe SampleSet do
           "chip_type_id" => @chip_type.id,
           "service_option_id" => @service_option.id,
           "submitted_by" => "bmarzolf",
-          "project_id" => @project.id,
           "chips_attributes" => {
             "1" => {
               "microarrays_attributes" => {
@@ -43,6 +42,7 @@ describe SampleSet do
                       "organism_id" => @chip_type.organism_id,
                       "label_id" => @label.id,
                       #"schemed_name"=>{"SampleKey"=>"YO 1"}
+                      "project_id" => @project.id,
                     }
                   }
                 },
@@ -55,6 +55,7 @@ describe SampleSet do
                       "organism_id" => @chip_type.organism_id,
                       "label_id" => @label.id,
                       #"schemed_name"=>{"SampleKey"=>"YO 2"}
+                      "project_id" => @project.id,
                     }
                   }
                 }
@@ -66,7 +67,6 @@ describe SampleSet do
       sample_set.should be_valid
       
       sample_set.attributes.should include({
-        "project_id" => @project.id,
         "submitted_by" => "bmarzolf",
         "submission_date" => Date.parse("2010-11-19"),
         "chip_type_id" => @chip_type.id,

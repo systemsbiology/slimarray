@@ -12,6 +12,7 @@ class Sample < ActiveRecord::Base
   belongs_to :fragmented_quality_trace, :class_name => "QualityTrace", :foreign_key => "fragmented_quality_trace_id"
   belongs_to :microarray
   belongs_to :label
+  belongs_to :project
   
   has_many :sample_terms, :dependent => :destroy
   has_many :sample_texts, :dependent => :destroy
@@ -137,7 +138,7 @@ class Sample < ActiveRecord::Base
         ]
 
         samples = Sample.find( :all, :conditions => "sample_sets.naming_scheme_id IS NULL",
-          :include => [:organism, {:microarray => {:chip => {:sample_set => [:project, :chip_type]}}}], :order => "samples.sample_name ASC" )
+          :include => [:organism, :project, {:microarray => {:chip => {:sample_set => :chip_type}}}], :order => "samples.sample_name ASC" )
 
         for sample in samples
           if(sample.microarray != nil)
@@ -164,7 +165,7 @@ class Sample < ActiveRecord::Base
             array_number,
             sample.organism.name,
             sample_set.submitted_by,
-            sample_set.project.name,
+            sample.project.name,
             "None"
           ]
         end
@@ -202,7 +203,7 @@ class Sample < ActiveRecord::Base
         csv << headings
 
         samples = Sample.find( :all, :conditions => ["sample_sets.naming_scheme_id = ?", scheme.id],
-          :include => [:organism, {:microarray => {:chip => {:sample_set => [:project, :chip_type]}}}], :order => "samples.sample_name ASC" )
+          :include => [:organism, :project, {:microarray => {:chip => {:sample_set => :chip_type}}}], :order => "samples.sample_name ASC" )
 
         current_row = 0
         for sample in samples
@@ -230,7 +231,7 @@ class Sample < ActiveRecord::Base
             array_number,
             sample.organism.name,
             sample_set.submitted_by,
-            sample_set.project.name,
+            sample.project.name,
             scheme.name
           ]
           # values for naming elements
@@ -467,13 +468,13 @@ class Sample < ActiveRecord::Base
           :short_sample_name => row[3],
           :sample_name => row[4],
           :sample_group_name => row[5],
-          :organism_id => organism.id
+          :organism_id => organism.id,
+          :project_id => project.id
         ) &&
         sample_set.update_attributes(
           :submission_date => row[2],
           :chip_type_id => chip_type.id,
-          :submitted_by => row[11],
-          :project_id => project.id
+          :submitted_by => row[11]
         )
       )
 
@@ -541,7 +542,7 @@ class Sample < ActiveRecord::Base
     return {
       :id => id,
       :user => sample_set.submitted_by,
-      :project => sample_set.project.name,
+      :project => project.name,
       :name_on_tube => short_sample_name,
       :sample_description => sample_name,
       :sample_group_name => sample_group_name,
@@ -579,7 +580,7 @@ class Sample < ActiveRecord::Base
     cutoff_date = age_limit ? Date.today - age_limit.to_i : 0
 
     samples = Sample.find(:all, 
-      :include => {:microarray => {:chip => {:sample_set => :project}}},
+      :include => [:project, {:microarray => {:chip => :sample_set}}],
       :conditions => [ "projects.lab_group_id IN (?) AND samples.updated_at > ?",
         user.get_lab_group_ids, cutoff_date ],
       :order => "submission_date DESC, samples.id ASC")
@@ -701,7 +702,7 @@ class Sample < ActiveRecord::Base
 
   def self.find_by_sanitized_conditions(conditions)
     accepted_keys = {
-      'project_id' => 'sample_sets.project_id',
+      'project_id' => 'samples.project_id',
       'submission_date' => 'sample_sets.submission_date',
       'chip_type_id' => 'sample_sets.chip_type_id',
       'organism_id' => 'chip_types.organism_id',
@@ -725,7 +726,7 @@ class Sample < ActiveRecord::Base
     sanitized_conditions.each do |condition|
       search_samples = Sample.find(
         :all,
-        :include => [:sample_terms, {:microarray => {:chip => {:sample_set => [:chip_type, :project]}}}],
+        :include => [:sample_terms, :project, {:microarray => {:chip => {:sample_set => :chip_type}}}],
         :conditions => condition
       )
 
