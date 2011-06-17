@@ -365,7 +365,7 @@ class NamingScheme < ActiveRecord::Base
 
   api_reader :project_ids
   def project_ids
-    projects = Project.find(:all, :include => :sample_sets, :conditions => {"sample_sets.naming_scheme_id" => id})
+    projects = Project.find(:all, :include => {:samples => {:microarray => {:chip => :sample_set}}}, :conditions => {"sample_sets.naming_scheme_id" => id})
 
     return projects.collect {|p| p.id}
   end
@@ -376,7 +376,7 @@ class NamingScheme < ActiveRecord::Base
     lab_group_ids = user.get_lab_group_ids
 
     populated_schemes = all_schemes.select do |scheme|
-      SampleSet.find(:all, :include => :project,
+      SampleSet.find(:all, :include => {:chips => {:microarrays => {:samples => :project}}},
         :conditions => ["naming_scheme_id = ? AND projects.lab_group_id IN (?)", scheme.id, lab_group_ids]).size > 0
     end
 

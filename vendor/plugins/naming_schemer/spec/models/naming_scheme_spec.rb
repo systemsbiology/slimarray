@@ -331,8 +331,14 @@ describe NamingScheme do
     project_1 = create_project
     project_2 = create_project
     project_3 = create_project
-    sample_set_1 = create_sample_set(:naming_scheme => scheme, :project => project_1)
-    sample_set_2 = create_sample_set(:naming_scheme => scheme, :project => project_2)
+    sample_set_1 = create_sample_set(:naming_scheme => scheme)
+    chip_1 = create_chip(:sample_set => sample_set_1)
+    microarray_1 = create_microarray(:chip => chip_1)
+    sample = create_sample(:microarray => microarray_1, :project => project_1)
+    sample_set_2 = create_sample_set(:naming_scheme => scheme)
+    chip_2 = create_chip(:sample_set => sample_set_2)
+    microarray_2 = create_microarray(:chip => chip_2)
+    sample = create_sample(:microarray => microarray_2, :project => project_2)
 
     scheme.reload.project_ids.should include(project_1.id)
     scheme.reload.project_ids.should include(project_2.id)
@@ -347,9 +353,18 @@ describe NamingScheme do
     project_1 = create_project(:lab_group => lab_group)
     project_2 = create_project(:lab_group => lab_group)
     project_3 = create_project
-    sample_set_1 = create_sample_set(:naming_scheme => scheme_1, :project => project_1)
-    sample_set_2 = create_sample_set(:naming_scheme => scheme_1, :project => project_2)
-    sample_set_3 = create_sample_set(:naming_scheme => scheme_2, :project => project_3)
+    sample_set_1 = create_sample_set(:naming_scheme => scheme_1)
+    chip_1 = create_chip(:sample_set => sample_set_1)
+    microarray_1 = create_microarray(:chip => chip_1)
+    sample = create_sample(:microarray => microarray_1, :project => project_1)
+    sample_set_2 = create_sample_set(:naming_scheme => scheme_1)
+    chip_2 = create_chip(:sample_set => sample_set_2)
+    microarray_2 = create_microarray(:chip => chip_2)
+    sample = create_sample(:microarray => microarray_2, :project => project_2)
+    sample_set_3 = create_sample_set(:naming_scheme => scheme_2)
+    chip_3 = create_chip(:sample_set => sample_set_3)
+    microarray_3 = create_microarray(:chip => chip_3)
+    sample = create_sample(:microarray => microarray_3, :project => project_3)
 
     NamingScheme.populated_for_user(user).should == [scheme_1]
   end

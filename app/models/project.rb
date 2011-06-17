@@ -89,8 +89,4 @@ class Project < ActiveRecord::Base
   def active_yes_or_no
     active ? "Yes" : "No"
   end
-
-  def samples
-    Sample.find(:all, :conditions => ["project_id = ?", self.id])
-  end
 end
