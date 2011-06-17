@@ -36,7 +36,7 @@ class Microarray < ActiveRecord::Base
 
   api_reader :lab_group
   def lab_group
-    sample.project.lab_group_id
+    samples.first.project.lab_group_id
   end
 
   api_reader :project
