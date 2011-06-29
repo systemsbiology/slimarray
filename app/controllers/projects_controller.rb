@@ -10,7 +10,6 @@ with any number of samples.
 
 class ProjectsController < ApplicationController
   before_filter :login_required
-  before_filter :staff_or_admin_required, :except => [:index, :new_inline, :create_inline]
   before_filter :load_dropdown_selections, :only => [:new, :new_inline, :create, :create_inline,
                                                      :edit, :update]
 
@@ -28,9 +27,8 @@ available when retrieving single projects (see GET /projects/[project id]).
 =end
   
   def index
-    @projects = Project.accessible_to_user(current_user, false)
-    @lab_groups_by_id = LabGroup.all_by_id
-    
+    @projects = Project.accessible_by(current_user)
+
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @projects.
@@ -55,7 +53,7 @@ Get detailed information about a single project.
 =end
   
   def show
-    @project = Project.find(params[:id])
+    @project = Project.accessible_by(current_user).find(params[:id])
 
     respond_to do |format|
       format.xml  { render :xml => @project.detail_hash }
@@ -93,11 +91,11 @@ Get detailed information about a single project.
   end
   
   def edit
-    @project = Project.find(params[:id])
+    @project = Project.accessible_by(current_user).find(params[:id])
   end
 
   def update
-    @project = Project.find(params[:id])
+    @project = Project.accessible_by(current_user).find(params[:id])
     
     begin
       if @project.update_attributes(params[:project])
@@ -108,13 +106,13 @@ Get detailed information about a single project.
       end
     rescue ActiveRecord::StaleObjectError
       flash[:warning] = "Unable to update information. Another user has modified this project."
-      @project = Project.find(params[:id])
+      @project = Project.accessible_by(current_user).find(params[:id])
       render :action => 'edit'
     end
   end
 
   def destroy    
-    Project.find(params[:id]).destroy
+    Project.accessible_by(current_user).find(params[:id]).destroy
 
     respond_to do |format|
       format.html { redirect_to projects_url }
@@ -124,13 +122,14 @@ Get detailed information about a single project.
   end
 
   def grid
-    projects = Project.find(:all) do
+    projects = Project.accessible_by(current_user).find(:all) do
       if params[:_search] == "true"
         name      =~ "%#{params[:name]}%" if params[:name].present?
         budget    =~ "%#{params[:budget]}%" if params[:budget].present?
         lab_group =~ "%#{params[:lab_group]}%" if params[:lab_group].present?
         active    =~ "%#{params[:active]}%" if params[:active].present?
       end
+      lab_group_id === current_user.get_lab_group_ids
       paginate :page => params[:page], :per_page => params[:rows]      
       order_by "#{params[:sidx]} #{params[:sord]}"
     end

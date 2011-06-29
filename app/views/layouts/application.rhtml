@@ -31,12 +31,13 @@
           <%= link_if_staff_or_admin 'Chip Types', chip_types_path, :wrap_in => 'li'%>
           <%= link_if_staff_or_admin 'Platforms', platforms_path , :wrap_in => 'li'%>
           <%= link_if_staff_or_admin 'QC Thresholds', qc_thresholds_path , :wrap_in => 'li'%>
+          <li class="category">Samples</li>
+          <li><%= link_to 'Bioanalyzer Results', bioanalyzer_runs_path %></li>
+          <li><%= link_to 'Samples', samples_path %></li>
           <% if SiteConfig.track_hybridizations? %>
-            <li class="category">Samples</li>
-            <li><%= link_to 'Bioanalyzer Results', bioanalyzer_runs_path %></li>
-            <li><%= link_to 'Samples', samples_path %></li>
             <li><%= link_to 'Hybridizations', chips_path %></li>
           <% end %>
+          <li><%= link_to 'Projects', projects_path %></li>
           <% if SiteConfig.track_charges? %>
             <% if current_user.staff_or_admin? %>
               <li class="category">Charges</li>
@@ -51,7 +52,6 @@
             <li><%= link_to 'Naming Schemes', naming_schemes_path %></li>
             <li><%= link_to 'Lab Groups', lab_groups_path %></li>
             <li><%= link_to 'Users', users_path %></li>
-            <li><%= link_to 'Projects', projects_path %></li>
             <li><%= link_to 'Organisms', organisms_path %></li>
           <% end %>
           <% if current_user.admin? %>

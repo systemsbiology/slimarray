@@ -15,6 +15,8 @@ class Project < ActiveRecord::Base
   
   cattr_accessor :cached_lab_groups_by_id
 
+  named_scope :accessible_by, lambda {|user| {:conditions => ["lab_group_id IN (?)", user.get_lab_group_ids]} }
+
   def lab_group_name
     @@cached_lab_groups_by_id ||= LabGroup.all_by_id
 

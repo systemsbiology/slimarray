@@ -14,16 +14,22 @@ describe ProjectsController do
       @project_1 = mock_model(Project)
       @project_2 = mock_model(Project)
       @projects = [@project_1, @project_2]
+      Project.stub!(:accessible_by).and_return(@projects)
     end
 
     describe "with a mime type of html" do
 
-      it "should render all the projects as html" do
-        Project.should_receive(:find).with(:all, :order => "name ASC").and_return(@projects)
+      it "should find all accessible projects" do
+        Project.should_receive(:accessible_by).with(@current_user).and_return(@projects)
+
         get :index
+      end
+
+      it "should render the view" do
+        get :index
+
         response.should be_success
         response.should render_template('index')
-        assigns[:projects].should == @projects
       end
       
     end
@@ -35,8 +41,10 @@ describe ProjectsController do
         @project_2.should_receive(:summary_hash).and_return( {:n => 2} )
 
         request.env["HTTP_ACCEPT"] = "application/xml"
-        Project.should_receive(:find).with(:all, :order => "name ASC").and_return(@projects)
+        Project.should_receive(:accessible_by).with(@current_user).and_return(@projects)
+
         get :index
+
         response.body.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
           "<records type=\"array\">\n  <record>\n    <n type=\"integer\">1</n>\n  " +
           "</record>\n  <record>\n    <n type=\"integer\">2</n>\n  </record>\n</records>\n"
@@ -51,9 +59,10 @@ describe ProjectsController do
         @project_2.should_receive(:summary_hash).and_return( {:n => 2} )
         
         request.env["HTTP_ACCEPT"] = "application/json"
-        Project.should_receive(:find).with(:all, :order => "name ASC").
-          and_return(@projects)
+        Project.should_receive(:accessible_by).with(@current_user).and_return(@projects)
+
         get :index
+
         response.body.should =~ /[{\"n\":\s*1},{\"n\":\s*2}]/
       end
     
@@ -72,7 +81,9 @@ describe ProjectsController do
 
       it "should render the requested project as xml" do
         request.env["HTTP_ACCEPT"] = "application/xml"
-        Project.should_receive(:find).with("37").and_return(@project)
+        accessible_projects = mock("Accessible projects")
+        Project.should_receive(:accessible_by).with(@current_user).and_return(accessible_projects)
+        accessible_projects.should_receive(:find).with("37").and_return(@project)
         get :show, :id => "37"
         response.body.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  " +
           "<n type=\"integer\">1</n>\n</hash>\n"
@@ -84,7 +95,9 @@ describe ProjectsController do
   
       it "should render the flow cell lane detail as json" do
         request.env["HTTP_ACCEPT"] = "application/json"
-        Project.should_receive(:find).with("37").and_return(@project)
+        accessible_projects = mock("Accessible projects")
+        Project.should_receive(:accessible_by).with(@current_user).and_return(accessible_projects)
+        accessible_projects.should_receive(:find).with("37").and_return(@project)
         get :show, :id => 37
         response.body.should =~ /\{\"n\":\s*1\}/
       end
@@ -177,7 +190,9 @@ describe ProjectsController do
       @current_user.should_receive(:accessible_lab_groups)
       
       @project = mock_model(Project)
-      Project.stub!(:find).and_return(@project)
+      @accessible_projects = mock("Accessible projects")
+      Project.stub!(:accessible_by).and_return(@accessible_projects)
+      @accessible_projects.stub!(:find).and_return(@project)
     end
 
     def do_get
@@ -195,7 +210,8 @@ describe ProjectsController do
     end
 
     it "should find the project requested" do
-      Project.should_receive(:find).and_return(@project)
+      Project.should_receive(:accessible_by).with(@current_user).and_return(@accessible_projects)
+      @accessible_projects.should_receive(:find).with("1").and_return(@project)
       do_get
     end
 
@@ -303,7 +319,9 @@ describe ProjectsController do
       @current_user.should_receive(:accessible_lab_groups)
 
       @project = mock_model(Project, :to_param => "1")
-      Project.stub!(:find).and_return(@project)
+      @accessible_projects = mock("Accessible projects")
+      Project.stub!(:accessible_by).and_return(@accessible_projects)
+      @accessible_projects.stub!(:find).and_return(@project)
     end
 
     describe "with successful update" do
@@ -314,7 +332,8 @@ describe ProjectsController do
       end
 
       it "should find the project requested" do
-        Project.should_receive(:find).with("1").and_return(@project)
+        Project.should_receive(:accessible_by).with(@current_user).and_return(@accessible_projects)
+        @accessible_projects.should_receive(:find).with("1").and_return(@project)
         do_put
       end
 
@@ -354,7 +373,9 @@ describe ProjectsController do
 
     before(:each) do
       @project = mock_model(Project, :destroy => true)
-      Project.stub!(:find).and_return(@project)
+      @accessible_projects = mock("Accessible projects")
+      Project.stub!(:accessible_by).and_return(@accessible_projects)
+      @accessible_projects.stub!(:find).and_return(@project)
     end
 
     def do_delete
@@ -362,7 +383,8 @@ describe ProjectsController do
     end
 
     it "should find the project requested" do
-      Project.should_receive(:find).with("1").and_return(@project)
+      Project.should_receive(:accessible_by).with(@current_user).and_return(@accessible_projects)
+      @accessible_projects.should_receive(:find).with("1").and_return(@project)
       do_delete
     end
 
