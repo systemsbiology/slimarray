@@ -16,4 +16,5 @@ gem 'guid', '0.1.1'
 group :test, :development do
   gem 'newrelic_rpm'
   gem 'ruby-debug'
+  gem 'rack-debug'
 end

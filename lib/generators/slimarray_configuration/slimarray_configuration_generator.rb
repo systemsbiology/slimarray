@@ -16,9 +16,6 @@ class SlimarrayConfigurationGenerator < Rails::Generator::Base
 
       if ARGV[0] == "slimcore"
         rubycas_server = ask_or_nil("RubyCAS Server Address [http://localhost:3020]: ")
-        slimcore_site = ask_or_nil("SLIMcore Address [http://localhost:3030]: ")
-        slimcore_user = ask_or_nil("SLIMcore User [slimbot]: ")
-        slimcore_password = ask_or_nil("SLIMcore Password [test]: ")
 
         slimcore_dev_mysql_server = ask_or_nil("SLIMcore Development MySQL Server [localhost]: ")
         slimcore_dev_mysql_database = ask_or_nil("SLIMcore Development MySQL Database [slimcore_dev]: ")
