@@ -14,6 +14,8 @@ gem 'rest-client', '0.8.2', :require => 'rest_client'
 gem 'guid', '0.1.1'
 
 group :test, :development do
+  gem 'rspec', '1.3.0'
+  gem 'rspec-rails', '1.3.2'
   gem 'newrelic_rpm'
   gem 'ruby-debug'
   gem 'rack-debug'
