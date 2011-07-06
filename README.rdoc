@@ -32,8 +32,8 @@ may find the following sufficient to get it up and running (with slimcore):
     git clone git://github.com/systemsbiology/slimarray.git
     cd slimarray
     bundle install
-    bundle exec rake setup authorizer=slimcore
-    bundle exec script/server
+    bin/rake setup authorizer=slimcore
+    script/server
 
 For a detailed example of how to install SLIMarray on a fresh Ubuntu 8.04 machine, see the file
 named INSTALL.rdoc. Installation on other operating systems should be similar.
