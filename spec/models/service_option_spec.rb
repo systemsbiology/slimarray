@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe ServiceOption do
   it "provides usage statistics" do
-    service_1 = create_service_option(:name => "Agilent labeling")
-    service_2 = create_service_option(:name => "Affymetrix hybridization")
+    service_1 = create_service_option(:name => "labeling", :notes => "Agilent")
+    service_2 = create_service_option(:name => "hybridization", :notes => "Affymetrix")
 
     lab_group_profile = mock_model(LabGroupProfile, :require_investigator_approval => false,
       :require_manager_approval => false)

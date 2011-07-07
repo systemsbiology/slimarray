@@ -10,6 +10,10 @@ class ServiceOption < ActiveRecord::Base
     "#{name} ($#{total_cost}/sample)"
   end
 
+  def full_name
+    "#{notes} #{name}"
+  end
+
   def self.usage_between(start_date, end_date)
     samples = Sample.find(:all, :include => {:microarray => {:chip => :sample_set}},
       :conditions => ["chips.hybridization_date >= ? AND chips.hybridization_date <= ? " +
@@ -19,7 +23,7 @@ class ServiceOption < ActiveRecord::Base
     
     stats = Array.new
     grouped.each do |group, members|
-      name = group.try(:name) || "No service option"
+      name = group.try(:full_name) || "No service option"
       stats << {:name => name, :count => members.size}
     end
 
