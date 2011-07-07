@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :usage_reports, :only => [:new, :create]
+
   map.resources :service_option_sets
 
   map.resources :service_options

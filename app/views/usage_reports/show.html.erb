@@ -1,0 +1,14 @@
+<h1>Usage from <%= @start_date %> to <%= @end_date %></h1>
+
+<table class="simple">
+  <tr>
+    <th>Service</th>
+    <th>Number</th>
+  </tr>
+  <% @stats.each do |stat| %>
+    <tr>
+      <td><%= stat[:name] %></td>
+      <td><%= stat[:count] %></td>
+    </tr>
+  <% end %>
+</table>

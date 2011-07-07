@@ -53,6 +53,7 @@
             <li><%= link_to 'Lab Groups', lab_groups_path %></li>
             <li><%= link_to 'Users', users_path %></li>
             <li><%= link_to 'Organisms', organisms_path %></li>
+            <li><%= link_to 'Usage Report', new_usage_report_path %></li>
           <% end %>
           <% if current_user.admin? %>
             <li><%= link_to 'Site Config', {:controller => 'site_config', :action => 'edit'} %></li>
