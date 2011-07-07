@@ -19,4 +19,5 @@ group :test, :development do
   gem 'newrelic_rpm'
   gem 'ruby-debug'
   gem 'rack-debug'
+  gem 'ZenTest'
 end
