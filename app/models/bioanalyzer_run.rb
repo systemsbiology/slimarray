@@ -9,7 +9,6 @@ class BioanalyzerRun < ActiveRecord::Base
     # QualityTrace.new below
     require 'quality_trace'
         
-    #bioanalyzer_pickup_location = "/users/bmarzolf/tmp/bioa_test"
     bioanalyzer_pickup_location = SiteConfig.bioanalyzer_pickup
     
     # get a list of the XML and JPG files
