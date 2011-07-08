@@ -8,7 +8,7 @@ incredibly clean one, so it does have a number of requirements on the applicatio
 
 Install the plugin itself:
 
-  script/plugin install git://github.com/bmarzolf/naming_schemer.git
+  script/plugin install git://github.com/systemsbiology/naming_schemer.git
 
 Add the following associations to your Sample model (create one if you don't have one already):
 
@@ -59,4 +59,4 @@ Link to the naming schemes management interface with this in your views:
 To integrate with sample CRUD interfaces in your application, there aren't any pre-made templates
 but you can refer to as an example:
 
-  http://github.com/bmarzolf/slimseq
+  http://github.com/systemsbiology/slimseq
