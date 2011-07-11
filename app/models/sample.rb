@@ -165,7 +165,7 @@ class Sample < ActiveRecord::Base
             array_number,
             sample.organism.name,
             sample_set.submitted_by,
-            sample.project.name,
+            sample.project.try(:name),
             "None"
           ]
         end
