@@ -12,6 +12,7 @@ gem 'formtastic', '1.1.0'
 gem 'parseexcel', '0.5.2'
 gem 'rest-client', '0.8.2', :require => 'rest_client'
 gem 'guid', '0.1.1'
+gem 'crypt-isaac', '0.9.1'
 
 group :test, :development do
   gem 'rspec', '1.3.0'
