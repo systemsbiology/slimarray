@@ -64,7 +64,15 @@ class ChargePeriod < ActiveRecord::Base
     table.column_order = [ "Charge Set", "Budget/PO", "Chips", "Chip Charge",
                            "Labeling Charge", "Hyb/Wash/Stain/\nScan Charge",
                            "QC Charge", "Other Charge", "Total Charge" ]
+
+    table.columns["Charge Set"] = PDF::SimpleTable::Column.new("Charge Set")
+    table.columns["Charge Set"].width = 95
+    table.columns["Budget/PO"] = PDF::SimpleTable::Column.new("Budget/PO")
+    table.columns["Budget/PO"].width = 55
+
+    RAILS_DEFAULT_LOGGER.error("table before render #{table.inspect}")
     table.render_on(_pdf)
+    RAILS_DEFAULT_LOGGER.error("after render")
     
     ############### 
     # DETAIL PAGES
@@ -154,7 +162,7 @@ class ChargePeriod < ActiveRecord::Base
       _pdf.text "\n\n"
       _pdf.text SiteConfig.charge_instructions
     end
-    
+
     return _pdf
   end
 
